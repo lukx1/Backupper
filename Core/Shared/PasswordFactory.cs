@@ -21,7 +21,7 @@ namespace Shared
             if (hashed.Length != 68)
                 throw new ArgumentException("Hashed password length must be 68");
 
-            byte[] salt = Convert.FromBase64String(hashed.Substring(0,24));
+            byte[] salt = Convert.FromBase64String(hashed.Substring(0, 24));
             if (salt.Length != saltBytes)
                 throw new ArgumentException("Salt length must be " + saltBytes + " bytes");
 
