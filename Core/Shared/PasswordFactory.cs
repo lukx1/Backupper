@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System.Text;
+using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Shared
 {
@@ -16,7 +19,7 @@ namespace Shared
         /// <param name="plain">Unhashed password</param>
         /// <param name="hashed">Password hashed using HassPassword</param>
         /// <returns>true if plain and hashes are the same hash</returns>
-        public static bool ComparePasswords(string plain, string hashed)
+        public static bool ComparePasswordsPbkdf2(string plain, string hashed)
         {
             if (hashed.Length != 68)
                 throw new ArgumentException("Hashed password length must be 68");
@@ -25,10 +28,10 @@ namespace Shared
             if (salt.Length != saltBytes)
                 throw new ArgumentException("Salt length must be " + saltBytes + " bytes");
 
-            return HashPassword(plain, salt) == hashed;
+            return HashPasswordPbkdf2(plain, salt) == hashed;
         }
 
-        private static string HashPassword(string password, byte[] salt)
+        private static string HashPasswordPbkdf2(string password, byte[] salt)
         {
             string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: password,
@@ -44,15 +47,60 @@ namespace Shared
         /// </summary>
         /// <param name="password"></param>
         /// <returns>Hashes salt and password, 68 chars long</returns>
-        public static string HashPassword(string password)
+        public static string HashPasswordPbkdf2(string password)
         {
             // generate a 128-bit salt using a secure PRNG
-            byte[] salt = new byte[saltBytes];
+            return HashPasswordPbkdf2(password, GenerateRandomBytes(128/8));
+        }
+
+        private static byte[] GenerateRandomBytes(int count)
+        {
+            byte[] b = new byte[saltBytes];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(b);
+            }
+            return b;
+        }
+
+        //private static readonly byte[] SALT = new byte[] { 0x26, 0xdc, 0xff, 0x00, 0xad, 0xed, 0x7a, 0xee, 0xc5, 0xfe, 0x07, 0xaf, 0x4d, 0x08, 0x22, 0x3c };
+        //private static readonly byte[] IV = new byte[]   { 1,7,255,0,173,237,122,238,2,254,7,5,77,8,34,60 };
+
+        public static string EncryptAES(string plain, string password)
+        {
+            byte[] iv = GenerateRandomBytes(16);
+            byte[] salt = GenerateRandomBytes(16);
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(salt);
             }
-            return HashPassword(password, salt);
+            MemoryStream memoryStream;
+            CryptoStream cryptoStream;
+            Rijndael rijndael = Rijndael.Create();
+            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(password, salt);
+            rijndael.Key = pdb.GetBytes(32);
+            rijndael.IV = iv;
+            memoryStream = new MemoryStream();
+            cryptoStream = new CryptoStream(memoryStream, rijndael.CreateEncryptor(), CryptoStreamMode.Write);
+            cryptoStream.Write(Encoding.UTF8.GetBytes(plain), 0, plain.Length);
+            cryptoStream.Close();
+            return Convert.ToBase64String(salt) + Convert.ToBase64String(iv) + Convert.ToBase64String(memoryStream.ToArray());
+        }
+
+        public static string DecryptAES(string cipher, string password)
+        {
+            MemoryStream memoryStream;
+            CryptoStream cryptoStream;
+            Rijndael rijndael = Rijndael.Create();
+            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(password, Convert.FromBase64String(cipher.Substring(0, 24)));
+            //byte[] cipherBytes = Convert.FromBase64String(cipher);
+            rijndael.Key = pdb.GetBytes(32);
+            rijndael.IV = Convert.FromBase64String(cipher.Substring(24, 24));
+            memoryStream = new MemoryStream();
+            cryptoStream = new CryptoStream(memoryStream, rijndael.CreateDecryptor(), CryptoStreamMode.Write);
+            cryptoStream.Write(Convert.FromBase64String(cipher.Substring(48)), 0, Convert.FromBase64String(cipher.Substring(48)).Length);
+            cryptoStream.Close();
+            return Encoding.UTF8.GetString(memoryStream.ToArray());
         }
     }
 }
