@@ -14,12 +14,18 @@ namespace Daemon
         /// </summary>
         static void Main()
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
+            var service = new Service1();
+            if(Environment.UserInteractive)
             {
-                new Service1()
-            };
-            ServiceBase.Run(ServicesToRun);
+                service.OnPubStart();
+                Console.WriteLine("Press any key to stop");
+                Console.Read();
+                service.OnPubStop();
+            }
+            else
+            {
+                ServiceBase.Run(service);
+            }
         }
     }
 }
