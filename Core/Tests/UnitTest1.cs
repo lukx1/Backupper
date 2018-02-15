@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+
+
 namespace Tests
 {
     [TestClass]
@@ -11,8 +13,8 @@ namespace Tests
         [TestMethod]
         public void ComparePasswordsTest()
         {
-            string hashed = Shared.PasswordFactory.HashPasswordPbkdf2("asda");
-            Assert.IsTrue(Shared.PasswordFactory.ComparePasswordsPbkdf2("asda", hashed));
+            string hashed = Shared.PasswordFactory.HashPassword("asda");
+            Assert.IsTrue(Shared.PasswordFactory.ComparePasswords("asda", hashed));
         }
     }
 }
