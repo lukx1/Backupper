@@ -17,6 +17,9 @@ namespace Daemon
             InitializeComponent();
         }
 
+        public void OnPubStart(string[] args = null) => OnStart(args);
+        public void OnPubStop() => OnStop();
+
         protected override void OnStart(string[] args)
         {
         }
