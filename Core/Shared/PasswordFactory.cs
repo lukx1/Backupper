@@ -31,6 +31,12 @@ namespace Shared
             return HashPasswordPbkdf2(plain, salt) == hashed;
         }
 
+        public static uint CalculateCRC32(string input)
+        {
+            Crc32 crc = new Crc32();
+            return crc.ComputeChecksum(Encoding.UTF8.GetBytes(input));
+        }
+
         private static string HashPasswordPbkdf2(string password, byte[] salt)
         {
             string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
@@ -51,6 +57,11 @@ namespace Shared
         {
             // generate a 128-bit salt using a secure PRNG
             return HashPasswordPbkdf2(password, GenerateRandomBytes(128/8));
+        }
+
+        public static string CreateRandomPassword(int bytes)
+        {
+            return Convert.ToBase64String(GenerateRandomBytes(bytes));
         }
 
         private static byte[] GenerateRandomBytes(int count)

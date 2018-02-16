@@ -36,6 +36,9 @@
     <Reference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNetCore.Cryptography.KeyDerivation.2.0.1\lib\netstandard2.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Rijndael256, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Rijndael256.3.2.0\lib\net452\Rijndael256.dll</HintPath>
     </Reference>
@@ -49,11 +52,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Crc32.cs" />
+    <Compile Include="HttpAdvancedClient.cs" />
+    <Compile Include="NetMessages\EncryptionRequestMessage.cs" />
+    <Compile Include="NetMessages\ErrorMessage.cs" />
+    <Compile Include="NetMessages\INetMessage.cs" />
+    <Compile Include="NetMessages\IntroductionMessage.cs" />
+    <Compile Include="NetMessages\MessageParser.cs" />
+    <Compile Include="NetMessages\PingMessage.cs" />
+    <Compile Include="NetMessages\SuccessMessage.cs" />
     <Compile Include="PasswordFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
