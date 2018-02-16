@@ -1,0 +1,3 @@
+Pred loginem musí být zdílen preshared key (unhasnutý) serveru v introduction messagy.
+Pokud je daemon overen je pridán do databáze a je mu poslána zpráva s login informacemi.
+Poté je preshared key neplatný a daemon se musí overovat pomocí loginu (hesla od serveru) prijatého ve success message uvnitr hodnoty value
