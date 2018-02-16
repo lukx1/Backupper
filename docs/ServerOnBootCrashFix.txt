@@ -1,0 +1,1 @@
+Zobrazit skryté složky uvnitr projektu server a vymazat bin

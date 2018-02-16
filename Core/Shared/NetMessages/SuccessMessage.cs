@@ -11,9 +11,5 @@ namespace Shared.NetMessages
         public string message;
         public string value;
         public INetMessage innerMessage;
-        public uint GetUid()
-        {
-            return 3;
-        }
     }
 }

@@ -1,0 +1,2 @@
+introduction v.1
+{"os":"Win10","macAdress":["0","0","0","0","0","0","0","0","0","0","0","0"],"preSharedKey":"tRnhF0IfmkDrIZU6dbCusQ==","version":1}
