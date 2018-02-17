@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.NetMessages
+namespace Shared
 {
     /// <summary>
-    /// Základní interface pro komunikaci
+    /// Užitečné nástroje které nikam jinam nepatří
     /// </summary>
-    public interface INetMessage
+    public static class Util
     {
-        
+        public const bool IsDebug = true;
     }
 }

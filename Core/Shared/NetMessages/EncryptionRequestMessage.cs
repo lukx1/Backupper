@@ -8,5 +8,9 @@ namespace Shared.NetMessages
 {
     public class EncryptionRequestMessage : INetMessage
     {
+        public EncryptionRequestMessage()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

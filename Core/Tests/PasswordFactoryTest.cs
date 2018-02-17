@@ -29,7 +29,7 @@ namespace Tests
 
         private async void killMe()
         {
-            HttpAdvancedClient client = new HttpAdvancedClient();
+            Messenger client = new Messenger();
             await client.SendPost(new IntroductionMessage()
             {
                 macAdress = new char[12] { '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' },

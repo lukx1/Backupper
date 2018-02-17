@@ -14,7 +14,7 @@ namespace Tests
     public class HttpAdvancedClientTest
     {
 
-        private async void adasd(HttpAdvancedClient client)
+        private async void adasd(Messenger client)
         {
             var res = await client.SendPost(new PingMessage());
             Console.WriteLine();
@@ -23,7 +23,7 @@ namespace Tests
         [TestMethod]
         public void HttpTest()
         {
-            HttpAdvancedClient client = new HttpAdvancedClient();
+            Messenger client = new Messenger();
             adasd(client);
         }
     }

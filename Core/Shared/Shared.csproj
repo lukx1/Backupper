@@ -53,16 +53,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crc32.cs" />
-    <Compile Include="HttpAdvancedClient.cs" />
+    <Compile Include="Messenger.cs" />
     <Compile Include="NetMessages\EncryptionRequestMessage.cs" />
-    <Compile Include="NetMessages\ErrorMessage.cs" />
     <Compile Include="NetMessages\INetMessage.cs" />
     <Compile Include="NetMessages\IntroductionMessage.cs" />
-    <Compile Include="NetMessages\MessageParser.cs" />
     <Compile Include="NetMessages\PingMessage.cs" />
-    <Compile Include="NetMessages\SuccessMessage.cs" />
+    <Compile Include="NetMessages\CommonResponseMessage.cs" />
+    <Compile Include="NetMessages\ResponseType.cs" />
+    <Compile Include="NetMessages\StandardResponseMessage.cs" />
     <Compile Include="PasswordFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -11,14 +11,18 @@ namespace Server.Authentication
     public class DaemonAuthenticator
     {
         private IntroductionMessage message;
-        private DaemonLogin daemonLogin;
-        private daemonPreSharedKey matchingLogin;
+        private DaemonLoginContext daemonLogin;
+        private DaemonPreSharedKey matchingLogin;
 
-        public DaemonAuthenticator(DaemonLogin daemonLogin)
+        public DaemonAuthenticator()
         {
-            this.daemonLogin = daemonLogin;
+            this.daemonLogin = new DaemonLoginContext();
         }
 
+        /// <summary>
+        /// Musí být zavolána první. Načtě zprávu, nidky nehází exceptiony
+        /// </summary>
+        /// <param name="message"></param>
         public void ReadIntroduction(IntroductionMessage message)
         {
             this.message = message;
@@ -37,16 +41,20 @@ namespace Server.Authentication
         }
 
         
-
-        private string EnterDBGetPass(daemonPreSharedKey dbPreShared)
+        /// <summary>
+        /// Vloží data do databáze
+        /// </summary>
+        /// <param name="dbPreShared"></param>
+        /// <returns></returns>
+        private string EnterDBGetPass(DaemonPreSharedKey dbPreShared)
         {
             dbPreShared.used = true;
 
-            var dbDaemonInfo = new daemonInfo();
+            var dbDaemonInfo = new DaemonInfo();
             dbDaemonInfo.os = message.os;
             dbDaemonInfo.mac = new string(message.macAdress);
 
-            var dbDaemon = new daemon();
+            var dbDaemon = new Daemon();
             var unhashedPass = PasswordFactory.CreateRandomPassword(16);
             var hashedPass = PasswordFactory.HashPasswordPbkdf2(unhashedPass);
 
@@ -54,32 +62,41 @@ namespace Server.Authentication
             dbDaemon.idUser = dbPreShared.idUser;
             dbDaemon.daemonInfo = dbDaemonInfo;
 
+            daemonLogin.daemonInfos.Add(dbDaemonInfo);
+            daemonLogin.daemons.Add(dbDaemon);
+
             daemonLogin.SaveChanges();// TODO: make async
-            daemonLogin.Dispose();
             return unhashedPass;
         }
 
         /// <summary>
-        /// Closes DB connection
+        /// Přidá daemona do databáze a pošle heslo
         /// </summary>
         /// <returns></returns>
-        public INetMessage AddToDBMakeResponse()
+        public StandardResponseMessage AddToDBMakeResponse()
         {
             if (matchingLogin == null)
                 throw new InvalidOperationException("Can't add to DB if login isn't valid");
             var unhashedpass = EnterDBGetPass(matchingLogin);
-            SuccessMessage successMessage = new SuccessMessage() { message = "Added to daemon list",value = unhashedpass };
+            StandardResponseMessage successMessage = new StandardResponseMessage() { type=ResponseType.SUCCESS, message = "Added to daemon list",value = unhashedpass };
             unhashedpass = null; // Clean RAM
             message = null;
             return successMessage;
         }
-
+        /// 
+        /// <summary>
+        /// Ověří zda jsou údaje platné
+        /// </summary>
+        /// <returns></returns>
         public bool IsValid()
         {
-            foreach (var entry in daemonLogin.daemonPreSharedKeys)
+            
+            foreach (var entry in daemonLogin.daemonPreSharedKeys.Where(r => r.id == message.id))
             {
                 if (PasswordFactory.ComparePasswordsPbkdf2(message.preSharedKey, entry.preSharedKey))//TODO:Check for expired and used
                 {
+                    if ((entry.used || DateTime.Compare(entry.expires,DateTime.Now) < 0/*Expired*/) && !Util.IsDebug)
+                        continue;
                     matchingLogin = entry;
                     return true;
                 }

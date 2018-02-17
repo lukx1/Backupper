@@ -9,36 +9,35 @@ using System.Web.Mvc;
 
 namespace Server.Controllers
 {
+    /// <summary>
+    /// Vytváří daemony z preshared klíče a id, registruje vstupní info
+    /// </summary>
     public class IntroductionController : ApiController
     {
         private DaemonAuthenticator authenticator;
 
-        private INetMessage HandleIntroduction(IntroductionMessage message)
+        private StandardResponseMessage HandleIntroduction(IntroductionMessage message)
         {
             if (authenticator == null)
-                authenticator = new DaemonAuthenticator(new Models.DaemonLogin());
+                authenticator = new DaemonAuthenticator();
+
             authenticator.ReadIntroduction(message);
             if (!authenticator.IsValid())
-                return new ErrorMessage() { message="Invalid preshared key" };
+                return new StandardResponseMessage() { type=ResponseType.FAILURE, message="Invalid introduction" };
             return authenticator.AddToDBMakeResponse();
-            }
-
-        private INetMessage HandleMessage(Type type, string json)
-        {
-            if(type == typeof(IntroductionMessage))
-            {
-                return HandleIntroduction(MessageParser.ParseMessage<IntroductionMessage>(json));
-            }
-            else
-            {
-                return new ErrorMessage() { message = "Invalid message type" };
-            }
         }
 
-        /**Post*/
-        public string Post([FromBody]IntroductionMessage value)
+
+
+        /// <summary>
+        /// Přijme introduction od daemonu a ověří
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns>success pokud prošlo, jinak failure</returns>
+        public StandardResponseMessage Post([FromBody]IntroductionMessage value)
         {
-            return HandleIntroduction(value).ToString();
+            
+            return HandleIntroduction(value);
         }
 
     }

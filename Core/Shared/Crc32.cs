@@ -6,11 +6,18 @@ using System.Threading.Tasks;
 
 namespace Shared
 {
-    /**http://sanity-free.org/12/crc32_implementation_in_csharp.html*/
+    /// <summary>
+    /// Počítá CRC32
+    /// </summary>
     public class Crc32
     {
         uint[] table;
 
+        /// <summary>
+        /// Vypočítá CRC32 z bytů
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
         public uint ComputeChecksum(byte[] bytes)
         {
             uint crc = 0xffffffff;
@@ -22,6 +29,11 @@ namespace Shared
             return ~crc;
         }
 
+        /// <summary>
+        /// Vypočítá CRC32 z bytů
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
         public byte[] ComputeChecksumBytes(byte[] bytes)
         {
             return BitConverter.GetBytes(ComputeChecksum(bytes));

@@ -7,7 +7,7 @@ namespace Server.Models
     using System.Data.Entity.Spatial;
 
     [Table("3b1_joskalukas_db1.daemons")]
-    public partial class daemon
+    public partial class Daemon
     {
         public int id { get; set; }
 
@@ -22,6 +22,6 @@ namespace Server.Models
 
         public int idDaemonInfo { get; set; }
 
-        public virtual daemonInfo daemonInfo { get; set; }
+        public virtual DaemonInfo daemonInfo { get; set; }
     }
 }

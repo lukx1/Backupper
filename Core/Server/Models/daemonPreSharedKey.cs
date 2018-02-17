@@ -7,7 +7,7 @@ namespace Server.Models
     using System.Data.Entity.Spatial;
 
     [Table("3b1_joskalukas_db1.daemonPreSharedKeys")]
-    public partial class daemonPreSharedKey
+    public partial class DaemonPreSharedKey
     {
         public int id { get; set; }
 

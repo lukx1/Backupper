@@ -6,11 +6,18 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages
 {
+    /// <summary>
+    /// Testuje odezvu
+    /// </summary>
     public class PingMessage : INetMessage
     {
-        /**In ms*/
+        /// <summary>
+        /// Začátek měření, nastaven klientem
+        /// </summary>
         public long startTime { get; set; } 
-        /**In ms*/
+        /// <summary>
+        /// Výsledek měření, nstaven serverem
+        /// </summary>
         public long endTime { get; set; }
     }
 }

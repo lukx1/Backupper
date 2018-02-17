@@ -7,6 +7,9 @@ using System.Text.RegularExpressions;
 
 namespace Shared
 {
+    /// <summary>
+    /// Tvoří, šifruje a porovnává hesla. 
+    /// </summary>
     public class PasswordFactory
     {
 
@@ -14,11 +17,11 @@ namespace Shared
         private const int keyBytes = 256 / 8;
 
         /// <summary>
-        /// Compares a plain(unhashed) to a hashed password
+        /// Porovnává a obyčejné(nešifrované) heslo s šifrovaným heslem
         /// </summary>
-        /// <param name="plain">Unhashed password</param>
-        /// <param name="hashed">Password hashed using HassPassword</param>
-        /// <returns>true if plain and hashes are the same hash</returns>
+        /// <param name="plain">Nešifrované heslo</param>
+        /// <param name="hashed">Heslo šifrované pomocí HashPasswordPbkdf2</param>
+        /// <returns>Pravda pokud hesla jsou shodná</returns>
         public static bool ComparePasswordsPbkdf2(string plain, string hashed)
         {
             if (hashed.Length != 68)
@@ -31,6 +34,11 @@ namespace Shared
             return HashPasswordPbkdf2(plain, salt) == hashed;
         }
 
+        /// <summary>
+        /// Vypočítá CRC32 stringu, pouze pro kontrolu.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
         public static uint CalculateCRC32(string input)
         {
             Crc32 crc = new Crc32();
@@ -49,16 +57,20 @@ namespace Shared
         }
 
         /// <summary>
-        /// Safely hashes a string
+        /// Bezpečně asymetricky zašifruje string
         /// </summary>
         /// <param name="password"></param>
-        /// <returns>Hashes salt and password, 68 chars long</returns>
+        /// <returns>Šifrované heslo se solí, 68 char dlouhé</returns>
         public static string HashPasswordPbkdf2(string password)
         {
-            // generate a 128-bit salt using a secure PRNG
             return HashPasswordPbkdf2(password, GenerateRandomBytes(128/8));
         }
 
+        /// <summary>
+        /// Vytvoří bezpečně náhodné heslo o žádané délce
+        /// </summary>
+        /// <param name="bytes">Z kolika bytů bude heslo vytvořeno</param>
+        /// <returns></returns>
         public static string CreateRandomPassword(int bytes)
         {
             return Convert.ToBase64String(GenerateRandomBytes(bytes));
@@ -77,7 +89,13 @@ namespace Shared
         //private static readonly byte[] SALT = new byte[] { 0x26, 0xdc, 0xff, 0x00, 0xad, 0xed, 0x7a, 0xee, 0xc5, 0xfe, 0x07, 0xaf, 0x4d, 0x08, 0x22, 0x3c };
         //private static readonly byte[] IV = new byte[]   { 1,7,255,0,173,237,122,238,2,254,7,5,77,8,34,60 };
 
-        public static string EncryptAES(string plain, string password)
+        /// <summary>
+        /// Symetricky zašifruje zprávu pomocí hesla
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public static string EncryptAES(string message, string password)
         {
             byte[] iv = GenerateRandomBytes(16);
             byte[] salt = GenerateRandomBytes(16);
@@ -93,11 +111,17 @@ namespace Shared
             rijndael.IV = iv;
             memoryStream = new MemoryStream();
             cryptoStream = new CryptoStream(memoryStream, rijndael.CreateEncryptor(), CryptoStreamMode.Write);
-            cryptoStream.Write(Encoding.UTF8.GetBytes(plain), 0, plain.Length);
+            cryptoStream.Write(Encoding.UTF8.GetBytes(message), 0, message.Length);
             cryptoStream.Close();
             return Convert.ToBase64String(salt) + Convert.ToBase64String(iv) + Convert.ToBase64String(memoryStream.ToArray());
         }
 
+        /// <summary>
+        /// Dešifruje zprávu vytvořenou EncryptAES pomocí hesla
+        /// </summary>
+        /// <param name="cipher"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public static string DecryptAES(string cipher, string password)
         {
             MemoryStream memoryStream;
