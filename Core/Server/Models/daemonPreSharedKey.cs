@@ -21,5 +21,7 @@ namespace Server.Models
         public DateTime expires { get; set; }
 
         public bool used { get; set; }
+
+        public virtual User user { get; set; }
     }
 }

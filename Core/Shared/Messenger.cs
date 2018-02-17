@@ -11,27 +11,33 @@ using System.Threading.Tasks;
 namespace Shared
 {
     /// <summary>
-    /// Předem známo jako HttpAdvancedClient
+    /// Odesílá a přijímá http zprávy
     /// </summary>
+    /// Předem známo jako HttpAdvancedClient.
+    /// <see cref="Send(INetMessage, string, HttpMethod)"/> na odesílání.
+    /// <see cref="ReadMessage{T}"/> na čtení
     public class Messenger
     {
         private HttpClient client;
         private string jsonResponse;
         private HttpStatusCode _statusCode;
         private HttpStatusCode statusCode { get => _statusCode; }
+
         /// <summary>
         /// Vytvoří instanci a uloží si kontaktní server
         /// </summary>
-        /// <param name="server"></param>
-        public Messenger(string server)
+        /// <param name="serverUrl"></param>
+        public Messenger(string serverUrl)
         {
             client = new HttpClient();
-            client.BaseAddress = new Uri(server);
+            client.BaseAddress = new Uri(serverUrl);
         }
 
         /// <summary>
-        /// Reads the message using generics
+        /// Přečte zprávu genericky
         /// </summary>
+        /// Není možné přeložit pomocí interfacu. T musí být identický 
+        /// s přijmutým jsonem
         /// <typeparam name="T"> result message</typeparam>
         /// <returns>Message</returns>
         public T ReadMessage<T>()
@@ -49,7 +55,7 @@ namespace Shared
         }
 
         /// <summary>
-        /// Univerzálně přečte zprávu bez překladu do INetMessage
+        /// Univerzálně přečte zprávu
         /// </summary>
         /// <returns></returns>
         public Dictionary<string,string> ReadMessageAsDict()
@@ -58,7 +64,20 @@ namespace Shared
         }
 
         /// <summary>
-        /// Pošle zprávu na cílový kontroler a interně jí přečte
+        /// Pošle jakoukoliv zprávu na cílový kontroler a interně jí přečte
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="controller"></param>
+        public async void Send(INetMessage message, string controller, HttpMethod httpMethod)
+        {
+            var json = JsonConvert.SerializeObject(message);
+            var response = await client.SendAsync(new HttpRequestMessage(httpMethod, "api/" + controller) { Content = new StringContent(json)});
+            jsonResponse = await response.Content.ReadAsStringAsync();
+            _statusCode = response.StatusCode;
+        }
+
+        /// <summary>
+        /// Pošle post zprávu na cílový kontroler a interně jí přečte
         /// </summary>
         /// <param name="message"></param>
         /// <param name="controller"></param>
@@ -69,5 +88,8 @@ namespace Shared
             jsonResponse = await response.Content.ReadAsStringAsync();
             _statusCode = response.StatusCode;
         }
+
+
+
     }
 }

@@ -14,12 +14,12 @@ namespace Server.Controllers
     /// </summary>
     public class IntroductionController : ApiController
     {
-        private DaemonAuthenticator authenticator;
+        private DaemonIntroducer authenticator;
 
         private StandardResponseMessage HandleIntroduction(IntroductionMessage message)
         {
             if (authenticator == null)
-                authenticator = new DaemonAuthenticator();
+                authenticator = new DaemonIntroducer();
 
             authenticator.ReadIntroduction(message);
             if (!authenticator.IsValid())

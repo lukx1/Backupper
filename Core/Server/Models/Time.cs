@@ -6,30 +6,30 @@ namespace Server.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("3b1_joskalukas_db1.daemonInfos")]
-    public partial class DaemonInfo
+    [Table("3b1_joskalukas_db1.times")]
+    public partial class Time
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public DaemonInfo()
+        public Time()
         {
-            daemons = new HashSet<Daemon>();
+            taskLocationsTimes = new HashSet<TaskLocationsTime>();
         }
 
         public int id { get; set; }
 
-        [Required]
-        [StringLength(64)]
-        public string os { get; set; }
+        public int? interval { get; set; }
 
-        [Column(TypeName = "char")]
         [Required]
-        [StringLength(12)]
-        public string mac { get; set; }
+        [StringLength(40)]
+        public string name { get; set; }
 
-        [Column(TypeName = "timestamp")]
-        public DateTime dateAdded { get; set; }
+        public bool repeat { get; set; }
+
+        public DateTime startTime { get; set; }
+
+        public DateTime? endTime { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Daemon> daemons { get; set; }
+        public virtual ICollection<TaskLocationsTime> taskLocationsTimes { get; set; }
     }
 }

@@ -57,6 +57,7 @@
     <Compile Include="NetMessages\EncryptionRequestMessage.cs" />
     <Compile Include="NetMessages\INetMessage.cs" />
     <Compile Include="NetMessages\IntroductionMessage.cs" />
+    <Compile Include="NetMessages\LoginMessage.cs" />
     <Compile Include="NetMessages\PingMessage.cs" />
     <Compile Include="NetMessages\CommonResponseMessage.cs" />
     <Compile Include="NetMessages\ResponseType.cs" />

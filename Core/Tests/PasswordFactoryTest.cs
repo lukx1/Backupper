@@ -27,17 +27,17 @@ namespace Tests
             Assert.IsTrue(result == "message");
         }
 
-        private async void killMe()
+        /*private async void killMe()
         {
-            Messenger client = new Messenger();
+            Messenger client = new Messenger("");
             await client.SendPost(new IntroductionMessage()
             {
                 macAdress = new char[12] { '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' },
                 os = "Win10",
                 version = 1,
-                preSharedKey = "tRnhF0IfmkDrIZU6dbCusQ==",
-            });
-        }
+                preSharedKey = "tRnhF0IfmkDrIZU6dbCusQ=="
+            );
+        }*/
 
         [TestMethod]
         public void Test()
@@ -48,7 +48,7 @@ namespace Tests
             //INetMessage ping = new PingMessage();
             //var res = JsonConvert.DeserializeAnonymousType<PingMessage>("{\"startTime\":100,\"endTime\":900}", (PingMessage)ping);
             // messageParse.parsePingMessage("");
-            killMe();
+            //killMe();
             Console.WriteLine();
             //jsonResponse.Works = true;
 

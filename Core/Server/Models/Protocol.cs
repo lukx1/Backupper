@@ -6,30 +6,27 @@ namespace Server.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("3b1_joskalukas_db1.daemonInfos")]
-    public partial class DaemonInfo
+    [Table("3b1_joskalukas_db1.protocols")]
+    public partial class Protocol
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public DaemonInfo()
+        public Protocol()
         {
-            daemons = new HashSet<Daemon>();
+            locations = new HashSet<Location>();
         }
 
         public int id { get; set; }
 
-        [Required]
-        [StringLength(64)]
-        public string os { get; set; }
-
         [Column(TypeName = "char")]
         [Required]
-        [StringLength(12)]
-        public string mac { get; set; }
+        [StringLength(3)]
+        public string ShortName { get; set; }
 
-        [Column(TypeName = "timestamp")]
-        public DateTime dateAdded { get; set; }
+        [Required]
+        [StringLength(32)]
+        public string LongName { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Daemon> daemons { get; set; }
+        public virtual ICollection<Location> locations { get; set; }
     }
 }

@@ -21,7 +21,7 @@ namespace Shared.NetMessages
         /// <summary>
         /// Vnitřní hodnota
         /// </summary>
-        public string value;
+        public Dictionary<string,object> values;
         
     }
 }

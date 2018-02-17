@@ -193,17 +193,30 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
-    <Compile Include="Authentication\DaemonAuthenticator.cs" />
+    <Compile Include="Authentication\DaemonIntroducer.cs" />
+    <Compile Include="Authentication\DaemonLoginer.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IntroductionController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\BackupType.cs" />
     <Compile Include="Models\Daemon.cs" />
     <Compile Include="Models\DaemonInfo.cs" />
-    <Compile Include="Models\DaemonLoginContext.cs" />
     <Compile Include="Models\DaemonPreSharedKey.cs" />
+    <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\LocationCredential.cs" />
+    <Compile Include="Models\LogedInDaemon.cs" />
+    <Compile Include="Models\LogonType.cs" />
+    <Compile Include="Models\MySQLContext.cs" />
+    <Compile Include="Models\Protocol.cs" />
+    <Compile Include="Models\Task.cs" />
+    <Compile Include="Models\TaskLocation.cs" />
+    <Compile Include="Models\TaskLocationsTime.cs" />
+    <Compile Include="Models\Time.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -323,7 +336,8 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.5\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.5\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
   </Target>
   <PropertyGroup>
-    <PreBuildEvent>rmdir /s /q bin</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

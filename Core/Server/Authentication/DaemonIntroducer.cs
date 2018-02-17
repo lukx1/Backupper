@@ -8,15 +8,15 @@ using System.Web;
 
 namespace Server.Authentication
 {
-    public class DaemonAuthenticator
+    public class DaemonIntroducer
     {
         private IntroductionMessage message;
-        private DaemonLoginContext daemonLogin;
+        private MySQLContext mysql;
         private DaemonPreSharedKey matchingLogin;
 
-        public DaemonAuthenticator()
+        public DaemonIntroducer()
         {
-            this.daemonLogin = new DaemonLoginContext();
+            this.mysql = MySQLContext.Instance;
         }
 
         /// <summary>
@@ -40,13 +40,18 @@ namespace Server.Authentication
             return true;
         }
 
+        private struct UuidPass
+        {
+            public string uuid;
+            public string pass;
+        }
         
         /// <summary>
         /// Vloží data do databáze
         /// </summary>
         /// <param name="dbPreShared"></param>
         /// <returns></returns>
-        private string EnterDBGetPass(DaemonPreSharedKey dbPreShared)
+        private UuidPass EnterDBGetPass(DaemonPreSharedKey dbPreShared)
         {
             dbPreShared.used = true;
 
@@ -58,15 +63,19 @@ namespace Server.Authentication
             var unhashedPass = PasswordFactory.CreateRandomPassword(16);
             var hashedPass = PasswordFactory.HashPasswordPbkdf2(unhashedPass);
 
+            dbDaemon.uuid = Guid.NewGuid();
             dbDaemon.password = hashedPass;
             dbDaemon.idUser = dbPreShared.idUser;
             dbDaemon.daemonInfo = dbDaemonInfo;
 
-            daemonLogin.daemonInfos.Add(dbDaemonInfo);
-            daemonLogin.daemons.Add(dbDaemon);
+            mysql.daemonInfos.Add(dbDaemonInfo);
+            mysql.daemons.Add(dbDaemon);
 
-            daemonLogin.SaveChanges();// TODO: make async
-            return unhashedPass;
+            mysql.SaveChanges();// TODO: make async
+
+            //Console.WriteLine();
+
+            return new UuidPass() { uuid = dbDaemon.uuid.ToString(), pass = unhashedPass};
         }
 
         /// <summary>
@@ -77,9 +86,12 @@ namespace Server.Authentication
         {
             if (matchingLogin == null)
                 throw new InvalidOperationException("Can't add to DB if login isn't valid");
-            var unhashedpass = EnterDBGetPass(matchingLogin);
-            StandardResponseMessage successMessage = new StandardResponseMessage() { type=ResponseType.SUCCESS, message = "Added to daemon list",value = unhashedpass };
-            unhashedpass = null; // Clean RAM
+            UuidPass uuidPass = EnterDBGetPass(matchingLogin);
+            Dictionary<string, object> values = new Dictionary<string, object>();
+            values.Add("uuid", uuidPass.uuid);
+            values.Add("password", uuidPass.pass);
+            StandardResponseMessage successMessage = new StandardResponseMessage() { type=ResponseType.SUCCESS, message = "Added to daemon list",values=values};
+            uuidPass.pass = null;
             message = null;
             return successMessage;
         }
@@ -91,7 +103,7 @@ namespace Server.Authentication
         public bool IsValid()
         {
             
-            foreach (var entry in daemonLogin.daemonPreSharedKeys.Where(r => r.id == message.id))
+            foreach (var entry in mysql.daemonPreSharedKeys.Where(r => r.id == message.id))
             {
                 if (PasswordFactory.ComparePasswordsPbkdf2(message.preSharedKey, entry.preSharedKey))//TODO:Check for expired and used
                 {

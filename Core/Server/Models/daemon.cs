@@ -9,6 +9,12 @@ namespace Server.Models
     [Table("3b1_joskalukas_db1.daemons")]
     public partial class Daemon
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Daemon()
+        {
+            tasks = new HashSet<Task>();
+        }
+
         public int id { get; set; }
 
         public Guid uuid { get; set; }
@@ -23,5 +29,12 @@ namespace Server.Models
         public int idDaemonInfo { get; set; }
 
         public virtual DaemonInfo daemonInfo { get; set; }
+
+        public virtual User user { get; set; }
+
+        public virtual LogedInDaemon logedInDaemon { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Task> tasks { get; set; }
     }
 }
