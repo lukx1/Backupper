@@ -42,7 +42,7 @@ namespace Server.Authentication
 
         private struct UuidPass
         {
-            public string uuid;
+            public Guid uuid;
             public string pass;
         }
         
@@ -75,25 +75,22 @@ namespace Server.Authentication
 
             //Console.WriteLine();
 
-            return new UuidPass() { uuid = dbDaemon.uuid.ToString(), pass = unhashedPass};
+            return new UuidPass() { uuid = dbDaemon.uuid, pass = unhashedPass};
         }
 
         /// <summary>
         /// Přidá daemona do databáze a pošle heslo
         /// </summary>
         /// <returns></returns>
-        public StandardResponseMessage AddToDBMakeResponse()
+        public IntroductionResponse AddToDBMakeResponse()
         {
             if (matchingLogin == null)
-                throw new InvalidOperationException("Can't add to DB if login isn't valid");
+                return new IntroductionResponse { errorMessage = new ErrorMessage() { message = "Login se neshoduje", value = "login"} };
             UuidPass uuidPass = EnterDBGetPass(matchingLogin);
-            Dictionary<string, object> values = new Dictionary<string, object>();
-            values.Add("uuid", uuidPass.uuid);
-            values.Add("password", uuidPass.pass);
-            StandardResponseMessage successMessage = new StandardResponseMessage() { type=ResponseType.SUCCESS, message = "Added to daemon list",values=values};
+            IntroductionResponse response = new IntroductionResponse { uuid = uuidPass.uuid, password = uuidPass.pass };
             uuidPass.pass = null;
             message = null;
-            return successMessage;
+            return response;
         }
         /// 
         /// <summary>
@@ -107,7 +104,7 @@ namespace Server.Authentication
             {
                 if (PasswordFactory.ComparePasswordsPbkdf2(message.preSharedKey, entry.preSharedKey))//TODO:Check for expired and used
                 {
-                    if ((entry.used || DateTime.Compare(entry.expires,DateTime.Now) < 0/*Expired*/) && !Util.IsDebug)
+                    if (entry.used || DateTime.Compare(entry.expires,DateTime.Now) < 0/*Expired*/)
                         continue;
                     matchingLogin = entry;
                     return true;

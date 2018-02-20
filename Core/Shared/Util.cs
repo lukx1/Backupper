@@ -11,6 +11,6 @@ namespace Shared
     /// </summary>
     public static class Util
     {
-        public const bool IsDebug = true;
+        public const bool IsDebug = false;
     }
 }

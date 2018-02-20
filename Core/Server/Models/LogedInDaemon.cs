@@ -16,6 +16,9 @@ namespace Server.Models
         [Column(TypeName = "timestamp")]
         public DateTime expires { get; set; }
 
+        [Required]
+        public Guid sessionUuid { get; set; }
+
         public virtual Daemon daemon { get; set; }
     }
 }

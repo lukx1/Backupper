@@ -1,5 +1,6 @@
 ﻿using Server.Models;
 using Shared;
+using Shared.NetMessages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,37 +21,42 @@ namespace Server.Authentication
             mysql = MySQLContext.Instance;
         }
 
-        private void Validate(Daemon daemon, string password)
-        {
-            if (daemon == null)
-                throw new ArgumentNullException("Daemons s daným uuid neexistuje");
-            if (!IsPasswordValid(password, daemon))
-                throw new ArgumentException("Hesla se neshodují");
-        }
 
         /// <summary>
         /// Prihlasi daemona, hazi ArgumentException nebo ArgumentNullexception pokud nastane chyba
         /// </summary>
         /// <param name="uuid"></param>
         /// <param name="password"></param>
-        public void Login(Guid uuid, string password)
+        /// <returns>Uuid</returns>
+        public LoginResponse LoginAndGetSessionUuid(Guid uuid, string password)
         {
             Daemon daemon = mysql.daemons.Where(r => r.uuid == uuid).FirstOrDefault();
+
+            if (daemon == null)
+                return new LoginResponse() { errorMessage = new ErrorMessage {id = 1,message = "Daemon s daným uuid nebyl nalezen",value=uuid.ToString() } };
+            if (!IsPasswordValid(password, daemon))
+                return new LoginResponse() { errorMessage = new ErrorMessage { id = 2, message = "Login je neplatný" } };
+
             LogedInDaemon logedInDaemon = GetLogedInDaemonWithUuid(uuid);
 
-            Validate(daemon,password);
+            Guid sessionUuid = Guid.NewGuid();
 
-            if (logedInDaemon == null) // Daemon existuje ale nikdy nebyl prihlasen
-                FirstLogin(daemon);
+            if (logedInDaemon == null) { // Daemon existuje ale nikdy nebyl prihlasen
+                logedInDaemon = new LogedInDaemon() { daemon = daemon, idDaemon = daemon.id, expires = DateTime.Now.AddMinutes(LOGIN_PERIOD)};
+                mysql.logedInDaemons.Add(logedInDaemon);
+            }
             else // Daemon existuje a bude prihlasen na loginPrediod
                 logedInDaemon.expires = DateTime.Now.AddMinutes(LOGIN_PERIOD);
+            logedInDaemon.sessionUuid = sessionUuid;
             mysql.SaveChanges();
+            return new LoginResponse() {sessionUuid = sessionUuid };
         }
 
         private bool IsPasswordValid(string pass, Daemon daemon)
         {
             return PasswordFactory.ComparePasswordsPbkdf2(pass, daemon.password);
         }
+
 
         private void FirstLogin(Daemon daemon)
         {

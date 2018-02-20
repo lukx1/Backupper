@@ -16,27 +16,24 @@ namespace Server.Controllers
     {
         private DaemonIntroducer authenticator;
 
-        private StandardResponseMessage HandleIntroduction(IntroductionMessage message)
+        private IntroductionResponse HandleIntroduction(IntroductionMessage message)
         {
             if (authenticator == null)
                 authenticator = new DaemonIntroducer();
 
             authenticator.ReadIntroduction(message);
             if (!authenticator.IsValid())
-                return new StandardResponseMessage() { type=ResponseType.FAILURE, message="Invalid introduction" };
+                return new IntroductionResponse() { errorMessage = new ErrorMessage {message="Údaje nejsou platné" } };
             return authenticator.AddToDBMakeResponse();
         }
-
-
 
         /// <summary>
         /// Přijme introduction od daemonu a ověří
         /// </summary>
         /// <param name="value"></param>
         /// <returns>success pokud prošlo, jinak failure</returns>
-        public StandardResponseMessage Post([FromBody]IntroductionMessage value)
+        public IntroductionResponse Post([FromBody]IntroductionMessage value)
         {
-            
             return HandleIntroduction(value);
         }
 

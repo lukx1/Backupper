@@ -42,6 +42,10 @@ namespace Tests
         [TestMethod]
         public void Test()
         {
+            /*LoginResponse login = new LoginResponse() { sessionUuid = new Guid(), errorMessage = new StandardResponseMessage() {message = "err" } };
+            var json = JsonConvert.SerializeObject(login);
+            LoginResponse res = JsonConvert.DeserializeObject<LoginResponse>(json);*/
+            Console.WriteLine();
             //NetMessageParse messageParse = new NetMessageParse();
             //string s = JsonConvert.SerializeObject(new PingMessage() { startTime = 100, endTime = 900});
             //INetMessage receive = HttpAdvancedClient.ParseMessage("0{\"startTime\":100,\"endTime\":900}");
