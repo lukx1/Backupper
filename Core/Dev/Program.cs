@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -53,7 +54,14 @@ namespace Dev
         static void Main(string[] args)
         {
             //CreateParsingScripts();
-            PresharedMaker();
+            //HttpClient client = new HttpClient();
+            //client.BaseAddress = new Uri("http://localhost:57597/");
+            //client.PostAsync("/api/login",new StringContent("\"{\"uuid\":\"50a7cd9f - d5f9 - 4c40 - 8e0f - bfcbb21a5f0e\",\"password\":\"VO0e + 84BW4wqVYsuUpGeWw == \"}\"")));
+            Messenger messenger = new Messenger("http://localhost:57597/");
+            messenger.SendPost(new LoginMessage(),"login");
+            var response = messenger.ReadMessage<LoginMessage>();
+            Console.WriteLine(response.ToString());
+            //PresharedMaker();
             Console.ReadLine();
         }
     }

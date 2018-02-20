@@ -26,7 +26,8 @@ namespace Server.Controllers
         // POST api/values
         public string Post([FromBody]string value)
         {
-            return JsonConvert.SerializeObject(new PingMessage());
+            return null;
+            //return JsonConvert.SerializeObject(new PingMessage());
         }
 
         // PUT api/values/5

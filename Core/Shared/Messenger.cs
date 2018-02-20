@@ -31,6 +31,7 @@ namespace Shared
         {
             client = new HttpClient();
             client.BaseAddress = new Uri(serverUrl);
+
         }
 
         /// <summary>
