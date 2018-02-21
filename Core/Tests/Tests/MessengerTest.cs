@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Net.Http;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shared;
 using Shared.NetMessages;
@@ -17,7 +18,7 @@ namespace Tests
         public void Login()
         {
             Messenger messenger = new Messenger(@"http://localhost:57597");
-            messenger.SendPost(new IntroductionMessage(), "introduction");
+            messenger.Send(new IntroductionMessage(), "introduction", HttpMethod.Post);
             var response = messenger.ReadMessage<IntroductionResponse>();
             Console.WriteLine();
         }

@@ -83,18 +83,55 @@ namespace Dev
                   });*/
         }
 
+        /*private static async void Test()
+        {
+            Messenger messenger = new Messenger("http://localhost:57597/");
+            await messenger.SendAsync(new LoginMessage(), "login", HttpMethod.Post).ContinueWith(r => Console.WriteLine(messenger.ReadMessage<LoginResponse>()));
+            Console.ReadLine();
+            //Console.WriteLine();
+        }*/
+
         static void Main(string[] args)
         {
+            Messenger messenger = new Messenger("http://localhost:57597/");
+            messenger.Send(new LoginMessage(), "login", HttpMethod.Post);
+            var res = messenger.ReadMessage<LoginResponse>();
+            Console.WriteLine();
+        }
+
+        /*static void Main(string[] args)
+        {
+            Task theTask = ProcessAsync();
+            int x = 0;  // set breakpoint
+            theTask.Wait();
+        }
+
+        static async Task ProcessAsync()
+        {
+            var result = await DoSomethingAsync();  // set breakpoint
+
+            int y = 0;  // set breakpoint
+        }
+
+        static async Task<int> DoSomethingAsync()
+        {
+            await Task.Delay(1000);
+            return 5;
+        }*/
+
+        /*static void Main(string[] args)
+        {
             //CreateParsingScripts();
+
+            //ad();
+            Test();
             
-            ad();
-            
-            /*Messenger messenger = new Messenger("http://localhost:57597/");
+            Messenger messenger = new Messenger("http://localhost:57597/");
             messenger.SendPost(new LoginMessage(),"login");
             var response = messenger.ReadMessage<LoginMessage>();
             Console.WriteLine(response.ToString());
-            //PresharedMaker();*/
-            Console.ReadLine();
-        }
+            //PresharedMaker();
+            //Console.ReadLine();
+        }*/
     }
 }

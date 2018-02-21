@@ -21,6 +21,7 @@ namespace Shared
     {
         private HttpClient client;
         private string jsonResponse;
+        private HttpResponseMessage responseMessage;
         private HttpStatusCode _statusCode;
         private HttpStatusCode statusCode { get => _statusCode; }
 
@@ -31,6 +32,7 @@ namespace Shared
         public Messenger(string serverUrl)
         {
             client = new HttpClient();
+            client.Timeout = new TimeSpan(0, 0, 5);
             client.DefaultRequestHeaders
                   .Accept
                   .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
@@ -69,32 +71,21 @@ namespace Shared
         }
 
         /// <summary>
-        /// Pošle jakoukoliv zprávu na cílový kontroler a interně jí přečte
+        /// Synchroní odeslání zprávy
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="controller"></param>
-        public async void Send(INetMessage message, string controller, HttpMethod httpMethod)
+        /// <param name="message">Zpráva k odeslání</param>
+        /// <param name="controller">Jméno kontroleru</param>
+        /// <param name="httpMethod">Druh http zprávy</param>>
+        public void Send(INetMessage message, string controller, HttpMethod httpMethod)
         {
             var json = JsonConvert.SerializeObject(message);
-            var response = await client.SendAsync(new HttpRequestMessage(httpMethod, "/api/" + controller) { Content = new StringContent(json, Encoding.UTF8,"application/json")
-            });
-            jsonResponse = await response.Content.ReadAsStringAsync();
-            _statusCode = response.StatusCode;
+            Task<HttpResponseMessage> sendTask = client.SendAsync(new HttpRequestMessage(httpMethod, "api/" + controller) { Content = new StringContent(json, Encoding.UTF8, "application/json") });
+            sendTask.Wait();
+            responseMessage = sendTask.Result;
+            Task<string> readTask = responseMessage.Content.ReadAsStringAsync();
+            readTask.Wait();
+            this.jsonResponse = readTask.Result;
         }
-
-        /// <summary>
-        /// Pošle post zprávu na cílový kontroler a interně jí přečte
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="controller"></param>
-        public async void SendPost(INetMessage message, string controller)
-        {
-            var json = JsonConvert.SerializeObject(message);
-            var response = await client.PostAsync("api/"+controller, new StringContent(json, Encoding.UTF8, "application/json"));
-            jsonResponse = await response.Content.ReadAsStringAsync();
-            _statusCode = response.StatusCode;
-        }
-
 
 
     }

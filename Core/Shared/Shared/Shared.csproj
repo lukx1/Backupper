@@ -61,6 +61,7 @@
     <Compile Include="NetMessages\SessionMessage.cs" />
     <Compile Include="NetMessages\TaskMessage.cs" />
     <Compile Include="PasswordFactory.cs" />
+    <Compile Include="ProjectIni.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
