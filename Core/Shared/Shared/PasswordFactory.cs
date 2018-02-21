@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Text;
 using System.IO;
-using System.Text.RegularExpressions;
 
 namespace Shared
 {
@@ -31,7 +29,7 @@ namespace Shared
             if (salt.Length != saltBytes)
                 throw new ArgumentException("Salt length must be " + saltBytes + " bytes");
 
-            return HashPasswordPbkdf2(plain, salt) == hashed;
+            return SlowEquals(Encoding.ASCII.GetBytes(HashPasswordPbkdf2(plain, salt)),Encoding.ASCII.GetBytes(hashed));
         }
 
         /// <summary>
@@ -42,18 +40,30 @@ namespace Shared
         public static uint CalculateCRC32(string input)
         {
             Crc32 crc = new Crc32();
-            return crc.ComputeChecksum(Encoding.UTF8.GetBytes(input));
+            return crc.ComputeChecksum(Encoding.ASCII.GetBytes(input));
+        }
+
+        private static bool SlowEquals(byte[] a, byte[] b)
+        {
+            var diff = (uint)a.Length ^ (uint)b.Length;
+            for (int i = 0; i < a.Length && i < b.Length; i++)
+            {
+                diff |= (uint)(a[i] ^ b[i]);
+            }
+            return diff == 0;
         }
 
         private static string HashPasswordPbkdf2(string password, byte[] salt)
         {
-            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+            /*string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                 password: password,
                 salt: salt,
                 prf: KeyDerivationPrf.HMACSHA1,
                 iterationCount: 10000,
-                numBytesRequested: keyBytes));
-            return Convert.ToBase64String(salt) + hashed;
+                numBytesRequested: keyBytes));*/
+            Rfc2898DeriveBytes rfc = new Rfc2898DeriveBytes(password, salt);
+            rfc.IterationCount = 10000;
+            return Convert.ToBase64String(salt) + Convert.ToBase64String(rfc.GetBytes(keyBytes));
         }
 
         /// <summary>
@@ -111,7 +121,7 @@ namespace Shared
             rijndael.IV = iv;
             memoryStream = new MemoryStream();
             cryptoStream = new CryptoStream(memoryStream, rijndael.CreateEncryptor(), CryptoStreamMode.Write);
-            cryptoStream.Write(Encoding.UTF8.GetBytes(message), 0, message.Length);
+            cryptoStream.Write(Encoding.ASCII.GetBytes(message), 0, message.Length);
             cryptoStream.Close();
             return Convert.ToBase64String(salt) + Convert.ToBase64String(iv) + Convert.ToBase64String(memoryStream.ToArray());
         }
@@ -135,7 +145,7 @@ namespace Shared
             cryptoStream = new CryptoStream(memoryStream, rijndael.CreateDecryptor(), CryptoStreamMode.Write);
             cryptoStream.Write(Convert.FromBase64String(cipher.Substring(48)), 0, Convert.FromBase64String(cipher.Substring(48)).Length);
             cryptoStream.Close();
-            return Encoding.UTF8.GetString(memoryStream.ToArray());
+            return Encoding.ASCII.GetString(memoryStream.ToArray());
         }
     }
 }

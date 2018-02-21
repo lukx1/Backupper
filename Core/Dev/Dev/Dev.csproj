@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{894B39DF-6FB2-4254-8993-71FBBAD4BD6E}</ProjectGuid>
+    <ProjectGuid>{58CD9CFC-81C4-4A8F-9525-61D3583782CE}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Dev</RootNamespace>
     <AssemblyName>Dev</AssemblyName>
@@ -32,18 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.AspNetCore.Cryptography.Internal, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNetCore.Cryptography.Internal.2.0.1\lib\netstandard2.0\Microsoft.AspNetCore.Cryptography.Internal.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNetCore.Cryptography.KeyDerivation.2.0.1\lib\netstandard2.0\Microsoft.AspNetCore.Cryptography.KeyDerivation.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Rijndael256, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Rijndael256.3.2.0\lib\net452\Rijndael256.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,11 +47,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Shared\Shared.csproj">
-      <Project>{9984539f-7eaf-40bc-8cb2-ea719a15c9a3}</Project>
+    <ProjectReference Include="..\..\Shared\Shared\Shared.csproj">
+      <Project>{f627124e-e950-4a06-ba35-bade392c1074}</Project>
       <Name>Shared</Name>
     </ProjectReference>
   </ItemGroup>

@@ -5,7 +5,7 @@ using System.Text;
 using Shared;
 using System.Security.Cryptography;
 using Shared.NetMessages;
-using Newtonsoft.Json;
+
 
 namespace Tests
 {
@@ -13,10 +13,11 @@ namespace Tests
     public class PasswordFactoryTest
     {
         [TestMethod]
-        public void ComparePasswordsTest()
+        public void ComparePbkdf2()
         {
             string hashed = Shared.PasswordFactory.HashPasswordPbkdf2("asda");
-            Assert.IsTrue(Shared.PasswordFactory.ComparePasswordsPbkdf2("asda", hashed));
+            Assert.IsTrue(hashed.Length == 68, "Delka AES neni 72 charu");
+            Assert.IsTrue(Shared.PasswordFactory.ComparePasswordsPbkdf2("asda", hashed), "Sifra nerozlustena");
         }
 
         [TestMethod]
@@ -24,7 +25,8 @@ namespace Tests
         {
             string encrypted = PasswordFactory.EncryptAES("message", "123");
             string result = PasswordFactory.DecryptAES(encrypted, "123");
-            Assert.IsTrue(result == "message");
+            Assert.IsTrue(encrypted.Length == 72,"Delka AES neni 72 charu");
+            Assert.IsTrue(result == "message","Sifra nerozlustena");
         }
 
         /*private async void killMe()
@@ -42,6 +44,7 @@ namespace Tests
         [TestMethod]
         public void Test()
         {
+            
             /*LoginResponse login = new LoginResponse() { sessionUuid = new Guid(), errorMessage = new StandardResponseMessage() {message = "err" } };
             var json = JsonConvert.SerializeObject(login);
             LoginResponse res = JsonConvert.DeserializeObject<LoginResponse>(json);*/
@@ -55,16 +58,18 @@ namespace Tests
             //killMe();
             Console.WriteLine();
             //jsonResponse.Works = true;
+            Assert.Inconclusive();
 
         }
 
         [TestMethod]
-        public void HashMD5()
+        public void CRC32()
         {
-            uint res0 = PasswordFactory.CalculateCRC32("testAAA");
-            uint res1 = PasswordFactory.CalculateCRC32("a");
-            uint res2 = PasswordFactory.CalculateCRC32("testAAAssssssssssssssssssssssssssssssssssssssss");
-            
+            uint a = PasswordFactory.CalculateCRC32("adqwudghdsivbsiafbsdlkihafnbadsf");
+            uint b = PasswordFactory.CalculateCRC32("adqwudghdsivbsiafbsdlkihafnbadsf");
+            uint c = PasswordFactory.CalculateCRC32("casdwdfhxfopohwqiodhjfhaslfgewhi");
+            Assert.IsTrue(a == b,"CRC32 dvou stejnych objektu neni stejne");
+            Assert.IsTrue(a != c,"CRC32 dvou rozdilnych objektu je stejne");
         }
 
     }

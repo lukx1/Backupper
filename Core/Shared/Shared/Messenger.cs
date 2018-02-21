@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,6 +31,9 @@ namespace Shared
         public Messenger(string serverUrl)
         {
             client = new HttpClient();
+            client.DefaultRequestHeaders
+                  .Accept
+                  .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
             client.BaseAddress = new Uri(serverUrl);
 
         }
@@ -72,7 +76,8 @@ namespace Shared
         public async void Send(INetMessage message, string controller, HttpMethod httpMethod)
         {
             var json = JsonConvert.SerializeObject(message);
-            var response = await client.SendAsync(new HttpRequestMessage(httpMethod, "api/" + controller) { Content = new StringContent(json)});
+            var response = await client.SendAsync(new HttpRequestMessage(httpMethod, "/api/" + controller) { Content = new StringContent(json, Encoding.UTF8,"application/json")
+            });
             jsonResponse = await response.Content.ReadAsStringAsync();
             _statusCode = response.StatusCode;
         }
@@ -85,7 +90,7 @@ namespace Shared
         public async void SendPost(INetMessage message, string controller)
         {
             var json = JsonConvert.SerializeObject(message);
-            var response = await client.PostAsync("api/"+controller, new StringContent(json));
+            var response = await client.PostAsync("api/"+controller, new StringContent(json, Encoding.UTF8, "application/json"));
             jsonResponse = await response.Content.ReadAsStringAsync();
             _statusCode = response.StatusCode;
         }

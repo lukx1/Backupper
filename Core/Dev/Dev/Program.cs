@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -51,17 +52,48 @@ namespace Dev
             
         }
 
+        private async static void ad()
+        {
+            /*HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:57597/");
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            //var result = await client.PostAsync("api/login", new StringContent("\"{\"uuid\":\"50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e\",\"password\":\"VO0e+84BW4wqVYsuUpGeWw==\"}\"", Encoding.UTF8, "application/json"));
+
+            var content = new StringContent("\"{\"uuid\":\"50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e\",\"password\":\"VO0e+84BW4wqVYsuUpGeWw==\"}\"", Encoding.UTF8, "application/json");
+            //content.Headers.Add("Content-Type", "application/json");
+            var result = await client.PostAsync("api/login", content);
+            
+            Console.WriteLine((int)result.StatusCode);*/
+            new Messenger("");
+            /*HttpClient client = new HttpClient();
+            client.BaseAddress = new Uri("http://localhost:57597/");
+            client.DefaultRequestHeaders
+                  .Accept
+                  .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "api/login");
+            request.Content = new StringContent("sadasfdasdfadfadfsd",
+                                                Encoding.UTF8,
+                                                "application/json");//CONTENT-TYPE header
+
+            client.SendAsync(request)
+                  .ContinueWith(responseTask =>
+                  {
+                      Console.WriteLine("Response: {0}", responseTask.Result);
+                  });*/
+        }
+
         static void Main(string[] args)
         {
             //CreateParsingScripts();
-            //HttpClient client = new HttpClient();
-            //client.BaseAddress = new Uri("http://localhost:57597/");
-            //client.PostAsync("/api/login",new StringContent("\"{\"uuid\":\"50a7cd9f - d5f9 - 4c40 - 8e0f - bfcbb21a5f0e\",\"password\":\"VO0e + 84BW4wqVYsuUpGeWw == \"}\"")));
-            Messenger messenger = new Messenger("http://localhost:57597/");
+            
+            ad();
+            
+            /*Messenger messenger = new Messenger("http://localhost:57597/");
             messenger.SendPost(new LoginMessage(),"login");
             var response = messenger.ReadMessage<LoginMessage>();
             Console.WriteLine(response.ToString());
-            //PresharedMaker();
+            //PresharedMaker();*/
             Console.ReadLine();
         }
     }
