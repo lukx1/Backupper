@@ -3,6 +3,7 @@ using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Shared;
+using System.IO;
 
 namespace Tests
 {
@@ -12,6 +13,17 @@ namespace Tests
     [TestClass]
     public class ProjectIniTest
     {
+
+        private string SOURCE;
+
+        [TestInitialize]
+        public void TestInitialize()
+        {
+            SOURCE = Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().IndexOf("Core") + 4) + @"\Server\Server\ServerConfig.ini";
+            ProjectIni.SOURCE = SOURCE;
+        }
+
+
         [TestMethod]
         public void ReadTest()
         {
@@ -21,7 +33,7 @@ namespace Tests
 
         [TestMethod]
         public void WriteTest()
-        {
+        { 
             var name = ProjectIni.Data["sqlname"];
             Assert.IsTrue(ProjectIni.Data["sqlname"] == name);
             ProjectIni.Data["sqlname"] = "testName";

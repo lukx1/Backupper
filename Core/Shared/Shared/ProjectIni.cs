@@ -10,13 +10,31 @@ namespace Shared
 {
     public static class ProjectIni
     {
-        public static readonly string SOURCE = getSource();
-        public static IniDictionary Data = new IniDictionary(SOURCE);
+        public static IniDictionary Data;
+        private static string _SOURCE = "";
+        public static string SOURCE
+        {
+            get => _SOURCE;
+            set
+            {
+                if (Data != null)
+                    Data.Reload(value);
+                _SOURCE = value;
+            }
+        }
+        
+        
+        static ProjectIni()
+        {
+            SOURCE = getSource();
+            Data = new IniDictionary(SOURCE);
+        }
 
         private static string getSource()
         {
-            if (System.Diagnostics.Debugger.IsAttached) {
-                return Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().IndexOf("Core")+4)+@"\Server\Server\ServerConfig.ini";
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                return Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().IndexOf("Core") + 4) + @"\Server\Server\ServerConfig.ini";
             }
             else
                 return @"ServerConfig.ini";
@@ -25,37 +43,61 @@ namespace Shared
         public class IniDictionary
         {
             private Dictionary<string, string> inner = new Dictionary<string, string>();
-            public string this[string key] { get => inner[key.ToLower()]; set => inner[key] = Change(key,value); }
+
+            public string this[string key]
+            {
+                get
+                {
+                    return inner[key.ToLower()];
+                }
+                set
+                {
+                    inner[key] = Change(key, value);
+                }
+            }
+
+            public void Reload(string file)
+            {
+                inner.Clear();
+                if (!File.Exists(file))
+                    return;
+                string[] lines = File.ReadAllLines(file);
+                foreach (var item in lines)
+                {
+                    var res = item.Split(':');
+                    if (res.Length != 2)
+                        throw new FormatException("Ini " + file + " file is not in key:value format");
+                    if (inner.ContainsKey(res[0]))
+                        throw new FormatException("Ini " + file + " file contains duplicate keys");
+                    inner.Add(res[0], res[1]);
+                }
+            }
 
             private string Change(string key, string value)
             {
                 Remove(key);
-                Add(key,value);
+                Add(key, value);
                 return value;
             }
 
             public IniDictionary(string source)
             {
-                string[] lines = File.ReadAllLines(source);
-                foreach (var item in lines)
-                {
-                    var res = item.Split(':');
-                    if (res.Length != 2)
-                        throw new FormatException("Ini "+source+" file is not in key:value format");
-                    if (inner.ContainsKey(res[0]))
-                        throw new FormatException("Ini " + source + " file contains duplicate keys");
-                    inner.Add(res[0],res[1]);
-                }
+                Reload(SOURCE);
             }
 
             public void Remove(string key)
             {
                 key = key.ToLower();
-                var lines = File.ReadAllLines(SOURCE);
-                string[] linesMinus = new string[lines.Length - 1];
-                Data.Remove(key);
+                List<string> lines = new List<string>();
+                foreach (var line in File.ReadLines(SOURCE))
+                {
+                    lines.Add(line);
+                }
+                //var lines = File.ReadAllLines(SOURCE);
+                string[] linesMinus = new string[lines.Count - 1];
+
                 int inc = 0;
-                for (int i = 0; i < lines.Length; i++)
+                for (int i = 0; i < lines.Count; i++)
                 {
                     string[] res = lines[i].Split(':');
                     if (res[0] == key)
@@ -64,8 +106,9 @@ namespace Shared
                         continue;
                     }
                     else
-                        linesMinus[i-inc] = lines[i];
+                        linesMinus[i - inc] = lines[i];
                 }
+                File.WriteAllLines(SOURCE, linesMinus);
             }
 
             void InnerAdd(string key, string value)
@@ -75,13 +118,13 @@ namespace Shared
 
             public void Add(string key, string value)
             {
-                
+
                 key = key.ToLower();
                 string[] lines = File.ReadAllLines(SOURCE);
                 string[] linesPlus = new string[lines.Length + 1];
-                lines.CopyTo(linesPlus,0);
+                lines.CopyTo(linesPlus, 0);
                 linesPlus[linesPlus.Length - 1] = key + ":" + value;
-                File.WriteAllLines(SOURCE,linesPlus);
+                File.WriteAllLines(SOURCE, linesPlus);
             }
 
         }

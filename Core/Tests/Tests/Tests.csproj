@@ -53,6 +53,7 @@
     <Compile Include="PasswordFactoryTest.cs" />
     <Compile Include="ProjectIniTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PcInfoTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

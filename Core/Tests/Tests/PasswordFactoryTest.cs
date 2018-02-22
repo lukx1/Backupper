@@ -58,7 +58,7 @@ namespace Tests
             //killMe();
             Console.WriteLine();
             //jsonResponse.Works = true;
-            Assert.Inconclusive();
+            Assert.Inconclusive("Pouze na testovani");
 
         }
 

@@ -18,7 +18,7 @@ namespace Server.Authentication
 
         public DaemonLoginer()
         {
-            mysql = MySQLContext.Instance;
+            mysql = new MySQLContext();
         }
 
 

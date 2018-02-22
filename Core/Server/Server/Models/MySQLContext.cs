@@ -9,19 +9,9 @@ namespace Server.Models
     {
         private static MySQLContext mySQL;
 
-        private MySQLContext(): base("name=MySQLContext")
+        public MySQLContext(): base("name=MySQLContext")
         {
             
-        }
-
-        public static MySQLContext Instance
-        {
-            get
-            {
-                if (mySQL == null)
-                    return (mySQL = new MySQLContext());
-                return mySQL;
-            }
         }
 
         public virtual DbSet<BackupType> backupTypes { get; set; }

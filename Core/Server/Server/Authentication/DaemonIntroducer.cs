@@ -16,7 +16,7 @@ namespace Server.Authentication
 
         public DaemonIntroducer()
         {
-            this.mysql = MySQLContext.Instance;
+            this.mysql = new MySQLContext();
         }
 
         /// <summary>
@@ -99,12 +99,12 @@ namespace Server.Authentication
         /// <returns></returns>
         public bool IsValid()
         {
-            
+
             foreach (var entry in mysql.daemonPreSharedKeys.Where(r => r.id == message.id))
             {
                 if (PasswordFactory.ComparePasswordsPbkdf2(message.preSharedKey, entry.preSharedKey))//TODO:Check for expired and used
                 {
-                    if (entry.used || DateTime.Compare(entry.expires,DateTime.Now) < 0/*Expired*/)
+                    if (entry.used || DateTime.Compare(entry.expires, DateTime.Now) < 0/*Expired*/)
                         continue;
                     matchingLogin = entry;
                     return true;
