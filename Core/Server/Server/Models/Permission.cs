@@ -6,35 +6,30 @@ namespace Server.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("3b1_joskalukas_db1.Tasks")]
-    public partial class Task
+    [Table("3b1_joskalukas_db1.Permissions")]
+    public partial class Permission
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Task()
+        public Permission()
         {
-            TaskLocations = new HashSet<TaskLocation>();
-            TaskLocations1 = new HashSet<TaskLocation>();
+            GroupPermissions = new HashSet<GroupPermission>();
+            GroupPermissions1 = new HashSet<GroupPermission>();
         }
 
         public int Id { get; set; }
 
-        public int? IdDaemon { get; set; }
-
         [Required]
-        [StringLength(40)]
+        [StringLength(32)]
         public string Name { get; set; }
 
-        [StringLength(200)]
+        [Required]
+        [StringLength(256)]
         public string Description { get; set; }
 
-        public virtual Daemon Daemon { get; set; }
-
-        public virtual Daemon Daemon1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GroupPermission> GroupPermissions { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TaskLocation> TaskLocations { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TaskLocation> TaskLocations1 { get; set; }
+        public virtual ICollection<GroupPermission> GroupPermissions1 { get; set; }
     }
 }

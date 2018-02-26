@@ -53,29 +53,29 @@ namespace Server.Authentication
         /// <returns></returns>
         private UuidPass EnterDBGetPass(DaemonPreSharedKey dbPreShared)
         {
-            dbPreShared.used = true;
+            dbPreShared.Used = true;
 
             var dbDaemonInfo = new DaemonInfo();
-            dbDaemonInfo.os = message.os;
-            dbDaemonInfo.mac = new string(message.macAdress);
+            dbDaemonInfo.Os = message.os;
+            dbDaemonInfo.Mac = new string(message.macAdress);
 
             var dbDaemon = new Daemon();
             var unhashedPass = PasswordFactory.CreateRandomPassword(16);
             var hashedPass = PasswordFactory.HashPasswordPbkdf2(unhashedPass);
 
-            dbDaemon.uuid = Guid.NewGuid();
-            dbDaemon.password = hashedPass;
-            dbDaemon.idUser = dbPreShared.idUser;
-            dbDaemon.daemonInfo = dbDaemonInfo;
+            dbDaemon.Uuid = Guid.NewGuid();
+            dbDaemon.Password = hashedPass;
+            dbDaemon.IdUser = dbPreShared.IdUser;
+            dbDaemon.DaemonInfo = dbDaemonInfo;
 
-            mysql.daemonInfos.Add(dbDaemonInfo);
-            mysql.daemons.Add(dbDaemon);
+            mysql.DaemonInfos.Add(dbDaemonInfo);
+            mysql.Daemons.Add(dbDaemon);
 
             mysql.SaveChanges();// TODO: make async
 
             //Console.WriteLine();
 
-            return new UuidPass() { uuid = dbDaemon.uuid, pass = unhashedPass};
+            return new UuidPass() { uuid = dbDaemon.Uuid, pass = unhashedPass};
         }
 
         /// <summary>
@@ -100,11 +100,11 @@ namespace Server.Authentication
         public bool IsValid()
         {
 
-            foreach (var entry in mysql.daemonPreSharedKeys.Where(r => r.id == message.id))
+            foreach (var entry in mysql.DaemonPreSharedKeys.Where(r => r.Id == message.id))
             {
-                if (PasswordFactory.ComparePasswordsPbkdf2(message.preSharedKey, entry.preSharedKey))//TODO:Check for expired and used
+                if (PasswordFactory.ComparePasswordsPbkdf2(message.preSharedKey, entry.PreSharedKey))//TODO:Check for expired and used
                 {
-                    if (entry.used || DateTime.Compare(entry.expires, DateTime.Now) < 0/*Expired*/)
+                    if (entry.Used || DateTime.Compare(entry.Expires, DateTime.Now) < 0 /*Expired*/)
                         continue;
                     matchingLogin = entry;
                     return true;

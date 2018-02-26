@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages
 {
-    public class TaskMessage
+    /// <summary>
+    /// Tvoření, upravování a odstraňování tasků
+    /// </summary>
+    public class TaskMessage : SessionMessage
     {
+        /// <summary>
+        /// List tasků
+        /// </summary>
+        public List<NetMessages.TaskMessages.DbTask> tasks;
     }
 }

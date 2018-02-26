@@ -21,5 +21,10 @@ namespace Server
         {
             return session["userId"] != null;
         }
+
+        public static bool IsExpired(DateTime expires)
+        {
+            return DateTime.Compare(expires, DateTime.Now) <= 0;
+        }
     }
 }

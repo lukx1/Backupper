@@ -6,34 +6,46 @@ namespace Server.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("3b1_joskalukas_db1.locations")]
+    [Table("3b1_joskalukas_db1.Locations")]
     public partial class Location
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Location()
         {
-            taskLocations = new HashSet<TaskLocation>();
-            taskLocations1 = new HashSet<TaskLocation>();
+            TaskLocations = new HashSet<TaskLocation>();
+            TaskLocations1 = new HashSet<TaskLocation>();
+            TaskLocations2 = new HashSet<TaskLocation>();
+            TaskLocations3 = new HashSet<TaskLocation>();
         }
 
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [StringLength(1024)]
-        public string uri { get; set; }
+        public string Uri { get; set; }
 
-        public int idProtocol { get; set; }
+        public int? IdProtocol { get; set; }
 
-        public int idLocationCredentails { get; set; }
+        public int? IdLocationCredentails { get; set; }
 
-        public virtual LocationCredential locationCredential { get; set; }
+        public virtual LocationCredential LocationCredential { get; set; }
 
-        public virtual Protocol protocol { get; set; }
+        public virtual LocationCredential LocationCredential1 { get; set; }
+
+        public virtual Protocol Protocol { get; set; }
+
+        public virtual Protocol Protocol1 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TaskLocation> taskLocations { get; set; }
+        public virtual ICollection<TaskLocation> TaskLocations { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TaskLocation> taskLocations1 { get; set; }
+        public virtual ICollection<TaskLocation> TaskLocations1 { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TaskLocation> TaskLocations2 { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TaskLocation> TaskLocations3 { get; set; }
     }
 }

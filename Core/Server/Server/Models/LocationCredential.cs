@@ -6,34 +6,40 @@ namespace Server.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("3b1_joskalukas_db1.locationCredentials")]
+    [Table("3b1_joskalukas_db1.LocationCredentials")]
     public partial class LocationCredential
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public LocationCredential()
         {
-            locations = new HashSet<Location>();
+            Locations = new HashSet<Location>();
+            Locations1 = new HashSet<Location>();
         }
 
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [StringLength(256)]
-        public string host { get; set; }
+        public string Host { get; set; }
 
-        public int? port { get; set; }
+        public int? Port { get; set; }
 
-        public int idLogonType { get; set; }
+        public int? IdLogonType { get; set; }
 
         [StringLength(128)]
-        public string username { get; set; }
+        public string Username { get; set; }
 
         [Column(TypeName = "char")]
         [StringLength(72)]
-        public string password { get; set; }
+        public string Password { get; set; }
 
-        public virtual LogonType logonType { get; set; }
+        public virtual LogonType LogonType { get; set; }
+
+        public virtual LogType LogType { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Location> locations { get; set; }
+        public virtual ICollection<Location> Locations { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Location> Locations1 { get; set; }
     }
 }

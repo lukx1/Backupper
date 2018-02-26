@@ -185,31 +185,42 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Authentication\Authenticator.cs" />
     <Compile Include="Authentication\DaemonIntroducer.cs" />
     <Compile Include="Authentication\DaemonLoginer.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IntroductionController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Admin\LoginModel.cs" />
     <Compile Include="Models\BackupType.cs" />
     <Compile Include="Models\Daemon.cs" />
+    <Compile Include="Models\DaemonGroup.cs" />
     <Compile Include="Models\DaemonInfo.cs" />
     <Compile Include="Models\DaemonPreSharedKey.cs" />
+    <Compile Include="Models\Group.cs" />
+    <Compile Include="Models\GroupPermission.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\LocationCredential.cs" />
     <Compile Include="Models\LogedInDaemon.cs" />
     <Compile Include="Models\LogonType.cs" />
+    <Compile Include="Models\LogType.cs" />
     <Compile Include="Models\MySQLContext.cs" />
+    <Compile Include="Models\Permission.cs" />
     <Compile Include="Models\Protocol.cs" />
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\TaskLocation.cs" />
+    <Compile Include="Models\TaskLocationLog.cs" />
     <Compile Include="Models\TaskLocationsTime.cs" />
     <Compile Include="Models\Time.cs" />
     <Compile Include="Models\User.cs" />
+    <Compile Include="Models\UserGroup.cs" />
+    <Compile Include="Models\UserLog.cs" />
+    <Compile Include="Objects\TaskHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>

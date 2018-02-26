@@ -6,22 +6,22 @@ namespace Server.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("3b1_joskalukas_db1.logonTypes")]
+    [Table("3b1_joskalukas_db1.LogonTypes")]
     public partial class LogonType
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public LogonType()
         {
-            locationCredentials = new HashSet<LocationCredential>();
+            LocationCredentials = new HashSet<LocationCredential>();
         }
 
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [Required]
         [StringLength(32)]
-        public string name { get; set; }
+        public string Name { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<LocationCredential> locationCredentials { get; set; }
+        public virtual ICollection<LocationCredential> LocationCredentials { get; set; }
     }
 }

@@ -6,30 +6,34 @@ namespace Server.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("3b1_joskalukas_db1.times")]
+    [Table("3b1_joskalukas_db1.Times")]
     public partial class Time
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Time()
         {
-            taskLocationsTimes = new HashSet<TaskLocationsTime>();
+            TaskLocationsTimes = new HashSet<TaskLocationsTime>();
+            TaskLocationsTimes1 = new HashSet<TaskLocationsTime>();
         }
 
-        public int id { get; set; }
+        public int Id { get; set; }
 
-        public int? interval { get; set; }
+        public int? Interval { get; set; }
 
         [Required]
         [StringLength(40)]
-        public string name { get; set; }
+        public string Name { get; set; }
 
-        public bool repeat { get; set; }
+        public bool Repeat { get; set; }
 
-        public DateTime startTime { get; set; }
+        public DateTime StartTime { get; set; }
 
-        public DateTime? endTime { get; set; }
+        public DateTime? EndTime { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TaskLocationsTime> taskLocationsTimes { get; set; }
+        public virtual ICollection<TaskLocationsTime> TaskLocationsTimes { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TaskLocationsTime> TaskLocationsTimes1 { get; set; }
     }
 }

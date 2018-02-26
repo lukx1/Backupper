@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crc32.cs" />
+    <Compile Include="DeserializeOnly.cs" />
     <Compile Include="Messenger.cs" />
     <Compile Include="NetMessages\EncryptionRequestMessage.cs" />
     <Compile Include="NetMessages\ErrorMessage.cs" />
@@ -60,6 +61,15 @@
     <Compile Include="NetMessages\LoginResponse.cs" />
     <Compile Include="NetMessages\SessionMessage.cs" />
     <Compile Include="NetMessages\TaskMessage.cs" />
+    <Compile Include="NetMessages\TaskMessages\BackupType.cs" />
+    <Compile Include="NetMessages\TaskMessages\Location.cs" />
+    <Compile Include="NetMessages\TaskMessages\LocationCredential.cs" />
+    <Compile Include="NetMessages\TaskMessages\LogonType.cs" />
+    <Compile Include="NetMessages\TaskMessages\Protocol.cs" />
+    <Compile Include="NetMessages\TaskMessages\DbTask.cs" />
+    <Compile Include="NetMessages\TaskMessages\TaskLocation.cs" />
+    <Compile Include="NetMessages\TaskResponse.cs" />
+    <Compile Include="NetMessages\TaskMessages\Time.cs" />
     <Compile Include="PasswordFactory.cs" />
     <Compile Include="PcInfo.cs" />
     <Compile Include="ProjectIni.cs" />

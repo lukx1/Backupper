@@ -6,19 +6,21 @@ namespace Server.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("3b1_joskalukas_db1.LogedInDaemons")]
-    public partial class LogedInDaemon
+    [Table("3b1_joskalukas_db1.DaemonGroups")]
+    public partial class DaemonGroup
     {
-        [Key]
-        public int IdDaemon { get; set; }
+        public int Id { get; set; }
 
-        [Column(TypeName = "timestamp")]
-        public DateTime Expires { get; set; }
+        public int? IdDaemon { get; set; }
 
-        public Guid SessionUuid { get; set; }
+        public int? IdGroup { get; set; }
 
         public virtual Daemon Daemon { get; set; }
 
+        public virtual Group Group { get; set; }
+
         public virtual Daemon Daemon1 { get; set; }
+
+        public virtual Group Group1 { get; set; }
     }
 }

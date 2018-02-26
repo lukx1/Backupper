@@ -6,24 +6,17 @@ namespace Server.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("3b1_joskalukas_db1.DaemonPreSharedKeys")]
-    public partial class DaemonPreSharedKey
+    [Table("3b1_joskalukas_db1.UserGroups")]
+    public partial class UserGroup
     {
         public int Id { get; set; }
 
         public int IdUser { get; set; }
 
-        [Column(TypeName = "char")]
-        [Required]
-        [StringLength(68)]
-        public string PreSharedKey { get; set; }
+        public int IdGroup { get; set; }
 
-        public DateTime Expires { get; set; }
-
-        public bool Used { get; set; }
+        public virtual Group Group { get; set; }
 
         public virtual User User { get; set; }
-
-        public virtual User User1 { get; set; }
     }
 }
