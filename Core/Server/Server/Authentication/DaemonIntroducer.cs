@@ -104,7 +104,7 @@ namespace Server.Authentication
             {
                 if (PasswordFactory.ComparePasswordsPbkdf2(message.preSharedKey, entry.PreSharedKey))//TODO:Check for expired and used
                 {
-                    if (entry.Used || DateTime.Compare(entry.Expires, DateTime.Now) > 0 /*Expired*/)
+                    if (entry.Used || DateTime.Compare(entry.Expires, DateTime.Now) < 0 /*Expired*/)
                         continue;
                     matchingLogin = entry;
                     return true;

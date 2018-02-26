@@ -188,6 +188,7 @@
     <Compile Include="Authentication\Authenticator.cs" />
     <Compile Include="Authentication\DaemonIntroducer.cs" />
     <Compile Include="Authentication\DaemonLoginer.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IntroductionController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
@@ -318,6 +319,7 @@
     <Content Include="Scripts\popper-utils.js.map" />
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
+    <Content Include="Views\Admin\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
