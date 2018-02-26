@@ -6,17 +6,21 @@ namespace Server.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("3b1_joskalukas_db1.taskLocationsTimes")]
+    [Table("3b1_joskalukas_db1.TaskLocationsTimes")]
     public partial class TaskLocationsTime
     {
-        public int id { get; set; }
+        public int Id { get; set; }
 
-        public int idTaskLocation { get; set; }
+        public int? IdTaskLocation { get; set; }
 
-        public int idTime { get; set; }
+        public int? IdTime { get; set; }
 
-        public virtual TaskLocation taskLocation { get; set; }
+        public virtual TaskLocation TaskLocation { get; set; }
 
-        public virtual Time time { get; set; }
+        public virtual TaskLocation TaskLocation1 { get; set; }
+
+        public virtual Time Time { get; set; }
+
+        public virtual Time Time1 { get; set; }
     }
 }

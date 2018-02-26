@@ -30,7 +30,8 @@ namespace Server.Authentication
         /// <returns>Uuid</returns>
         public LoginResponse LoginAndGetSessionUuid(Guid uuid, string password)
         {
-            Daemon daemon = mysql.daemons.Where(r => r.uuid == uuid).FirstOrDefault();
+            Daemon d = mysql.Daemons.FirstOrDefault();
+            Daemon daemon = mysql.Daemons.Where(r => r.Uuid == uuid).FirstOrDefault();
 
             if (daemon == null)
                 return new LoginResponse() { errorMessage = new ErrorMessage {id = 1,message = "Daemon s daným uuid nebyl nalezen",value=uuid.ToString() } };
@@ -42,31 +43,31 @@ namespace Server.Authentication
             Guid sessionUuid = Guid.NewGuid();
 
             if (logedInDaemon == null) { // Daemon existuje ale nikdy nebyl prihlasen
-                logedInDaemon = new LogedInDaemon() { daemon = daemon, idDaemon = daemon.id, expires = DateTime.Now.AddMinutes(LOGIN_PERIOD)};
-                mysql.logedInDaemons.Add(logedInDaemon);
+                logedInDaemon = new LogedInDaemon() { Daemon = daemon, IdDaemon = daemon.Id, Expires = DateTime.Now.AddMinutes(LOGIN_PERIOD)};
+                mysql.LogedInDaemons.Add(logedInDaemon);
             }
             else // Daemon existuje a bude prihlasen na loginPrediod
-                logedInDaemon.expires = DateTime.Now.AddMinutes(LOGIN_PERIOD);
-            logedInDaemon.sessionUuid = sessionUuid;
+                logedInDaemon.Expires = DateTime.Now.AddMinutes(LOGIN_PERIOD);
+            logedInDaemon.SessionUuid = sessionUuid;
             mysql.SaveChanges();
             return new LoginResponse() {sessionUuid = sessionUuid };
         }
 
         private bool IsPasswordValid(string pass, Daemon daemon)
         {
-            return PasswordFactory.ComparePasswordsPbkdf2(pass, daemon.password);
+            return PasswordFactory.ComparePasswordsPbkdf2(pass, daemon.Password);
         }
 
 
         private void FirstLogin(Daemon daemon)
         {
-            LogedInDaemon logedInDaemon = new LogedInDaemon() { daemon = daemon, idDaemon = daemon.id, expires = DateTime.Now.AddMinutes(LOGIN_PERIOD) };
-            mysql.logedInDaemons.Add(logedInDaemon);
+            LogedInDaemon logedInDaemon = new LogedInDaemon() { Daemon = daemon, IdDaemon = daemon.Id, Expires = DateTime.Now.AddMinutes(LOGIN_PERIOD) };
+            mysql.LogedInDaemons.Add(logedInDaemon);
         }
 
         private LogedInDaemon GetLogedInDaemonWithUuid(Guid uuid)
         { 
-            return mysql.logedInDaemons.Where(r => r.idDaemon == mysql.daemons.Where(r2 => r2.uuid == uuid).FirstOrDefault().id).FirstOrDefault();
+            return mysql.LogedInDaemons.Where(r => r.IdDaemon == mysql.Daemons.Where(r2 => r2.Uuid == uuid).FirstOrDefault().Id).FirstOrDefault();
         }
 
         /// <summary>
@@ -78,13 +79,13 @@ namespace Server.Authentication
         {
 
             LogedInDaemon logedInDaemon = GetLogedInDaemonWithUuid(uuid);
-            if (DateTime.Compare(logedInDaemon.expires, DateTime.Now) < 0 /*Expired*/)
+            if (DateTime.Compare(logedInDaemon.Expires, DateTime.Now) < 0 /*Expired*/)
             {
                 throw new InvalidOperationException("Je nutno se znova prihlasit");
             }
             if (logedInDaemon != null)
             {
-                logedInDaemon.expires = DateTime.Now.AddMinutes(LOGIN_PERIOD);
+                logedInDaemon.Expires = DateTime.Now.AddMinutes(LOGIN_PERIOD);
                 mysql.SaveChanges();
             }
             else

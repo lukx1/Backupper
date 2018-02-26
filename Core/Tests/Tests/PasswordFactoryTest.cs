@@ -44,7 +44,9 @@ namespace Tests
         [TestMethod]
         public void Test()
         {
-            
+            var pred = DateTime.Compare(DateTime.Parse("2000-01-02"), DateTime.Parse("2000-01-03"));
+            var v = DateTime.Compare(DateTime.Parse("2000-01-01"), DateTime.Parse("2000-01-01"));
+            var po = DateTime.Compare(DateTime.Parse("2000-01-02"), DateTime.Parse("2000-01-01"));
             /*LoginResponse login = new LoginResponse() { sessionUuid = new Guid(), errorMessage = new StandardResponseMessage() {message = "err" } };
             var json = JsonConvert.SerializeObject(login);
             LoginResponse res = JsonConvert.DeserializeObject<LoginResponse>(json);*/

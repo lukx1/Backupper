@@ -7,6 +7,8 @@ using Shared;
 using Shared.NetMessages;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Shared.NetMessages.TaskMessages;
+using Newtonsoft.Json;
 
 namespace Tests
 {
@@ -34,6 +36,55 @@ namespace Tests
                 else
                     throw e;
             }
+        }
+
+        [TestCategory("Controller")]
+        [TestMethod]
+        public void TaskTest()
+        {
+            DbTask task = new DbTask()
+            {
+                name = "DebugTask",
+                description = "For debugging",
+                taskLocations = new System.Collections.Generic.List<TaskLocation>()
+                {
+                    new TaskLocation()
+                    {
+                        backupType = BackupType.NORM,
+                        times = new System.Collections.Generic.List<Time>()
+                        {
+                            new Time(){interval=0,name="Dneska",startTime = DateTime.Now.AddHours(1),repeat = false},
+                            new Time(){interval=24*3600*7,name="Kazdy Patek",startTime = DateTime.Parse("2018-02-23"),repeat = true},
+                        },
+                        destination = new Location()
+                        {
+                            protocol = Protocol.WND,
+                            uri = @"C:\Users\myName\Desktop\Docs**",
+                            LocationCredential = new LocationCredential()
+                            {
+                                host = "test.com/myName",password="abc",port=21,username="myName",LogonType = LogonType.Normal
+                            }
+                        },
+                        source = new Location()
+                        {
+                            protocol = Protocol.FTP,
+                            uri = "test.com",
+                            LocationCredential = new LocationCredential()
+                            {
+                                host = "test.com/myName",password="abc",port=21,username="myName",LogonType = LogonType.Normal
+                            }
+                        }
+                    }
+                }
+            };
+            Messenger messenger = new Messenger(@"http://localhost:57597");
+            messenger.Send(new LoginMessage() { uuid = new Guid("50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e"), password = "VO0e+84BW4wqVYsuUpGeWw==" }, "login", HttpMethod.Post);
+            var login = messenger.ReadMessage<LoginResponse>();
+            var taskMessage = new TaskMessage() { sessionUuid = login.sessionUuid, tasks = new List<DbTask>() { task } };
+            var jsonTaskMessage = JsonConvert.SerializeObject(taskMessage);
+            messenger.Send(taskMessage, "task", HttpMethod.Post);
+            var res = messenger.ReadMessage<TaskResponse>();
+            Console.WriteLine();
         }
 
         private async Task RealSendBulkAsync()

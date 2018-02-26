@@ -6,30 +6,30 @@ namespace Server.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("3b1_joskalukas_db1.Daemons")]
-    public partial class Daemon
+    [Table("3b1_joskalukas_db1.Groups")]
+    public partial class Group
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Daemon()
+        public Group()
         {
             DaemonGroups = new HashSet<DaemonGroup>();
             DaemonGroups1 = new HashSet<DaemonGroup>();
-            Tasks = new HashSet<Task>();
-            Tasks1 = new HashSet<Task>();
+            GroupPermissions = new HashSet<GroupPermission>();
+            GroupPermissions1 = new HashSet<GroupPermission>();
+            UserGroups = new HashSet<UserGroup>();
         }
 
         public int Id { get; set; }
 
-        public Guid Uuid { get; set; }
-
-        public int IdUser { get; set; }
-
-        [Column(TypeName = "char")]
         [Required]
-        [StringLength(68)]
-        public string Password { get; set; }
+        [StringLength(64)]
+        public string Name { get; set; }
 
-        public int IdDaemonInfo { get; set; }
+        [Required]
+        [StringLength(256)]
+        public string Description { get; set; }
+
+        public bool ForDaemons { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DaemonGroup> DaemonGroups { get; set; }
@@ -37,22 +37,13 @@ namespace Server.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DaemonGroup> DaemonGroups1 { get; set; }
 
-        public virtual DaemonInfo DaemonInfo { get; set; }
-
-        public virtual DaemonInfo DaemonInfo1 { get; set; }
-
-        public virtual User User { get; set; }
-
-        public virtual User User1 { get; set; }
-
-        public virtual LogedInDaemon LogedInDaemon { get; set; }
-
-        public virtual LogedInDaemon LogedInDaemon1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<GroupPermission> GroupPermissions { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Task> Tasks { get; set; }
+        public virtual ICollection<GroupPermission> GroupPermissions1 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Task> Tasks1 { get; set; }
+        public virtual ICollection<UserGroup> UserGroups { get; set; }
     }
 }

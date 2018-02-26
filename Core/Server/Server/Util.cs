@@ -15,5 +15,11 @@ namespace Server
         {
             return new HttpResponseMessage(statusCode) { Content = new StringContent(JsonConvert.SerializeObject(message)) };
         }
+
+        public static bool IsExpired(DateTime expires)
+        {
+            return DateTime.Compare(expires, DateTime.Now) <= 0;
+        }
+
     }
 }

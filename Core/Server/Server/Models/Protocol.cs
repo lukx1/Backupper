@@ -6,20 +6,21 @@ namespace Server.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("3b1_joskalukas_db1.protocols")]
+    [Table("3b1_joskalukas_db1.Protocols")]
     public partial class Protocol
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Protocol()
         {
-            locations = new HashSet<Location>();
+            Locations = new HashSet<Location>();
+            Locations1 = new HashSet<Location>();
         }
 
-        public int id { get; set; }
+        public int Id { get; set; }
 
         [Column(TypeName = "char")]
         [Required]
-        [StringLength(3)]
+        [StringLength(4)]
         public string ShortName { get; set; }
 
         [Required]
@@ -27,6 +28,9 @@ namespace Server.Models
         public string LongName { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Location> locations { get; set; }
+        public virtual ICollection<Location> Locations { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Location> Locations1 { get; set; }
     }
 }
