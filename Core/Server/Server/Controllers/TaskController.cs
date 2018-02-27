@@ -16,7 +16,7 @@ namespace Server.Controllers
         private Authenticator authenticator;
         private TaskHandler taskHandler;
 
-        private HttpResponseMessage PostResponse(TaskMessage taskMessage)
+        private HttpResponseMessage PutResponse(TaskMessage taskMessage)
         {
             if (taskMessage == null)
                 return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.UnsupportedMediaType, new TaskResponse() { ErrorMessages = new List<ErrorMessage>() { new ErrorMessage() { id = 4, message = "Přijumtá zpráva je prázdná" } } });
@@ -38,14 +38,38 @@ namespace Server.Controllers
 
         }
 
+        private HttpResponseMessage PostResponse(TaskMessage taskMessage)
+        {
+            if (taskMessage == null)
+                return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.UnsupportedMediaType, new TaskResponse() { ErrorMessages = new List<ErrorMessage>() { new ErrorMessage() { id = 4, message = "Přijumtá zpráva je prázdná" } } });
+
+            if (authenticator == null)
+                authenticator = new Authenticator();
+
+            if (!authenticator.IsSessionValid(taskMessage.sessionUuid))
+                return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.Unauthorized, new TaskResponse() { ErrorMessages = new List<ErrorMessage>() { new ErrorMessage() { id = 5, message = "Sezení není platné" } } });
+            throw new NotImplementedException();
+        }
+
         /// <summary>
-        /// Create tasks
+        /// Creates tasks
         /// </summary>
-        /// <param name="loginMessage"></param>
+        /// <param name="taskMessage"></param>
+        /// <returns></returns>
+        public HttpResponseMessage Put([FromBody]TaskMessage taskMessage)
+        {
+            return PutResponse(taskMessage);
+        }
+
+        /// <summary>
+        /// Creates tasks
+        /// </summary>
+        /// <param name="taskMessage"></param>
         /// <returns></returns>
         public HttpResponseMessage Post([FromBody]TaskMessage loginMessage)
         {
-            return PostResponse(loginMessage);
+            throw new NotImplementedException();
+            //return PostResponse(taskMessage);
         }
     }
 }

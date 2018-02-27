@@ -15,11 +15,9 @@ namespace Server.Models
 
         public int IdPermission { get; set; }
 
-        [Column(TypeName = "bit")]
-        public bool Allow { get; set; }
+        public bool? Allow { get; set; }
 
-        [Column(TypeName = "bit")]
-        public bool Deny { get; set; }
+        public bool? Deny { get; set; }
 
         public virtual Group Group { get; set; }
 

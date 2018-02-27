@@ -52,6 +52,7 @@
     <Compile Include="Crc32.cs" />
     <Compile Include="DeserializeOnly.cs" />
     <Compile Include="Messenger.cs" />
+    <Compile Include="NetMessages\AdminMessage.cs" />
     <Compile Include="NetMessages\EncryptionRequestMessage.cs" />
     <Compile Include="NetMessages\ErrorMessage.cs" />
     <Compile Include="NetMessages\INetMessage.cs" />

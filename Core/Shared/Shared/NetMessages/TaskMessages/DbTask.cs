@@ -7,8 +7,18 @@ using System.Threading.Tasks;
 namespace Shared.NetMessages.TaskMessages
 {
     /// <summary>
-    /// Jeden 
+    /// Pro vytváření, upravování a odstraňování tasků 
     /// </summary>
+    /// 
+    ///     Vytváření:
+    ///         Vše až na uuidDaemon
+    ///         
+    ///     Odstranení:
+    ///         Pouze uuidDaemon
+    ///         
+    ///     Upravování:
+    ///         Vše
+    ///         
     public class DbTask
     {   
         /// <summary>

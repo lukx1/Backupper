@@ -128,6 +128,13 @@ namespace Server.Objects
             mysql.SaveChanges();
         }
 
+
+
+        public ErrorMessage[] GetTasks(TaskMessage message)
+        {
+            throw new NotImplementedException();
+        }
+
         public ErrorMessage[] CreateTasks(TaskMessage message)
         {
             var logedInDaemons = mysql.LogedInDaemons.Where(r => r.SessionUuid == message.sessionUuid).FirstOrDefault();
@@ -145,9 +152,9 @@ namespace Server.Objects
                 {
                     CreateTask(task,daemon);
                 }
-                catch(SqlException e)
+                catch(Exception e)
                 {
-                    result[i] = new ErrorMessage() { id = 2, message = e.Message, value = e.ErrorCode.ToString() };
+                    result[i] = new ErrorMessage() { id = 2, message = "Task #"+i+" selhal\r\n"+e.Message, value = i.ToString() };
                 }
             }
             return result;

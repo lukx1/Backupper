@@ -24,11 +24,11 @@ namespace Server.Models
 
         [Required]
         [StringLength(100)]
-        public string Name { get; set; }
+        public string Nickname { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string Surname { get; set; }
+        public string FullName { get; set; }
 
         [Column(TypeName = "char")]
         [Required]

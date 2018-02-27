@@ -4,65 +4,12 @@ namespace Server.Models
     using System.Data.Entity;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
-    using Shared;
-    using System.Configuration;
-    using System.Data.Entity.Core.EntityClient;
-    using System.Data.Common;
-    using System.Data.SqlClient;
 
     public partial class MySQLContext : DbContext
     {
-        /*public MySQLContext() : base("name=MySQLContext")
+        public MySQLContext()
+            : base("name=MySQLContext1")
         {
-            Database.Connection.ConnectionString = Database.Connection.ConnectionString
-                .Replace("[userid]", "joskalukas").Replace("[password]", "123456");
-        }*/
-
-        private static string CreateConnectionString()
-        {
-            string providerName = "MySql.Data.MySqlClient";
-            string serverName = "mysqlstudenti.litv.sssvt.cz";
-            string databaseName = "database=3b1_joskalukas_db1";
-
-            // Initialize the connection string builder for the
-            // underlying provider.
-            SqlConnectionStringBuilder sqlBuilder =
-                new SqlConnectionStringBuilder();
-
-            // Set the properties for the data source.
-            sqlBuilder.DataSource = serverName;
-            sqlBuilder.Add("Password", "123456");
-            sqlBuilder.Add("User ID", "joskalukas");
-            sqlBuilder.InitialCatalog = databaseName;
-            sqlBuilder.IntegratedSecurity = true;
-
-            // Build the SqlConnection connection string.
-            string providerString = sqlBuilder.ToString();
-
-            // Initialize the EntityConnectionStringBuilder.
-            EntityConnectionStringBuilder entityBuilder =
-                new EntityConnectionStringBuilder();
-
-            //entityBuilder.Name = "MySQLContext";
-            //Set the provider name.
-            entityBuilder.Provider = providerName;
-            
-            // Set the provider-specific connection string.
-            entityBuilder.ProviderConnectionString = providerString;
-
-            // Set the Metadata location.
-            //entityBuilder.Metadata = @"res://*/database=3b1_joskalukas_db1.csdl|
-            //                res://*/database=3b1_joskalukas_db1.ssdl|
-            //                res://*/database=3b1_joskalukas_db1.msl";
-
-            return entityBuilder.ToString();
-            //return "server=mysqlstudenti.litv.sssvt.cz;persistsecurityinfo=True;database=3b1_joskalukas_db1;User ID=joskalukas;password=123456";
-        }
-
-
-        public MySQLContext() : base("name=MySQLContext")
-        {
-            
         }
 
         public virtual DbSet<BackupType> BackupTypes { get; set; }
@@ -75,6 +22,7 @@ namespace Server.Models
         public virtual DbSet<LocationCredential> LocationCredentials { get; set; }
         public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<LogedInDaemon> LogedInDaemons { get; set; }
+        public virtual DbSet<LogedInUser> LogedInUsers { get; set; }
         public virtual DbSet<LogonType> LogonTypes { get; set; }
         public virtual DbSet<LogType> LogTypes { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
@@ -385,11 +333,11 @@ namespace Server.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<User>()
-                .Property(e => e.Name)
+                .Property(e => e.Nickname)
                 .IsUnicode(false);
 
             modelBuilder.Entity<User>()
-                .Property(e => e.Surname)
+                .Property(e => e.FullName)
                 .IsUnicode(false);
 
             modelBuilder.Entity<User>()

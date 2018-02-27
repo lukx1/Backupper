@@ -10,6 +10,7 @@ namespace Server.Authentication
 {
     public class DaemonLoginer
     {
+        //TODO: Udelat soucasti authenticatoru
         private MySQLContext mysql;
         /// <summary>
         /// Login extension period in minutes
@@ -70,27 +71,7 @@ namespace Server.Authentication
             return mysql.LogedInDaemons.Where(r => r.IdDaemon == mysql.Daemons.Where(r2 => r2.Uuid == uuid).FirstOrDefault().Id).FirstOrDefault();
         }
 
-        /// <summary>
-        /// Refreshes for how long a daemon is loged in, throws invalid operation and argument exception
-        /// </summary>
-        /// <param name="uuid"></param>
-        /// <returns>true if refreshed timer, false is otherwise</returns>
-        public void RefreshLoginTimer(Guid uuid)
-        {
 
-            LogedInDaemon logedInDaemon = GetLogedInDaemonWithUuid(uuid);
-            if (DateTime.Compare(logedInDaemon.Expires, DateTime.Now) < 0 /*Expired*/)
-            {
-                throw new InvalidOperationException("Je nutno se znova prihlasit");
-            }
-            if (logedInDaemon != null)
-            {
-                logedInDaemon.Expires = DateTime.Now.AddMinutes(LOGIN_PERIOD);
-                mysql.SaveChanges();
-            }
-            else
-                throw new ArgumentException("Daemon with specified uuid not found");
-        }
 
     }
 }
