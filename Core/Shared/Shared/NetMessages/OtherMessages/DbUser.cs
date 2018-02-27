@@ -28,6 +28,9 @@ namespace Shared.NetMessages
         public int Id;
         public string Nickname;
         public string FullName;
+        /// <summary>
+        /// Pokud v PATCH metode je null tak je nezmenen
+        /// </summary>
         public string Password;
     }
 }

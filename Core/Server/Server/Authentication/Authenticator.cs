@@ -25,35 +25,99 @@ namespace Server.Authentication
                 throw new NullReferenceException("Uživatel s daným jménem nebyl nalezen");
             if (!PasswordFactory.ComparePasswordsPbkdf2(password, user.Password))
                 throw new ArgumentException("Heslo není platné");
-            return RealLoginUser(user);
+            return CreateUuid(user);
         }
 
-        private Guid RealLoginUser(User user)
+        private Guid CreateUuid(User user)
         {
             Guid guid = Guid.NewGuid();
             LogedInUser logedInUser = mysql.LogedInUsers.Where(r => r.idUser == user.Id).FirstOrDefault();
             if(logedInUser == null) //First login
             {
                 logedInUser = new LogedInUser() { idUser = user.Id, SessionUuid = guid, Expires = DateTime.Now.AddMinutes(15)};
+                mysql.LogedInUsers.Add(logedInUser);
             }
+            else
+            {
+                logedInUser.Expires = DateTime.Now.AddMinutes(15);
+            }
+            mysql.SaveChanges(); //DONT CHANGE TO ASYNC
+            return guid;
+        }
+
+        public User GetUserFromUuid(Guid uuid)
+        {
+            LogedInUser logedInUsers = mysql.LogedInUsers.Where(r => r.SessionUuid == uuid).FirstOrDefault();
+            return mysql.Users.Where(r => r.Id == logedInUsers.idUser).FirstOrDefault();
         }
 
         public Daemon GetDaemonFromUuid(Guid uuid)
         {
             LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == uuid).FirstOrDefault();
-            return mysql.Daemons.Where(r => r.Id == logedInDaemon.IdDaemon).First();
+            return mysql.Daemons.Where(r => r.Id == logedInDaemon.IdDaemon).FirstOrDefault();
         }
 
-        private void RefreshDaemonSession() { throw new NotImplementedException(); }
-
-        public bool IsSessionValid(Guid uuid, bool refreshTime = true)
+        public bool IsDaemonAllowed(Guid uuid, Server.Authentication.Permission permission)
         {
-            LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == uuid).FirstOrDefault();
-            if (logedInDaemon == null)
+            var daemon = mysql.Daemons.Where(r => r.Uuid == uuid).FirstOrDefault();
+            if (daemon == null)
                 return false;
-            if (Util.IsExpired(logedInDaemon.Expires))
+            var groups = mysql.DaemonGroups.Where(r => r.IdDaemon == daemon.Id);
+            foreach (var group in groups)
+            {
+                var groupPermissions = mysql.GroupPermissions.Where(r => r.IdGroup == group.Id);
+                foreach (var groupPermission in groupPermissions)
+                {
+                    if (groupPermission.IdPermission == (int)permission && groupPermission.Allow == true)
+                        return true;
+                    else if (groupPermission.IdPermission == (int)Permission.SKIP && groupPermission.Allow == true)
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        public bool IsUserAllowed(string nickname, Server.Authentication.Permission permission)
+        {
+            var user = mysql.Users.Where(r => r.Nickname == nickname).FirstOrDefault();
+            if (user == null)
                 return false;
-            return true;
+            var groups = mysql.DaemonGroups.Where(r => r.IdDaemon == user.Id);
+            foreach (var group in groups)
+            {
+                var groupPermissions = mysql.GroupPermissions.Where(r => r.IdGroup == group.Id);
+                foreach (var groupPermission in groupPermissions)
+                {
+                    if (groupPermission.IdPermission == (int)permission && groupPermission.Allow == true)
+                        return true;
+                    else if (groupPermission.IdPermission == (int)Permission.SKIP && groupPermission.Allow == true)
+                        return true;
+                }
+            }
+            return false;
+        }
+
+
+        public bool IsSessionValid(Guid uuid,bool IsDaemon, bool refreshTime = true)
+        {
+            if (IsDaemon)
+            {
+                LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == uuid).FirstOrDefault();
+                if (logedInDaemon == null)
+                    return false;
+                if (Util.IsExpired(logedInDaemon.Expires))
+                    return false;
+                return true;
+            }
+            else
+            {
+                LogedInUser logedInUser = mysql.LogedInUsers.Where(r => r.SessionUuid == uuid).FirstOrDefault();
+                if (logedInUser == null)
+                    return false;
+                if (Util.IsExpired(logedInUser.Expires))
+                    return false;
+                return true;
+            }
         }
 
     }

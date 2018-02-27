@@ -24,7 +24,7 @@ namespace Server.Controllers
             if (authenticator == null)
                 authenticator = new Authenticator();
 
-            if (!authenticator.IsSessionValid(taskMessage.sessionUuid))
+            if (!authenticator.IsSessionValid(taskMessage.sessionUuid,true))
                 return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.Unauthorized, new TaskResponse() { ErrorMessages = new List<ErrorMessage>() { new ErrorMessage() { id = 5, message = "Sezení není platné" } } });
 
             if (taskHandler == null)
@@ -46,7 +46,7 @@ namespace Server.Controllers
             if (authenticator == null)
                 authenticator = new Authenticator();
 
-            if (!authenticator.IsSessionValid(taskMessage.sessionUuid))
+            if (!authenticator.IsSessionValid(taskMessage.sessionUuid,taskMessage.IsDaemon))
                 return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.Unauthorized, new TaskResponse() { ErrorMessages = new List<ErrorMessage>() { new ErrorMessage() { id = 5, message = "Sezení není platné" } } });
             throw new NotImplementedException();
         }

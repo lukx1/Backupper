@@ -52,16 +52,32 @@
     <Compile Include="Crc32.cs" />
     <Compile Include="DeserializeOnly.cs" />
     <Compile Include="Messenger.cs" />
-    <Compile Include="NetMessages\AdminMessage.cs" />
+    <Compile Include="NetMessages\AccessorLogMessage.cs" />
+    <Compile Include="NetMessages\AccessorLogResponse.cs" />
+    <Compile Include="NetMessages\AccessorMessages\DbAccessorLog.cs" />
+    <Compile Include="NetMessages\UserMessage.cs" />
+    <Compile Include="NetMessages\OtherMessages\DbUser.cs" />
+    <Compile Include="NetMessages\OtherMessages\DbPreSharedKey.cs" />
+    <Compile Include="NetMessages\OtherMessages\DbTaskLocationLog.cs" />
     <Compile Include="NetMessages\EncryptionRequestMessage.cs" />
     <Compile Include="NetMessages\ErrorMessage.cs" />
+    <Compile Include="NetMessages\GroupMessage.cs" />
+    <Compile Include="NetMessages\GroupMessages\DbGroup.cs" />
+    <Compile Include="NetMessages\GroupMessages\GroupPermission.cs" />
+    <Compile Include="NetMessages\GroupMessages\Permission.cs" />
+    <Compile Include="NetMessages\GroupResponse.cs" />
     <Compile Include="NetMessages\INetMessage.cs" />
     <Compile Include="NetMessages\IntroductionMessage.cs" />
     <Compile Include="NetMessages\IntroductionResponse.cs" />
     <Compile Include="NetMessages\LoginMessage.cs" />
     <Compile Include="NetMessages\LoginResponse.cs" />
+    <Compile Include="NetMessages\PreSharedKeyMessage.cs" />
+    <Compile Include="NetMessages\PreSharedKeyResponse.cs" />
     <Compile Include="NetMessages\SessionMessage.cs" />
+    <Compile Include="NetMessages\TaskLocationLogMessage.cs" />
+    <Compile Include="NetMessages\TaskLocationLogResponse.cs" />
     <Compile Include="NetMessages\TaskMessage.cs" />
+    <Compile Include="NetMessages\UserResponse.cs" />
     <Compile Include="NetMessages\TaskMessages\BackupType.cs" />
     <Compile Include="NetMessages\TaskMessages\Location.cs" />
     <Compile Include="NetMessages\TaskMessages\LocationCredential.cs" />
@@ -81,5 +97,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -91,12 +91,25 @@ namespace Dev
             //Console.WriteLine();
         }*/
 
-        static void Main(string[] args)
+        private static void DoHash(params string[] passes)
         {
-            Messenger messenger = new Messenger("http://localhost:57597/");
+            foreach (var item in passes)
+            {
+                var hash = PasswordFactory.HashPasswordPbkdf2(item);
+                var isSame = PasswordFactory.ComparePasswordsPbkdf2(item, hash);
+                Console.WriteLine(hash+"\r\n"+isSame);
+            }
+            
+            Console.ReadLine();
+        }
+
+        public static void Main(string[] args)
+        {
+            DoHash("Admin123456");
+            /*Messenger messenger = new Messenger("http://localhost:57597/");
             messenger.Send(new LoginMessage(), "login", HttpMethod.Post);
             var res = messenger.ReadMessage<LoginResponse>();
-            Console.WriteLine();
+            Console.WriteLine();*/
         }
 
         /*static void Main(string[] args)
