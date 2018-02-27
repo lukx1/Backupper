@@ -1,0 +1,34 @@
+﻿@model global::Server.Models.Admin.LoginModel
+@{
+	ViewBag.Title = "Login";
+}
+
+<h2>Login</h2>
+
+@using (Html.BeginForm("LogIn", "Admin", FormMethod.Post))
+{
+<table>
+	<tr>
+		@Html.LabelFor(model => model.Username)
+		@Html.EditorFor(model => model.Username)
+	</tr>
+	<tr>
+		<td>@Html.ValidationMessageFor(model => model.Username)</td>
+	</tr>
+
+	<tr>
+		<td>@Html.LabelFor(model => model.Password)</td>
+		<td>@Html.EditorFor(model => model.Password)</td>
+	</tr>
+	<tr>
+		<td>@Html.ValidationMessageFor(model => model.Password)</td>
+	</tr>
+
+	<tr>
+		<td>
+			<input type="submit" name="name" value="Login" />
+			<input type="reset" name="name" value="Clear" />
+		</td>
+	</tr>
+</table>
+}
