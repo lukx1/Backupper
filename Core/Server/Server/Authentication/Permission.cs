@@ -5,14 +5,19 @@ using System.Web;
 
 namespace Server.Authentication
 {
+    /// <summary>
+    /// SQL PermissionEnum
+    /// </summary>
     public enum Permission
     {
-        DEBUG = -1,
         SKIP = 1,
-        MANAGEUSERS = 2,
-        MANAGEDAEMONS = 3,
-        MANAGEPRESHAREDKEYS = 4,
-        MANAGETASKS = 5,
-        MANAGEOTHERS = 6,
+        LOGIN = 2,
+        MANAGEPRESHARED = 3,
+        MANAGESELFUSER = 4,
+        MANAGEOTHERUSERS = 5,
+        MANAGESELFDAEMONS = 6,
+        MANAGEOTHERDAEMONS = 7,
+        MANAGEPERMISSION = 8,
+        MANAGEGROUPS = 9,
     }
 }

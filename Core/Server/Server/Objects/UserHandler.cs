@@ -50,10 +50,9 @@ namespace Server.Objects
             foreach (var users in userMessage.Users)
             {
                 if (users.Nickname != user.Nickname)
-                    return authenticator.IsUserAllowed(user.Nickname, Authentication.Permission.MANAGEUSERS) &&
-                        authenticator.IsUserAllowed(user.Nickname, Authentication.Permission.MANAGEOTHERS);
+                    return authenticator.IsUserAllowed(user.Nickname, Authentication.Permission.MANAGEOTHERUSERS);
             }
-            return authenticator.IsUserAllowed(user.Nickname, Authentication.Permission.MANAGEUSERS);
+            return authenticator.IsUserAllowed(user.Nickname, Authentication.Permission.MANAGESELFUSER);
         }
 
         private bool CanAddUsers(UserMessage userMessage)
@@ -61,8 +60,7 @@ namespace Server.Objects
             if (!authenticator.IsSessionValid(userMessage.sessionUuid, false))
                 return false;
             var user = authenticator.GetUserFromUuid(userMessage.sessionUuid);
-            return authenticator.IsUserAllowed(user.Nickname, Authentication.Permission.MANAGEUSERS) &&
-                authenticator.IsUserAllowed(user.Nickname, Authentication.Permission.MANAGEOTHERS);
+            return authenticator.IsUserAllowed(user.Nickname, Authentication.Permission.MANAGEOTHERUSERS);
         }
 
         private bool CanUpdateUsers(UserMessage userMessage)
@@ -70,8 +68,7 @@ namespace Server.Objects
             if (!authenticator.IsSessionValid(userMessage.sessionUuid, false))
                 return false;
             var user = authenticator.GetUserFromUuid(userMessage.sessionUuid);
-            return authenticator.IsUserAllowed(user.Nickname, Authentication.Permission.MANAGEUSERS) &&
-                authenticator.IsUserAllowed(user.Nickname, Authentication.Permission.MANAGEOTHERS);
+            return authenticator.IsUserAllowed(user.Nickname, Authentication.Permission.MANAGEOTHERUSERS);
         }
 
         private bool CanDeleteUsers(UserMessage userMessage)
@@ -79,8 +76,7 @@ namespace Server.Objects
             if (!authenticator.IsSessionValid(userMessage.sessionUuid, false))
                 return false;
             var user = authenticator.GetUserFromUuid(userMessage.sessionUuid);
-            return authenticator.IsUserAllowed(user.Nickname, Authentication.Permission.MANAGEUSERS) &&
-                authenticator.IsUserAllowed(user.Nickname, Authentication.Permission.MANAGEOTHERS);
+            return authenticator.IsUserAllowed(user.Nickname, Authentication.Permission.MANAGEOTHERUSERS);
         }
 
         public void UpdateUsers(UserMessage userMessage)
