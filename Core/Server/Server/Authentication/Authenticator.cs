@@ -12,6 +12,11 @@ namespace Server.Authentication
 
         private MySQLContext mysql;
 
+        public Authenticator(MySQLContext mySQLContext)
+        {
+            this.mysql = mySQLContext;
+        }
+
         public Authenticator()
         {
             this.mysql = new MySQLContext();
@@ -57,6 +62,39 @@ namespace Server.Authentication
             return mysql.Daemons.Where(r => r.Id == logedInDaemon.IdDaemon).FirstOrDefault();
         }
 
+        public struct UuidPass
+        {
+            public string name;
+            public string pass;
+        }
+
+        public UuidPass IntroduceDaemon(DaemonPreSharedKey preSharedKey, string os, string mac, int idUser)
+        {
+            preSharedKey.Used = true;
+
+            var dbDaemonInfo = new DaemonInfo();
+            dbDaemonInfo.Os = os;
+            dbDaemonInfo.Mac = mac;
+
+            var dbDaemon = new Daemon();
+            var unhashedPass = PasswordFactory.CreateRandomPassword(16);
+            var hashedPass = PasswordFactory.HashPasswordPbkdf2(unhashedPass);
+
+            dbDaemon.Uuid = Guid.NewGuid();
+            dbDaemon.Password = hashedPass;
+            dbDaemon.IdUser = idUser;
+            dbDaemon.DaemonInfo = dbDaemonInfo;
+
+            mysql.DaemonInfos.Add(dbDaemonInfo);
+            mysql.Daemons.Add(dbDaemon);
+
+            mysql.DaemonGroups.Add(new DaemonGroup() { Daemon = dbDaemon, IdGroup = (int)Group.DAEMONS }); // Ads to default group
+
+            mysql.SaveChanges();
+
+            return new UuidPass() { name = dbDaemon.Uuid.ToString(), pass = unhashedPass };
+        }
+
         public bool IsDaemonAllowed(Guid uuid, Server.Authentication.Permission permission)
         {
             var daemon = mysql.Daemons.Where(r => r.Uuid == uuid).FirstOrDefault();
@@ -68,9 +106,9 @@ namespace Server.Authentication
                 var groupPermissions = mysql.GroupPermissions.Where(r => r.IdGroup == group.Id);
                 foreach (var groupPermission in groupPermissions)
                 {
-                    if (groupPermission.IdPermission == (int)permission && groupPermission.Allow == true)
+                    if (groupPermission.IdPermission == (int)permission)
                         return true;
-                    else if (groupPermission.IdPermission == (int)Permission.SKIP && groupPermission.Allow == true)
+                    else if (groupPermission.IdPermission == (int)Permission.SKIP)
                         return true;
                 }
             }
@@ -88,15 +126,29 @@ namespace Server.Authentication
                 var groupPermissions = mysql.GroupPermissions.Where(r => r.IdGroup == group.Id);
                 foreach (var groupPermission in groupPermissions)
                 {
-                    if (groupPermission.IdPermission == (int)permission && groupPermission.Allow == true)
+                    if (groupPermission.IdPermission == (int)permission)
                         return true;
-                    else if (groupPermission.IdPermission == (int)Permission.SKIP && groupPermission.Allow == true)
+                    else if (groupPermission.IdPermission == (int)Permission.SKIP)
                         return true;
                 }
             }
             return false;
         }
 
+        public DaemonPreSharedKey GetPresharedFromId(int id)
+        {
+            return mysql.DaemonPreSharedKeys.Where(r => r.Id == id).FirstOrDefault();
+        }
+
+        public bool IsPresharedValid(int id,string key)
+        {
+            var preshared = mysql.DaemonPreSharedKeys.Where(r => r.Id == id).FirstOrDefault();
+            if (preshared == null)
+                return false;
+            if (preshared.Used || DateTime.Compare(preshared.Expires, DateTime.Now) < 0 /*Expired*/)
+                return false;
+            return PasswordFactory.ComparePasswordsPbkdf2(key, preshared.PreSharedKey);
+        }
 
         public bool IsSessionValid(Guid uuid,bool IsDaemon, bool refreshTime = true)
         {
@@ -107,7 +159,7 @@ namespace Server.Authentication
                     return false;
                 if (Util.IsExpired(logedInDaemon.Expires))
                     return false;
-                return true;
+                logedInDaemon.Expires = DateTime.Now.AddMinutes(15);
             }
             else
             {
@@ -116,8 +168,10 @@ namespace Server.Authentication
                     return false;
                 if (Util.IsExpired(logedInUser.Expires))
                     return false;
-                return true;
+                logedInUser.Expires = DateTime.Now.AddMinutes(15);
             }
+            mysql.SaveChangesAsync();
+            return true;
         }
 
     }

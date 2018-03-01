@@ -15,10 +15,6 @@ namespace Server.Models
 
         public int IdPermission { get; set; }
 
-        public bool? Allow { get; set; }
-
-        public bool? Deny { get; set; }
-
         public virtual Group Group { get; set; }
 
         public virtual Permission Permission { get; set; }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using static Server.Authentication.Authenticator;
 
 namespace Server.Authentication
 {
@@ -13,10 +14,12 @@ namespace Server.Authentication
         private IntroductionMessage message;
         private MySQLContext mysql;
         private DaemonPreSharedKey matchingLogin;
+        private Authenticator authenticator;
 
         public DaemonIntroducer()
         {
             this.mysql = new MySQLContext();
+            authenticator = new Authenticator(mysql);
         }
 
         /// <summary>
@@ -28,24 +31,6 @@ namespace Server.Authentication
             this.message = message;
         }
 
-        private bool IsCharArraySame(char[] a, char[] b)
-        {
-            if (a.Length != b.Length)
-                return false;
-            for (int i = 0; i < a.Length; i++)
-            {
-                if (a[i] != b[i])
-                    return false;
-            }
-            return true;
-        }
-
-        private struct UuidPass
-        {
-            public Guid uuid;
-            public string pass;
-        }
-        
         /// <summary>
         /// Vloží data do databáze
         /// </summary>
@@ -53,29 +38,7 @@ namespace Server.Authentication
         /// <returns></returns>
         private UuidPass EnterDBGetPass(DaemonPreSharedKey dbPreShared)
         {
-            dbPreShared.Used = true;
-
-            var dbDaemonInfo = new DaemonInfo();
-            dbDaemonInfo.Os = message.os;
-            dbDaemonInfo.Mac = new string(message.macAdress);
-
-            var dbDaemon = new Daemon();
-            var unhashedPass = PasswordFactory.CreateRandomPassword(16);
-            var hashedPass = PasswordFactory.HashPasswordPbkdf2(unhashedPass);
-
-            dbDaemon.Uuid = Guid.NewGuid();
-            dbDaemon.Password = hashedPass;
-            dbDaemon.IdUser = dbPreShared.IdUser;
-            dbDaemon.DaemonInfo = dbDaemonInfo;
-
-            mysql.DaemonInfos.Add(dbDaemonInfo);
-            mysql.Daemons.Add(dbDaemon);
-
-            mysql.SaveChanges();// TODO: make async
-
-            //Console.WriteLine();
-
-            return new UuidPass() { uuid = dbDaemon.Uuid, pass = unhashedPass};
+            return authenticator.IntroduceDaemon(dbPreShared,message.os,new string(message.macAdress),dbPreShared.IdUser);
         }
 
         /// <summary>
@@ -87,7 +50,7 @@ namespace Server.Authentication
             if (matchingLogin == null)
                 return new IntroductionResponse { errorMessage = new ErrorMessage() { message = "Login se neshoduje", value = "login"} };
             UuidPass uuidPass = EnterDBGetPass(matchingLogin);
-            IntroductionResponse response = new IntroductionResponse { uuid = uuidPass.uuid, password = uuidPass.pass };
+            IntroductionResponse response = new IntroductionResponse { uuid = new Guid(uuidPass.name), password = uuidPass.pass };
             uuidPass.pass = null;
             message = null;
             return response;
@@ -100,17 +63,13 @@ namespace Server.Authentication
         public bool IsValid()
         {
 
-            foreach (var entry in mysql.DaemonPreSharedKeys.Where(r => r.Id == message.id))
+            if (authenticator.IsPresharedValid(message.id, message.preSharedKey))
             {
-                if (PasswordFactory.ComparePasswordsPbkdf2(message.preSharedKey, entry.PreSharedKey))//TODO:Check for expired and used
-                {
-                    if (entry.Used || DateTime.Compare(entry.Expires, DateTime.Now) < 0 /*Expired*/)
-                        continue;
-                    matchingLogin = entry;
-                    return true;
-                }
+                matchingLogin = authenticator.GetPresharedFromId(message.id);
+                return true;
             }
-            return false;
+            else
+                return false;
         }
 
     }
