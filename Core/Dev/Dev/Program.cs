@@ -1,4 +1,5 @@
-﻿using Shared;
+﻿using Newtonsoft.Json;
+using Shared;
 using Shared.NetMessages;
 using System;
 using System.Collections.Generic;
@@ -105,11 +106,14 @@ namespace Dev
 
         public static void Main(string[] args)
         {
-            DoHash("Admin123456");
-            /*Messenger messenger = new Messenger("http://localhost:57597/");
-            messenger.Send(new LoginMessage(), "login", HttpMethod.Post);
-            var res = messenger.ReadMessage<LoginResponse>();
-            Console.WriteLine();*/
+            //DoHash("Admin123456");
+            Messenger messenger = new Messenger(@"http://localhost:57597");
+            messenger.Send(new LoginMessage() { uuid = new Guid("50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e"), password = "VO0e+84BW4wqVYsuUpGeWw==" }, "login", HttpMethod.Post);
+            var login = messenger.ReadMessage<LoginResponse>();
+            var taskMessage = new TaskMessage() { sessionUuid = login.sessionUuid };
+            messenger.Send(taskMessage, "task", HttpMethod.Post);
+            var res = messenger.ReadMessage<TaskResponse>();
+            Console.WriteLine();
         }
 
         /*static void Main(string[] args)

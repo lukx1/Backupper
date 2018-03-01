@@ -1,4 +1,5 @@
-﻿using Server.Models;
+﻿using Server.Authentication;
+using Server.Models;
 using Shared.NetMessages;
 using Shared.NetMessages.TaskMessages;
 using System;
@@ -11,8 +12,9 @@ namespace Server.Objects
 {
     public class TaskHandler
     {
-
+        private Authenticator authenticator = new Authenticator();
         private MySQLContext mysql;
+        public List<ErrorMessage> errors = new List<ErrorMessage>();
 
         public TaskHandler()
         {
@@ -42,8 +44,6 @@ namespace Server.Objects
                 Description = task.description
             };
         }
-
-
 
         private Models.TaskLocation CreateTaskLocationFromTaskLocation(Shared.NetMessages.TaskMessages.TaskLocation taskLocation, Models.Task task)
         {
@@ -128,11 +128,126 @@ namespace Server.Objects
             mysql.SaveChanges();
         }
 
-
-
-        public ErrorMessage[] GetTasks(TaskMessage message)
+        private DbTask ExtractData(Task task)
         {
-            throw new NotImplementedException();
+                var dbTask = new DbTask() { name = task.Name, description = task.Description,id=task.Id,uuidDaemon=task.Daemon.Uuid };
+                List<Shared.NetMessages.TaskMessages.TaskLocation> taskLocations = new List<Shared.NetMessages.TaskMessages.TaskLocation>();
+                dbTask.taskLocations = taskLocations;
+                foreach (var taskLocation in mysql.TaskLocations.Where(r => r.IdTask == task.Id))
+                {
+
+                    Shared.NetMessages.TaskMessages.TaskLocation dbTaskLocation = new Shared.NetMessages.TaskMessages.TaskLocation();
+                    taskLocations.Add(dbTaskLocation);
+                    dbTaskLocation.id = taskLocation.Id;
+                    dbTaskLocation.backupType = new Shared.NetMessages.TaskMessages.BackupType()
+                    {
+                        Id = taskLocation.BackupType.Id,
+                        LongName = taskLocation.BackupType.LongName,
+                        ShortName = taskLocation.BackupType.ShortName
+                    };
+                    dbTaskLocation.source = new Shared.NetMessages.TaskMessages.Location()
+                    {
+                        id = taskLocation.Location.Id,
+                        uri = taskLocation.Location.Uri,
+                        protocol = new Shared.NetMessages.TaskMessages.Protocol()
+                        {
+                            Id = taskLocation.Location.Protocol.Id,
+                            LongName = taskLocation.Location.Protocol.LongName,
+                            ShortName = taskLocation.Location.Protocol.ShortName
+                        },
+                        LocationCredential = new Shared.NetMessages.TaskMessages.LocationCredential()
+                        {
+                            Id = taskLocation.Location.LocationCredential.Id,
+                            host = taskLocation.Location.LocationCredential.Host,
+                            password = taskLocation.Location.LocationCredential.Password,
+                            port = (int)taskLocation.Location.LocationCredential.Port,
+                            username = taskLocation.Location.LocationCredential.Username,
+                            LogonType = new Shared.NetMessages.TaskMessages.LogonType()
+                            {
+                                Id = taskLocation.Location.LocationCredential.LogonType.Id,
+                                Name = taskLocation.Location.LocationCredential.LogonType.Name
+                            }
+                        }
+                    };
+                dbTaskLocation.destination = new Shared.NetMessages.TaskMessages.Location()
+                {
+                    id = taskLocation.Location1.Id,
+                    uri = taskLocation.Location1.Uri,
+                    protocol = new Shared.NetMessages.TaskMessages.Protocol()
+                    {
+                        Id = taskLocation.Location1.Protocol.Id,
+                        LongName = taskLocation.Location1.Protocol.LongName,
+                        ShortName = taskLocation.Location1.Protocol.ShortName
+                    },
+                    LocationCredential = new Shared.NetMessages.TaskMessages.LocationCredential()
+                    {
+                        Id = taskLocation.Location1.LocationCredential.Id,
+                        host = taskLocation.Location1.LocationCredential.Host,
+                        password = taskLocation.Location1.LocationCredential.Password,
+                        port = (int)taskLocation.Location1.LocationCredential.Port,
+                        username = taskLocation.Location1.LocationCredential.Username,
+                        LogonType = new Shared.NetMessages.TaskMessages.LogonType()
+                        {
+                            Id = taskLocation.Location1.LocationCredential.LogonType.Id,
+                            Name = taskLocation.Location1.LocationCredential.LogonType.Name
+                        }
+                    }
+                };
+                List<Shared.NetMessages.TaskMessages.Time> times = new List<Shared.NetMessages.TaskMessages.Time>();
+                    foreach (var taskLocationTime in mysql.TaskLocationsTimes.Where(r => r.IdTaskLocation == taskLocation.Id))
+                    {
+                        times.Add(new Shared.NetMessages.TaskMessages.Time()
+                        {
+                            id = taskLocationTime.Time.Id,
+                            endTime = taskLocationTime.Time.EndTime,
+                            interval = taskLocationTime.Time.Interval,
+                            name = taskLocationTime.Time.Name,
+                            repeat = taskLocationTime.Time.Repeat,
+                            startTime = taskLocationTime.Time.StartTime
+                        });
+                    }
+                    dbTaskLocation.times = times;
+                }
+                return dbTask;
+            }
+
+        private List<DbTask> FetchAll(TaskMessage message)
+        {
+            int idDaemon = authenticator.GetDaemonFromUuid(message.sessionUuid).Id;
+            var tasks = mysql.Tasks.Where(r => r.IdDaemon == idDaemon);
+            List<DbTask> dbTasks = new List<DbTask>();
+            int i = 0;
+            foreach (var task in tasks)
+            {
+                try
+                {
+                    dbTasks.Add(ExtractData(task));
+                }
+                catch(Exception e)
+                {
+                    errors.Add(new ErrorMessage() {id=e.HResult,message=e.Message,value=i.ToString() });
+                }
+                finally
+                {
+                    i++;
+                }
+            }
+            return dbTasks;
+        }
+
+        public List<DbTask> GetTasks(TaskMessage message)
+        {
+            if (message.tasks == null | message.tasks.Count == 0)
+                return FetchAll(message);
+            else
+            {
+                List<DbTask> tasks = new List<DbTask>();
+                for (int i = 0; i < message.tasks.Count; i++)
+                {
+                    tasks.Add(ExtractData(mysql.Tasks.Where(r => r.Id == message.tasks[i].id).FirstOrDefault()));
+                }
+                return tasks;
+            }
         }
 
         public ErrorMessage[] CreateTasks(TaskMessage message)

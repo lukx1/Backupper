@@ -14,7 +14,7 @@ namespace Shared.NetMessages
         /// <summary>
         /// List tasků
         /// </summary>
-        public bool IsDaemon;
-        public List<NetMessages.TaskMessages.DbTask> tasks;
+        public bool IsDaemon = true;
+        public List<NetMessages.TaskMessages.DbTask> tasks = new List<TaskMessages.DbTask>();
     }
 }

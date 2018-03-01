@@ -20,7 +20,8 @@ namespace Shared.NetMessages.TaskMessages
     ///         Vše
     ///         
     public class DbTask
-    {   
+    {
+        public int id;
         /// <summary>
         /// Uuid daemona, pokud odesláno daemonem bude odvozeno z sessionUuid
         /// </summary>

@@ -16,7 +16,7 @@ namespace Shared.NetMessages.TaskMessages
         /// <summary>
         /// Interval záloh v sekundách
         /// </summary>
-        public int interval;
+        public int? interval;
 
         /// <summary>
         /// Jméno času
@@ -36,6 +36,6 @@ namespace Shared.NetMessages.TaskMessages
         /// <summary>
         /// Konec rozmezí ve kterém se bude zálohovat
         /// </summary>
-        public DateTime endTime;
+        public DateTime? endTime;
     }
 }

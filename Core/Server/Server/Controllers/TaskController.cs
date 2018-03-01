@@ -48,7 +48,15 @@ namespace Server.Controllers
 
             if (!authenticator.IsSessionValid(taskMessage.sessionUuid,taskMessage.IsDaemon))
                 return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.Unauthorized, new TaskResponse() { ErrorMessages = new List<ErrorMessage>() { new ErrorMessage() { id = 5, message = "Sezení není platné" } } });
-            throw new NotImplementedException();
+
+            if (taskHandler == null)
+                taskHandler = new TaskHandler();
+
+            var tasks = taskHandler.GetTasks(taskMessage);
+            if (taskHandler.errors.Any(r => r != null))
+                return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.BadRequest, new TaskResponse() { ErrorMessages = taskHandler.errors });
+            else
+                return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.Created, new TaskResponse() { ErrorMessages = new List<ErrorMessage>(),Tasks =tasks });
         }
 
         /// <summary>
@@ -66,10 +74,10 @@ namespace Server.Controllers
         /// </summary>
         /// <param name="taskMessage"></param>
         /// <returns></returns>
-        public HttpResponseMessage Post([FromBody]TaskMessage loginMessage)
+        public HttpResponseMessage Post([FromBody]TaskMessage taskMessage)
         {
-            throw new NotImplementedException();
-            //return PostResponse(taskMessage);
+            //throw new NotImplementedException();
+            return PostResponse(taskMessage);
         }
     }
 }
