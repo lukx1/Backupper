@@ -16,9 +16,9 @@ namespace Server.Authentication
         private DaemonPreSharedKey matchingLogin;
         private Authenticator authenticator;
 
-        public DaemonIntroducer()
+        public DaemonIntroducer(MySQLContext mysql)
         {
-            this.mysql = new MySQLContext();
+            this.mysql = mysql;
             authenticator = new Authenticator(mysql);
         }
 
@@ -55,6 +55,9 @@ namespace Server.Authentication
             message = null;
             return response;
         }
+
+        
+
         /// 
         /// <summary>
         /// Ověří zda jsou údaje platné

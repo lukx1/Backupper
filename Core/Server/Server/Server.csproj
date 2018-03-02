@@ -188,6 +188,7 @@
     <Compile Include="Authentication\Authenticator.cs" />
     <Compile Include="Authentication\DaemonIntroducer.cs" />
     <Compile Include="Authentication\DaemonLoginer.cs" />
+    <Compile Include="Authentication\Group.cs" />
     <Compile Include="Authentication\Permission.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
