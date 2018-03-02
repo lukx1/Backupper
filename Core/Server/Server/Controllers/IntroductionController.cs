@@ -41,5 +41,10 @@ namespace Server.Controllers
             return HandleIntroduction(value);
         }
 
+        protected override void Dispose(bool b)
+        {
+            //mySQL.Database.Connection.Close();
+        }
+
     }
 }
