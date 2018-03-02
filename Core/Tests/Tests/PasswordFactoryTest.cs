@@ -16,7 +16,7 @@ namespace Tests
         public void ComparePbkdf2()
         {
             string hashed = Shared.PasswordFactory.HashPasswordPbkdf2("asda");
-            Assert.IsTrue(hashed.Length == 68, "Delka AES neni 72 charu");
+            Assert.IsTrue(hashed.Length == 68, "Delka Pbkdf neni 68 charu");
             Assert.IsTrue(Shared.PasswordFactory.ComparePasswordsPbkdf2("asda", hashed), "Sifra nerozlustena");
         }
 
