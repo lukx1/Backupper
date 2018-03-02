@@ -38,7 +38,41 @@ namespace Server.Controllers
         /// <returns>success pokud prošlo, jinak failure</returns>
         public IntroductionResponse Post([FromBody]IntroductionMessage value)
         {
-            return HandleIntroduction(value);
+            int i = 0;
+            List<MySQLContext> contexts = new List<MySQLContext>();
+            
+            try
+            {
+                while (true)
+                {
+                    var c = new MySQLContext();
+                    contexts.Add(c);
+                    Thread.Sleep(10);
+                    List<Task<int>> tasks = new List<Task<int>>();
+                    foreach (var cc in contexts)
+                    {
+                        var t = new Task<int>(() => cc.Database.ExecuteSqlCommandAsync("SELECT * FROM Daemons").Result);
+                        tasks.Add(t);
+                    }
+                    foreach (var item in tasks)
+                    {
+                        item.Start();
+                    }
+                    //Thread.Sleep(10);
+                    i++;
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine();
+            }
+            return null;
+            //return HandleIntroduction(value);
+        }
+
+        protected override void Dispose(bool b)
+        {
+            //mySQL.Database.Connection.Close();
         }
 
     }
