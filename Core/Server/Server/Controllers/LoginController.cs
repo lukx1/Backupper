@@ -31,10 +31,7 @@ namespace Server.Controllers
         {
             LoginResponse responseMessage = TryLogin(loginMessage);
             if(responseMessage.errorMessage != null)
-            {
-                if (responseMessage.errorMessage.id >= 1)
-                    return Util.MakeHttpResponseMessage(HttpStatusCode.Forbidden,responseMessage);
-            }
+                return Util.MakeHttpResponseMessage((HttpStatusCode)responseMessage.errorMessage.id,responseMessage);
             return Util.MakeHttpResponseMessage(HttpStatusCode.Created, responseMessage);
         }
     }

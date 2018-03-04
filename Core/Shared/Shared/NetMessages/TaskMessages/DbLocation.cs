@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages.TaskMessages
 {
-    public class Location
+    public class DbLocation
     {
         /// <summary>
         /// Id lokace, při vytváření nemusí být nastaveno
@@ -21,11 +21,11 @@ namespace Shared.NetMessages.TaskMessages
         /// <summary>
         /// Protokol pomocí kterého přistoupit k lokaci
         /// </summary>
-        public Protocol protocol;
+        public DbProtocol protocol;
 
         /// <summary>
         /// Přídavné informace k připojení
         /// </summary>
-        public LocationCredential LocationCredential;
+        public DbLocationCredential LocationCredential;
     }
 }

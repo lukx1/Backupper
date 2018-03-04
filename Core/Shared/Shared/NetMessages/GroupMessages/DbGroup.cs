@@ -18,7 +18,7 @@ namespace Shared.NetMessages.GroupMessages
         /// Pokud ID jsou Daemonů nebo Userů
         /// </summary>
         public bool ForDaemons;
-        public List<GroupPermission> permissions;
+        public List<DbGroupPermission> permissions;
         public List<int> IdUsersOrDaemons;
     }
 }

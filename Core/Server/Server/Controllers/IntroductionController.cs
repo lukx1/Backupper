@@ -4,6 +4,7 @@ using Shared.NetMessages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
@@ -22,12 +23,15 @@ namespace Server.Controllers
 
         private IntroductionResponse HandleIntroduction(IntroductionMessage message)
         {
+            if (message == null)
+                return new IntroductionResponse() { errorMessage = { id = 1, message = "Přijatý message byl null" } };
+
             if (authenticator == null)
                 authenticator = new DaemonIntroducer((mySQL = new MySQLContext()));
 
             authenticator.ReadIntroduction(message);
             if (!authenticator.IsValid())
-                return new IntroductionResponse() { errorMessage = new ErrorMessage {message="Údaje nejsou platné" } };
+                return new IntroductionResponse() { errorMessage = new ErrorMessage {id = 2,message="Údaje nejsou platné" } };
             return authenticator.AddToDBMakeResponse();
         }
 
@@ -36,14 +40,14 @@ namespace Server.Controllers
         /// </summary>
         /// <param name="value"></param>
         /// <returns>success pokud prošlo, jinak failure</returns>
-        public IntroductionResponse Post([FromBody]IntroductionMessage value)
+        public HttpResponseMessage Post([FromBody]IntroductionMessage value)
         {
-            return HandleIntroduction(value);
-        }
-
-        protected override void Dispose(bool b)
-        {
-            //mySQL.Database.Connection.Close();
+            var msg = HandleIntroduction(value);
+            if (msg.errorMessage != null && msg.errorMessage.id == 1)
+                return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.BadRequest,msg);
+            else if (msg.errorMessage != null && msg.errorMessage.id == 2)
+                return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.Forbidden, msg);
+            return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.Created, msg);
         }
 
     }

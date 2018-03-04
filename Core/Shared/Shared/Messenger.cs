@@ -47,7 +47,6 @@ namespace Shared
         public T ReadMessage<T>()
         {
             return ReadMessage<T>(jsonResponse);
-            return JsonConvert.DeserializeObject<T>(jsonResponse);
         }
 
         /// <summary>
@@ -92,7 +91,7 @@ namespace Shared
         /// <param name="controller">Jméno kontroleru</param>
         /// <param name="httpMethod">Druh http zprávy</param>>
         /// 
-        /// <returns>Odpověď v Jsonu</returns>
+        /// <returns>Odpověď JSon string</returns>
         public async Task<string> SendAsyncGetJson(INetMessage message, string controller, HttpMethod httpMethod)
         {
             var json = JsonConvert.SerializeObject(message);

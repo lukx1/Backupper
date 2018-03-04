@@ -9,6 +9,9 @@ using System.Xml;
 
 namespace Shared
 {
+    /// <summary>
+    /// Pro tvoření unikátní stringu z hardwarů PC
+    /// </summary>
     public class PcInfo : IDisposable
     {
 

@@ -40,6 +40,6 @@ namespace Shared.NetMessages.TaskMessages
         /// <summary>
         /// Lokace která mají být zkopírovany a kam kopírovat
         /// </summary>
-        public List<TaskLocation> taskLocations;
+        public List<DbTaskLocation> taskLocations;
     }
 }

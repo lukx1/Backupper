@@ -10,16 +10,16 @@ namespace Shared.NetMessages.TaskMessages
     /// <summary>
     /// Druh backupu podle mysql databáze
     /// </summary>
-    public class BackupType
+    public class DbBackupType
     {
-        public static readonly BackupType NORM = new BackupType(1,"NORM","Normal");
-        public static readonly BackupType DIFF = new BackupType(2,"DIFF","Differential");
-        public static readonly BackupType INCR = new BackupType(3,"INCR","Incremental");
+        public static readonly DbBackupType NORM = new DbBackupType(1,"NORM","Normal");
+        public static readonly DbBackupType DIFF = new DbBackupType(2,"DIFF","Differential");
+        public static readonly DbBackupType INCR = new DbBackupType(3,"INCR","Incremental");
 
         [DeserializeOnly]
-        public BackupType() { }
+        public DbBackupType() { }
 
-        private BackupType(int id, string shortName, string longName)
+        private DbBackupType(int id, string shortName, string longName)
         {
             Id = id;
             ShortName = shortName;

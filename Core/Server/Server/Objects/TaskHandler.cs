@@ -21,7 +21,7 @@ namespace Server.Objects
             this.mysql = new MySQLContext();
         }
 
-        private Models.Location CreateLocationFromLocation(Shared.NetMessages.TaskMessages.Location location)
+        private Models.Location CreateLocationFromLocation(Shared.NetMessages.TaskMessages.DbLocation location)
         {
             Models.LocationCredential locationCredential = new Models.LocationCredential();
             locationCredential.Id = location.LocationCredential.Id;
@@ -45,7 +45,7 @@ namespace Server.Objects
             };
         }
 
-        private Models.TaskLocation CreateTaskLocationFromTaskLocation(Shared.NetMessages.TaskMessages.TaskLocation taskLocation, Models.Task task)
+        private Models.TaskLocation CreateTaskLocationFromTaskLocation(Shared.NetMessages.TaskMessages.DbTaskLocation taskLocation, Models.Task task)
         {
             var source = new Models.Location()
             {
@@ -84,7 +84,7 @@ namespace Server.Objects
             };
         }
 
-        private Models.Time CreateTimeFromTime(Shared.NetMessages.TaskMessages.Time time)
+        private Models.Time CreateTimeFromTime(Shared.NetMessages.TaskMessages.DbTime time)
         {
             return new Models.Time()
             {
@@ -131,72 +131,72 @@ namespace Server.Objects
         private DbTask ExtractData(Task task)
         {
                 var dbTask = new DbTask() { name = task.Name, description = task.Description,id=task.Id,uuidDaemon=task.Daemon.Uuid };
-                List<Shared.NetMessages.TaskMessages.TaskLocation> taskLocations = new List<Shared.NetMessages.TaskMessages.TaskLocation>();
+                List<Shared.NetMessages.TaskMessages.DbTaskLocation> taskLocations = new List<Shared.NetMessages.TaskMessages.DbTaskLocation>();
                 dbTask.taskLocations = taskLocations;
                 foreach (var taskLocation in mysql.TaskLocations.Where(r => r.IdTask == task.Id))
                 {
 
-                    Shared.NetMessages.TaskMessages.TaskLocation dbTaskLocation = new Shared.NetMessages.TaskMessages.TaskLocation();
+                    Shared.NetMessages.TaskMessages.DbTaskLocation dbTaskLocation = new Shared.NetMessages.TaskMessages.DbTaskLocation();
                     taskLocations.Add(dbTaskLocation);
                     dbTaskLocation.id = taskLocation.Id;
-                    dbTaskLocation.backupType = new Shared.NetMessages.TaskMessages.BackupType()
+                    dbTaskLocation.backupType = new Shared.NetMessages.TaskMessages.DbBackupType()
                     {
                         Id = taskLocation.BackupType.Id,
                         LongName = taskLocation.BackupType.LongName,
                         ShortName = taskLocation.BackupType.ShortName
                     };
-                    dbTaskLocation.source = new Shared.NetMessages.TaskMessages.Location()
+                    dbTaskLocation.source = new Shared.NetMessages.TaskMessages.DbLocation()
                     {
                         id = taskLocation.Location.Id,
                         uri = taskLocation.Location.Uri,
-                        protocol = new Shared.NetMessages.TaskMessages.Protocol()
+                        protocol = new Shared.NetMessages.TaskMessages.DbProtocol()
                         {
                             Id = taskLocation.Location.Protocol.Id,
                             LongName = taskLocation.Location.Protocol.LongName,
                             ShortName = taskLocation.Location.Protocol.ShortName
                         },
-                        LocationCredential = new Shared.NetMessages.TaskMessages.LocationCredential()
+                        LocationCredential = new Shared.NetMessages.TaskMessages.DbLocationCredential()
                         {
                             Id = taskLocation.Location.LocationCredential.Id,
                             host = taskLocation.Location.LocationCredential.Host,
                             password = taskLocation.Location.LocationCredential.Password,
                             port = (int)taskLocation.Location.LocationCredential.Port,
                             username = taskLocation.Location.LocationCredential.Username,
-                            LogonType = new Shared.NetMessages.TaskMessages.LogonType()
+                            LogonType = new Shared.NetMessages.TaskMessages.DbLogonType()
                             {
                                 Id = taskLocation.Location.LocationCredential.LogonType.Id,
                                 Name = taskLocation.Location.LocationCredential.LogonType.Name
                             }
                         }
                     };
-                dbTaskLocation.destination = new Shared.NetMessages.TaskMessages.Location()
+                dbTaskLocation.destination = new Shared.NetMessages.TaskMessages.DbLocation()
                 {
                     id = taskLocation.Location1.Id,
                     uri = taskLocation.Location1.Uri,
-                    protocol = new Shared.NetMessages.TaskMessages.Protocol()
+                    protocol = new Shared.NetMessages.TaskMessages.DbProtocol()
                     {
                         Id = taskLocation.Location1.Protocol.Id,
                         LongName = taskLocation.Location1.Protocol.LongName,
                         ShortName = taskLocation.Location1.Protocol.ShortName
                     },
-                    LocationCredential = new Shared.NetMessages.TaskMessages.LocationCredential()
+                    LocationCredential = new Shared.NetMessages.TaskMessages.DbLocationCredential()
                     {
                         Id = taskLocation.Location1.LocationCredential.Id,
                         host = taskLocation.Location1.LocationCredential.Host,
                         password = taskLocation.Location1.LocationCredential.Password,
                         port = (int)taskLocation.Location1.LocationCredential.Port,
                         username = taskLocation.Location1.LocationCredential.Username,
-                        LogonType = new Shared.NetMessages.TaskMessages.LogonType()
+                        LogonType = new Shared.NetMessages.TaskMessages.DbLogonType()
                         {
                             Id = taskLocation.Location1.LocationCredential.LogonType.Id,
                             Name = taskLocation.Location1.LocationCredential.LogonType.Name
                         }
                     }
                 };
-                List<Shared.NetMessages.TaskMessages.Time> times = new List<Shared.NetMessages.TaskMessages.Time>();
+                List<Shared.NetMessages.TaskMessages.DbTime> times = new List<Shared.NetMessages.TaskMessages.DbTime>();
                     foreach (var taskLocationTime in mysql.TaskLocationsTimes.Where(r => r.IdTaskLocation == taskLocation.Id))
                     {
-                        times.Add(new Shared.NetMessages.TaskMessages.Time()
+                        times.Add(new Shared.NetMessages.TaskMessages.DbTime()
                         {
                             id = taskLocationTime.Time.Id,
                             endTime = taskLocationTime.Time.EndTime,

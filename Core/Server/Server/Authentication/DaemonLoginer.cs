@@ -4,6 +4,7 @@ using Shared.NetMessages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 
 namespace Server.Authentication
@@ -35,9 +36,9 @@ namespace Server.Authentication
             Daemon daemon = mysql.Daemons.Where(r => r.Uuid == uuid).FirstOrDefault();
 
             if (daemon == null)
-                return new LoginResponse() { errorMessage = new ErrorMessage {id = 1,message = "Daemon s daným uuid nebyl nalezen",value=uuid.ToString() } };
+                return new LoginResponse() { errorMessage = new ErrorMessage {id = (int)HttpStatusCode.NotFound, message = "Daemon s daným uuid nebyl nalezen",value=uuid.ToString() } };
             if (!IsPasswordValid(password, daemon))
-                return new LoginResponse() { errorMessage = new ErrorMessage { id = 2, message = "Login je neplatný" } };
+                return new LoginResponse() { errorMessage = new ErrorMessage { id = (int)HttpStatusCode.Forbidden, message = "Login je neplatný" } };
 
             LogedInDaemon logedInDaemon = GetLogedInDaemonWithUuid(uuid);
 

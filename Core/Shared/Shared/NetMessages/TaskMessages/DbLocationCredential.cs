@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages.TaskMessages
 {
-    public class LocationCredential
+    public class DbLocationCredential
     {
         /// <summary>
         /// Id LC, při vytváření nemusí být nastaveno
@@ -26,7 +26,7 @@ namespace Shared.NetMessages.TaskMessages
         /// <summary>
         /// Způsob připojení
         /// </summary>
-        public LogonType LogonType;
+        public DbLogonType LogonType;
 
 
         public string username;

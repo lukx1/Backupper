@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages.TaskMessages
 {
-    public class TaskLocation
+    public class DbTaskLocation
     {
         /// <summary>
         /// Id lokace shodující se s id serveru, při vytváření nemusí být nastaveno
@@ -17,21 +17,21 @@ namespace Shared.NetMessages.TaskMessages
         /// <summary>
         /// Odkud kopírovat
         /// </summary>
-        public Location source;
+        public DbLocation source;
 
         /// <summary>
         /// Kam kopírovat
         /// </summary>
-        public Location destination;
+        public DbLocation destination;
 
         /// <summary>
         /// Jakým způsobem kopírovat
         /// </summary>
-        public BackupType backupType;
+        public DbBackupType backupType;
 
         /// <summary>
         /// Kdy kopírovat
         /// </summary>
-        public List<Time> times;
+        public List<DbTime> times;
     }
 }

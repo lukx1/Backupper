@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages.GroupMessages
 {
-    public class Permission
+    public class DbGroupPermission
     {
         public int Id;
-        public string Name;
-        public string Description;
-        
+        public DbPermission Permission;
+        public bool? Allow;
+        public bool? Deny;
     }
 }

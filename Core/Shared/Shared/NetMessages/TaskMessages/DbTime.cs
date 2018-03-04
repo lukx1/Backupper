@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages.TaskMessages
 {
-    public class Time
+    public class DbTime
     {
         /// <summary>
         /// Id času, při vytváření nemusí být nastaveno 

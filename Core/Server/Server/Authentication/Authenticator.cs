@@ -7,11 +7,18 @@ using System.Web;
 
 namespace Server.Authentication
 {
+    /// <summary>
+    /// Pro oveřování
+    /// </summary>
     public class Authenticator
     {
 
         private MySQLContext mysql;
 
+        /// <summary>
+        /// Nutno pokud jiná třída již používá tento kontext
+        /// </summary>
+        /// <param name="mySQLContext"></param>
         public Authenticator(MySQLContext mySQLContext)
         {
             this.mysql = mySQLContext;
@@ -22,6 +29,16 @@ namespace Server.Authentication
             this.mysql = new MySQLContext();
         }
 
+        /// <summary>
+        /// Pokusí se přihlásit uživatele a vrátí uuid
+        /// </summary>
+        ///     Argument Exception 
+        ///         pokud heslo není platné
+        ///     NullReference Exception
+        ///         pokud uživatel s daným jménem nebyl nalezen
+        /// <param name="nickname"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         public Guid LoginUser(string nickname, string password)
         {
 
@@ -32,7 +49,12 @@ namespace Server.Authentication
                 throw new ArgumentException("Heslo není platné");
             return CreateUuid(user);
         }
-
+        
+        /// <summary>
+        /// Pomocná třída pro LoginUser
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         private Guid CreateUuid(User user)
         {
             Guid guid = Guid.NewGuid();
@@ -50,12 +72,22 @@ namespace Server.Authentication
             return guid;
         }
 
+        /// <summary>
+        /// Získá z Uuid objekt uživatele
+        /// </summary>
+        /// <param name="uuid"></param>
+        /// <returns></returns>
         public User GetUserFromUuid(Guid uuid)
         {
             LogedInUser logedInUsers = mysql.LogedInUsers.Where(r => r.SessionUuid == uuid).FirstOrDefault();
             return mysql.Users.Where(r => r.Id == logedInUsers.idUser).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Vracé z Uuid objekt daemona
+        /// </summary>
+        /// <param name="uuid"></param>
+        /// <returns></returns>
         public Daemon GetDaemonFromUuid(Guid uuid)
         {
             LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == uuid).FirstOrDefault();
@@ -68,6 +100,14 @@ namespace Server.Authentication
             public string pass;
         }
 
+        /// <summary>
+        /// Introducne daemona
+        /// </summary>
+        /// <param name="preSharedKey"></param>
+        /// <param name="os"></param>
+        /// <param name="mac"></param>
+        /// <param name="idUser"></param>
+        /// <returns></returns>
         public UuidPass IntroduceDaemon(DaemonPreSharedKey preSharedKey, string os, string mac, int idUser)
         {
             preSharedKey.Used = true;
@@ -95,6 +135,12 @@ namespace Server.Authentication
             return new UuidPass() { name = dbDaemon.Uuid.ToString(), pass = unhashedPass };
         }
 
+        /// <summary>
+        /// Zjistí jestli daemon s daným uuid může udělat danou věc
+        /// </summary>
+        /// <param name="uuid"></param>
+        /// <param name="permission"></param>
+        /// <returns></returns>
         public bool IsDaemonAllowed(Guid uuid, Server.Authentication.Permission permission)
         {
             var daemon = mysql.Daemons.Where(r => r.Uuid == uuid).FirstOrDefault();
@@ -115,6 +161,12 @@ namespace Server.Authentication
             return false;
         }
 
+        /// <summary>
+        /// Zjistí jestli daemon s daným uuid může udělat danou věc
+        /// </summary>
+        /// <param name="nickname"></param>
+        /// <param name="permission"></param>
+        /// <returns></returns>
         public bool IsUserAllowed(string nickname, Server.Authentication.Permission permission)
         {
             var user = mysql.Users.Where(r => r.Nickname == nickname).FirstOrDefault();
@@ -135,11 +187,22 @@ namespace Server.Authentication
             return false;
         }
 
+        /// <summary>
+        /// Zjístí předzdílen=y klíč s daným ID, toto ID není ID uživatele
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public DaemonPreSharedKey GetPresharedFromId(int id)
         {
             return mysql.DaemonPreSharedKeys.Where(r => r.Id == id).FirstOrDefault();
         }
 
+        /// <summary>
+        /// Zjistí jestli předzdílený klíč je platný
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public bool IsPresharedValid(int id,string key)
         {
             var preshared = mysql.DaemonPreSharedKeys.Where(r => r.Id == id).FirstOrDefault();
@@ -150,6 +213,13 @@ namespace Server.Authentication
             return PasswordFactory.ComparePasswordsPbkdf2(key, preshared.PreSharedKey);
         }
 
+        /// <summary>
+        /// Zjistí zda sezení je platné
+        /// </summary>
+        /// <param name="uuid"></param>
+        /// <param name="IsDaemon"></param>
+        /// <param name="refreshTime"></param>
+        /// <returns></returns>
         public bool IsSessionValid(Guid uuid,bool IsDaemon, bool refreshTime = true)
         {
             if (IsDaemon)
