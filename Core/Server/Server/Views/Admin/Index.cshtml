@@ -1,5 +1,42 @@
 ﻿@{
-	ViewBag.Title = "Main Page";
+	ViewBag.Title = "Admin Panel";
 }
 
-<h2>Main Page</h2>
+<h2>Admin panel</h2>
+
+<br />
+User management
+<ul class="list-unstyled">
+	<li>@Html.ActionLink("User List", "Index", "AdminUsers")</li>
+	<li>@Html.ActionLink("User Groups List (support table)", "UserGroups", "AdminUsers")</li>
+	<li>@Html.ActionLink("Preshared Key List", "Index", "AdminPresharedKeys")</li>
+
+</ul>
+
+<br />
+Daemon management
+<ul class="list-unstyled">
+	<li>@Html.ActionLink("Daemon List", "Index", "AdminDaemons")</li>
+</ul>
+
+<br />
+Tasks management
+<ul class="list-unstyled">
+	<li>@Html.ActionLink("Tasks", "Index", "AdminTasks")</li>
+</ul>
+
+<br />
+Groups management
+<ul class="list-unstyled">
+	<li>@Html.ActionLink("Group List", "Index", "AdminGroups")</li>
+</ul>
+
+<br />
+Statistics & Info
+<ul class="list-unstyled">
+	<li>@Html.ActionLink("User Logs", "Logs", "AdminUsers")</li>
+	<li>@Html.ActionLink("Daemon Logs (DO NOT USE)", "Logs", "AdminDaemons")</li>
+	<li>@Html.ActionLink("Task Location Logs", "Logs", "AdminTasks")</li>
+	<li>@Html.ActionLink("Loged In Daemons", "LogedInDaemons", "AdminDaemons")</li>
+	<li>@Html.ActionLink("Loged In Users", "LogedInUsers", "AdminUsers")</li>
+</ul>

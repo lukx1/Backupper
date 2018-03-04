@@ -1,0 +1,28 @@
+﻿@model IEnumerable<global::Server.Models.Daemon>
+
+@{
+	ViewBag.Title = "Daemons";
+}
+
+<h2>Daemons</h2>
+
+<table style="width:100%">
+	<tr>
+		<th>ID</th>
+		<th>Daemon Info ID</th>
+		<th>User ID</th>
+		<th>Hashed Pasasword</th>
+		<th>Uuid</th>
+	</tr>
+	@foreach (var item in Model)
+	{
+	<tr>
+		<td>@item.Id</td>
+		<td>@item.IdDaemonInfo</td>
+		<td>@item.IdUser</td>
+		<td>@item.Password</td>
+		<td>@item.Uuid</td>
+	</tr>
+	}
+</table>
+

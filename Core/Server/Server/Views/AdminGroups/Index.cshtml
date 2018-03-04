@@ -1,0 +1,25 @@
+﻿@model IEnumerable<global::Server.Models.Group>
+
+@{
+	ViewBag.Title = "Groups";
+}
+
+<h2>Groups</h2>
+
+<table style="width:100%">
+	<tr>
+		<th>ID</th>
+		<th>Name</th>
+		<th>Description</th>
+		<th>Is meants for daemons</th>
+	</tr>
+	@foreach (var item in Model)
+	{
+	<tr>
+		<td>@item.Id</td>
+		<td>@item.Name</td>
+		<td>@item.Description</td>
+		<td>@item.ForDaemons</td>
+	</tr>
+	}
+</table>

@@ -17,9 +17,13 @@ namespace Server
             return new HttpResponseMessage(statusCode) { Content = new StringContent(JsonConvert.SerializeObject(message)) };
         }
 
-        public static bool IsUserAlreadyLoggedIn(HttpSessionStateBase session)
+        public static bool IsUserAlreadyLoggedIn(HttpSessionStateBase session, bool refresh = true)
         {
-            return session["userId"] != null;
+            Guid? uuid = (Guid?)session["sessionUuid"];
+            if (!uuid.HasValue)
+                return false;
+
+            return Authentication.StaticUserHelper.CheckSessionValidity(uuid.Value, refresh);
         }
 
         public static bool IsExpired(DateTime expires)

@@ -1,0 +1,23 @@
+﻿@model IEnumerable<global::Server.Models.LogedInDaemon>
+
+@{
+	ViewBag.Title = "Loged In Daemons";
+}
+
+<h2>Loged In Daemons</h2>
+
+<table style="width:100%">
+	<tr>
+		<th>Daemon ID</th>
+		<th>Expires</th>
+		<th>Session UUID</th>
+	</tr>
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>@item.IdDaemon</td>
+			<td>@item.Expires</td>
+			<td>@item.SessionUuid</td>
+		</tr>
+	}
+</table>

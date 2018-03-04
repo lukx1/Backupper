@@ -190,12 +190,22 @@
     <Compile Include="Authentication\DaemonLoginer.cs" />
     <Compile Include="Authentication\Group.cs" />
     <Compile Include="Authentication\Permission.cs" />
+    <Compile Include="Authentication\StaticUserHelper.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\AdminDaemonsController.cs" />
+    <Compile Include="Controllers\AdminErrorController.cs" />
+    <Compile Include="Controllers\AdminGroupsController.cs" />
+    <Compile Include="Controllers\AdminLoginController.cs" />
+    <Compile Include="Controllers\AdminPresharedKeysController.cs" />
+    <Compile Include="Controllers\AdminTasksController.cs" />
+    <Compile Include="Controllers\AdminUsersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IntroductionController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Exceptions\NonExistingUserException.cs" />
+    <Compile Include="Exceptions\NotMatchingPasswordException.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -301,7 +311,9 @@
     <Content Include="Scripts\umd\popper-utils.min.js" />
     <Content Include="Scripts\umd\popper.js" />
     <Content Include="Scripts\umd\popper.min.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -326,7 +338,18 @@
     <Content Include="Scripts\jquery-3.3.1.slim.min.map" />
     <Content Include="Scripts\jquery-3.3.1.min.map" />
     <Content Include="Views\Admin\Index.cshtml" />
-    <Content Include="Views\Admin\Login.cshtml" />
+    <Content Include="Views\AdminLogin\Login.cshtml" />
+    <Content Include="Views\AdminPresharedKeys\Index.cshtml" />
+    <Content Include="Views\AdminTasks\Logs.cshtml" />
+    <Content Include="Views\AdminDaemons\Logs.cshtml" />
+    <Content Include="Views\AdminDaemons\LogedInDaemons.cshtml" />
+    <Content Include="Views\AdminUsers\Logs.cshtml" />
+    <Content Include="Views\AdminUsers\LogedInUsers.cshtml" />
+    <Content Include="Views\AdminGroups\Index.cshtml" />
+    <Content Include="Views\AdminTasks\Index.cshtml" />
+    <Content Include="Views\AdminDaemons\Index.cshtml" />
+    <Content Include="Views\AdminUsers\Index.cshtml" />
+    <Content Include="Views\AdminUsers\UserGroups.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

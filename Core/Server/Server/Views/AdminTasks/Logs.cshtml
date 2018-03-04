@@ -1,0 +1,27 @@
+﻿@model IEnumerable<global::Server.Models.TaskLocationLog>
+
+@{
+	ViewBag.Title = "Task location logs";
+}
+
+<h2>User logs</h2>
+
+<table style="width:100%">
+	<tr>
+		<th>ID</th>
+		<th>Log Type ID</th>
+		<th>Task Location ID</th>
+		<th>SText</th>
+		<th>LText</th>
+	</tr>
+	@foreach (var item in Model)
+	{
+	<tr>
+		<td>@item.Id</td>
+		<td>@(item.IdLogType.HasValue ? item.IdLogType.Value.ToString() : "no id")</td>
+		<td>@(item.IdTaskLocation.HasValue ? item.IdTaskLocation.Value.ToString() : "no id")</td>
+		<td>@item.ShortText</td>
+		<td>@item.LongText</td>
+	</tr>
+	}
+</table>

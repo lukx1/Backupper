@@ -1,0 +1,28 @@
+﻿@model IEnumerable<global::Server.Models.DaemonPreSharedKey>
+
+@{
+    ViewBag.Title = "Preshared Keys";
+}
+
+<h2>Preshared Keys</h2>
+
+<table style="width:100%">
+	<tr>
+		<th>ID</th>
+		<th>User ID</th>
+		<th>PKey</th>
+		<th>Expires</th>
+		<th>Used</th>
+	</tr>
+	@foreach(var item in Model)
+	{
+	<tr>
+		<td>@item.Id</td>
+		<td>@item.IdUser</td>
+		<td>@item.PreSharedKey</td>
+		<td>@item.Expires</td>
+		<td>@item.Used</td>
+	</tr>
+	}
+</table>
+
