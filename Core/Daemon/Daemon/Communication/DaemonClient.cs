@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Shared.NetMessages;
 using System.Net.NetworkInformation;
+using Shared.NetMessages.TaskMessages;
+using Daemon.Utility;
+using System.Net.Http;
 
 namespace Daemon.Communication
 {
@@ -14,12 +17,41 @@ namespace Daemon.Communication
     /// </summary>
     public class DaemonClient
     {
-        Messenger messenger { get; set; }
+        private Messenger messenger { get; set; }
+        private IConfig config = new TempConfig();
+        private TaskHandler taskHandler = new TaskHandler();
 
         public DaemonClient()
         {
             messenger = new Messenger("http://localhost:3393/"); 
-            this.Introduce();
+            if(config.GetUuid() == null)
+                this.Introduce();
+            Login();
+            ApplyTasks();
+        }
+
+
+
+        private void CheckLogin()
+        {
+            if (config.GetSession() == null)
+                Login();
+            //TODO : else if(> 15 min bez kontaktu)
+        }
+
+        private async Task ApplyTasks()
+        {
+            taskHandler.Tasks = await GetAllTaskFromDB();
+            taskHandler.CreateTimers();
+        }
+
+        private async Task<List<DbTask>> GetAllTaskFromDB()
+        {
+            CheckLogin();
+            var responseJson = await messenger.SendAsyncGetJson(new TaskMessage(), "task", HttpMethod.Post);
+            if(!messenger.IsSuccessStatusCode())
+                throw new HttpRequestException(messenger.StatusCode + " Error"); //TODO: Custom exception
+            return messenger.ReadMessage<TaskResponse>(responseJson).Tasks;
         }
 
         /// <summary>
@@ -47,11 +79,16 @@ namespace Daemon.Communication
         }
 
         /// <summary>
-        /// Loggins Daemon to the server
+        /// Přihlásí uživatele a zaznamená si session do configu
         /// </summary>
         public void Login()
         {
-            LoginMessage loginMessage = new LoginMessage();
+            LoginMessage loginMessage = new LoginMessage() {password = config.GetPass(),uuid = config.GetUuid() };
+            messenger.Send(loginMessage, "login", HttpMethod.Post);
+            if (!messenger.IsSuccessStatusCode())
+                throw new HttpRequestException(messenger.StatusCode+" Error");
+            LoginResponse response = messenger.ReadMessage<LoginResponse>();
+            config.SetSession(response.sessionUuid);
         }
     }
 }
