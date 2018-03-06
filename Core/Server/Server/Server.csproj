@@ -214,6 +214,7 @@
     <Compile Include="Models\Daemon.cs" />
     <Compile Include="Models\DaemonGroup.cs" />
     <Compile Include="Models\DaemonInfo.cs" />
+    <Compile Include="Models\DaemonLog.cs" />
     <Compile Include="Models\DaemonPreSharedKey.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\GroupPermission.cs" />
