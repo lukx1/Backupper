@@ -12,7 +12,6 @@ namespace Server.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public LogType()
         {
-            LocationCredentials = new HashSet<LocationCredential>();
             TaskLocationLogs = new HashSet<TaskLocationLog>();
             UserLogs = new HashSet<UserLog>();
         }
@@ -26,9 +25,6 @@ namespace Server.Models
         [Required]
         [StringLength(32)]
         public string Description { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<LocationCredential> LocationCredentials { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TaskLocationLog> TaskLocationLogs { get; set; }

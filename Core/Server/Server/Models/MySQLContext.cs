@@ -166,6 +166,12 @@ namespace Server.Models
                 .Property(e => e.Name)
                 .IsUnicode(false);
 
+            modelBuilder.Entity<LogonType>()
+                .HasMany(e => e.LocationCredentials)
+                .WithOptional(e => e.LogonType)
+                .HasForeignKey(e => e.IdLogonType)
+                .WillCascadeOnDelete();
+
             modelBuilder.Entity<LogType>()
                 .Property(e => e.Name)
                 .IsUnicode(false);
@@ -173,12 +179,6 @@ namespace Server.Models
             modelBuilder.Entity<LogType>()
                 .Property(e => e.Description)
                 .IsUnicode(false);
-
-            modelBuilder.Entity<LogType>()
-                .HasMany(e => e.LocationCredentials)
-                .WithOptional(e => e.LogType)
-                .HasForeignKey(e => e.IdLogonType)
-                .WillCascadeOnDelete();
 
             modelBuilder.Entity<LogType>()
                 .HasMany(e => e.TaskLocationLogs)
