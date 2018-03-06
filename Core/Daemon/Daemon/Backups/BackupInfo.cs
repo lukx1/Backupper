@@ -25,10 +25,10 @@ namespace Daemon.Backups
         {
             timeCreated = DateTime.Now;
             CreateBackupInfo("");
-            StreamWriter writer = new StreamWriter(pBackup.destinationPath + ".log");
+            StreamWriter writer = new StreamWriter(pBackup.DestinationPath + ".log");
             writer.WriteLine(timeCreated.ToString());
             writer.WriteLine(pBackup.ID);
-            writer.WriteLine(pBackup.backupPath);
+            writer.WriteLine(pBackup.SourcePath);
             foreach (FileBackupedInfo item in files)
             {
                 writer.WriteLine($"{item.subRootPath};{item.name};{item.size}");
@@ -38,7 +38,7 @@ namespace Daemon.Backups
 
         public void CreateBackupInfo(string sub)
         {
-            string dir = pBackup.backupPath;
+            string dir = pBackup.SourcePath;
             string subDir = sub;
 
             foreach (FileInfo item in new DirectoryInfo(dir + subDir).GetFiles())

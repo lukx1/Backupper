@@ -7,20 +7,22 @@ using System.IO;
 
 namespace Daemon.Backups
 {
-    public class FullBackup 
+    public class FullBackup : IBackup
     {
-        string destinationPath { get; set; }
-        string backupPath { get; set; }
+        public string DestinationPath { get; set; }
+        public string SourcePath { get; set; }
+        public bool ShouldZip { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int ID { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="Cilova Destinace"></param>
         /// <param name="Destinace Zalohovanych souboru"></param>
-        public FullBackup(string destinationPath, string backupPath)
+        public FullBackup(string destinationPath, string sourcePath)
         {
-            this.destinationPath = destinationPath;
-            this.backupPath = backupPath;
+            this.DestinationPath = destinationPath;
+            this.SourcePath = sourcePath;
         }
 
         void Backup(DirectoryInfo dir,string Destination)
@@ -36,7 +38,7 @@ namespace Daemon.Backups
 
         public void StartBackup()
         {
-            Backup(new DirectoryInfo(backupPath), destinationPath);
+            Backup(new DirectoryInfo(SourcePath), DestinationPath);
         }
     }
 }

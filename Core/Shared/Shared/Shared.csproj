@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Crc32.cs" />
     <Compile Include="DeserializeOnly.cs" />
+    <Compile Include="IniReader.cs" />
     <Compile Include="Messenger.cs" />
     <Compile Include="NetMessages\AccessorLogMessage.cs" />
     <Compile Include="NetMessages\AccessorLogResponse.cs" />

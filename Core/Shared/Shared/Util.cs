@@ -13,7 +13,7 @@ namespace Shared
     public static class Util
     {
         public const bool IsDebug = false;
-        public const string Newline => "\r\n"; //TODO dodelat
+        public const string Newline = "\r\n"; //TODO dodelat
         public static string GetFileInAppData(string fileName)
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Backupper\\"+fileName);

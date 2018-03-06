@@ -29,7 +29,7 @@ namespace Daemon.Backups
         public void AddBackup(IBackup backup)
         {
             backup.ID = AllBackups.Count;
-            backup.destinationPath = BackupMainDirectory + ID + "/" + backup.ID + "/Backup";
+            backup.DestinationPath = BackupMainDirectory + ID + "/" + backup.ID + "/Backup";
             AllBackups.Add(backup);
         }
     }

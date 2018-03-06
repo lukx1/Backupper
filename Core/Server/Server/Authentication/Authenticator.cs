@@ -57,10 +57,10 @@ namespace Server.Authentication
         private Guid CreateUuid(User user)
         {
             Guid guid = Guid.NewGuid();
-            LogedInUser logedInUser = mysql.LogedInUsers.Where(r => r.idUser == user.Id).FirstOrDefault();
+            LogedInUser logedInUser = mysql.LogedInUsers.Where(r => r.IdUser == user.Id).FirstOrDefault();
             if (logedInUser == null) //First login
             {
-                logedInUser = new LogedInUser() { idUser = user.Id, SessionUuid = guid, Expires = DateTime.Now.AddMinutes(15) };
+                logedInUser = new LogedInUser() { IdUser = user.Id, SessionUuid = guid, Expires = DateTime.Now.AddMinutes(15) };
                 mysql.LogedInUsers.Add(logedInUser);
             }
             else
@@ -79,7 +79,7 @@ namespace Server.Authentication
         public User GetUserFromUuid(Guid uuid)
         {
             LogedInUser logedInUsers = mysql.LogedInUsers.Where(r => r.SessionUuid == uuid).FirstOrDefault();
-            return mysql.Users.Where(r => r.Id == logedInUsers.idUser).FirstOrDefault();
+            return mysql.Users.Where(r => r.Id == logedInUsers.IdUser).FirstOrDefault();
         }
 
         /// <summary>

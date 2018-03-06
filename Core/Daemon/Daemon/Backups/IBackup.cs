@@ -9,9 +9,9 @@ namespace Daemon.Backups
     public interface IBackup
     {
         void StartBackup();
-        string destinationPath { get; set; }
-        string backupPath { get; set; }
-        bool zip { get; set; }
+        string DestinationPath { get; set; }
+        string SourcePath { get; set; }
+        bool ShouldZip { get; set; }
         int ID { get; set; }
     }
 }

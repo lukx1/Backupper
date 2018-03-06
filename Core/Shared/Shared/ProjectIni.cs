@@ -10,7 +10,7 @@ namespace Shared
 {
     public static class ProjectIni
     {
-        public static string SourceName = "ServerConfig.ini"
+        public static string SourceName = "ServerConfig.ini";
         public static IniDictionary Data;
         private static string _SOURCE = getSource();
         public static string SOURCE

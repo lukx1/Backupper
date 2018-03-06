@@ -5,13 +5,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using Daemon.Backups;
+using System.Configuration;
 
 namespace Daemon
 {
     public class TaskHandler
     {
         public List<DbTask> Tasks { get; set; }
+
         private List<Timer> timers = new List<Timer>();
+        private BackupFactory backupFactory = new BackupFactory();
+
+        private Timer CreateTimer(DbTaskLocation taskLocation,DbTime time)
+        {
+            return new Timer((e) =>
+            {
+                if (ConfigurationManager.AppSettings["TimerDontBackup"] == "True" || ConfigurationManager.AppSettings["TimerDontBackup"] == null)
+                {
+                    PlaceHolderMethod();
+                    return;
+                }
+                var backupInstance = CreateBackupInstance(taskLocation);
+                backupInstance.StartBackup();
+            }, null, time.startTime.TimeOfDay, new TimeSpan(0, 0, 0, (int)time.interval, 0));
+        }
 
         public void CreateTimers(bool clear = true)
         {
@@ -22,11 +40,7 @@ namespace Daemon
                 {
                     foreach (var time in taskLocation.times)
                     {
-                        var timer = new System.Threading.Timer((e) =>
-                        {
-                            var action = DecideAction();
-                            action();
-                        }, null, time.startTime.TimeOfDay, new TimeSpan(0,0,0,(int)time.interval,0));
+                        
                     }
                 }
                 
@@ -35,9 +49,15 @@ namespace Daemon
         }
 
         //TODO : Finish
-        private Action DecideAction()
+        private IBackup CreateBackupInstance(DbTaskLocation taskLocation)
         {
-            return PlaceHolderMethod;
+            backupFactory.ID = taskLocation.id;
+            backupFactory.BackupType = BackupType.Parse(taskLocation.backupType);
+            backupFactory.DestinationPath = taskLocation.destination.uri;
+            backupFactory.SourcePath = taskLocation.source.uri;
+            backupFactory.IsZip = false; //TODO : Pridat TaskLocation details do db
+
+            return backupFactory.CreateFromBackupType();
         }
         //TODO : Finish
         private void PlaceHolderMethod()
