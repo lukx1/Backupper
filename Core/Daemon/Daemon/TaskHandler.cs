@@ -24,7 +24,8 @@ namespace Daemon
                     {
                         var timer = new System.Threading.Timer((e) =>
                         {
-                            DecideAction();
+                            var action = DecideAction();
+                            action();
                         }, null, time.startTime.TimeOfDay, new TimeSpan(0,0,0,(int)time.interval,0));
                     }
                 }
@@ -41,7 +42,7 @@ namespace Daemon
         //TODO : Finish
         private void PlaceHolderMethod()
         {
-            Console.WriteLine("PLACE HOLDER");
+            Console.WriteLine(DateTime.Now+": PLACE HOLDER 11234786321");
         }
 
     }

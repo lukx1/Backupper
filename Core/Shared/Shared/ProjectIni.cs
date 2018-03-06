@@ -10,6 +10,7 @@ namespace Shared
 {
     public static class ProjectIni
     {
+        public static string SourceName = "ServerConfig.ini"
         public static IniDictionary Data;
         private static string _SOURCE = getSource();
         public static string SOURCE
@@ -32,14 +33,8 @@ namespace Shared
 
         private static string getSource()
         {
-            return Path.Combine(Environment.GetFolderPath(
-    Environment.SpecialFolder.LocalApplicationData), "Backupper\\ServerConfig.ini");
-            /*if (System.Diagnostics.Debugger.IsAttached)
-            {
-                return Directory.GetCurrentDirectory().Substring(0, Directory.GetCurrentDirectory().IndexOf("Core") + 4) + @"\Server\Server\ServerConfig.ini";
-            }
-            else
-                return @"ServerConfig.ini";*/
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Backupper\\ServerConfig.ini");
+
         }
 
         public class IniDictionary

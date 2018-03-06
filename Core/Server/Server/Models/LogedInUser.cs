@@ -10,11 +10,14 @@ namespace Server.Models
     public partial class LogedInUser
     {
         [Key]
-        public int idUser { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int IdUser { get; set; }
 
         [Column(TypeName = "timestamp")]
         public DateTime Expires { get; set; }
 
         public Guid SessionUuid { get; set; }
+
+        public virtual User User { get; set; }
     }
 }

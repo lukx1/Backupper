@@ -18,9 +18,5 @@ namespace Server.Models
         public virtual Group Group { get; set; }
 
         public virtual Permission Permission { get; set; }
-
-        public virtual Group Group1 { get; set; }
-
-        public virtual Permission Permission1 { get; set; }
     }
 }

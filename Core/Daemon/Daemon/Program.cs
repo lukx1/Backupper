@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Daemon.Communication;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceProcess;
@@ -19,6 +20,7 @@ namespace Daemon
             {
                 service.OnPubStart();
                 Console.WriteLine("Press any key to stop");
+                DaemonClient daemonClient = new DaemonClient();
                 Console.Read();
                 service.OnPubStop();
             }

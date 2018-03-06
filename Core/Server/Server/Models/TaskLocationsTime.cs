@@ -17,10 +17,6 @@ namespace Server.Models
 
         public virtual TaskLocation TaskLocation { get; set; }
 
-        public virtual TaskLocation TaskLocation1 { get; set; }
-
         public virtual Time Time { get; set; }
-
-        public virtual Time Time1 { get; set; }
     }
 }

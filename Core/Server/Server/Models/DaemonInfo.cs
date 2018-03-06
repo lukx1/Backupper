@@ -13,7 +13,6 @@ namespace Server.Models
         public DaemonInfo()
         {
             Daemons = new HashSet<Daemon>();
-            Daemons1 = new HashSet<Daemon>();
         }
 
         public int Id { get; set; }
@@ -32,8 +31,5 @@ namespace Server.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Daemon> Daemons { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Daemon> Daemons1 { get; set; }
     }
 }

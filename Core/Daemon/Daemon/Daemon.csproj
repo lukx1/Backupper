@@ -46,9 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backups\BackupLog.cs" />
-    <Compile Include="Backups\FullBackup.cs" />
-    <Compile Include="Backups\IBackup.cs" />
     <Compile Include="Communication\DaemonClient.cs" />
     <Compile Include="Service1.cs">
       <SubType>Component</SubType>
@@ -71,6 +68,9 @@
       <Project>{f627124e-e950-4a06-ba35-bade392c1074}</Project>
       <Name>Shared</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Backups\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

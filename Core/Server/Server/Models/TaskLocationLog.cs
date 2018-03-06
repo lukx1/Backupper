@@ -15,6 +15,8 @@ namespace Server.Models
 
         public int? IdLogType { get; set; }
 
+        public int Code { get; set; }
+
         [Column(TypeName = "timestamp")]
         public DateTime DateCreated { get; set; }
 

@@ -8,13 +8,14 @@ namespace Server.Models
     public partial class MySQLContext : DbContext
     {
         public MySQLContext()
-            : base("name=MySQLContext1")
+            : base("name=MySQLContext")
         {
         }
 
         public virtual DbSet<BackupType> BackupTypes { get; set; }
         public virtual DbSet<DaemonGroup> DaemonGroups { get; set; }
         public virtual DbSet<DaemonInfo> DaemonInfos { get; set; }
+        public virtual DbSet<DaemonLog> DaemonLogs { get; set; }
         public virtual DbSet<DaemonPreSharedKey> DaemonPreSharedKeys { get; set; }
         public virtual DbSet<Daemon> Daemons { get; set; }
         public virtual DbSet<GroupPermission> GroupPermissions { get; set; }
@@ -34,7 +35,6 @@ namespace Server.Models
         public virtual DbSet<Time> Times { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<UserLog> UserLogs { get; set; }
-        public virtual DbSet<DaemonLog> DaemonLogs { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -50,15 +50,8 @@ namespace Server.Models
             modelBuilder.Entity<BackupType>()
                 .HasMany(e => e.TaskLocations)
                 .WithOptional(e => e.BackupType)
-                .HasForeignKey(e => e.IdBackupTypes);
-
-            modelBuilder.Entity<LogedInUser>()
-                .HasKey(e => e.idUser);
-
-            modelBuilder.Entity<BackupType>()
-                .HasMany(e => e.TaskLocations1)
-                .WithOptional(e => e.BackupType1)
-                .HasForeignKey(e => e.IdBackupTypes);
+                .HasForeignKey(e => e.IdBackupTypes)
+                .WillCascadeOnDelete();
 
             modelBuilder.Entity<DaemonInfo>()
                 .Property(e => e.Os)
@@ -73,11 +66,13 @@ namespace Server.Models
                 .WithRequired(e => e.DaemonInfo)
                 .HasForeignKey(e => e.IdDaemonInfo);
 
-            modelBuilder.Entity<DaemonInfo>()
-                .HasMany(e => e.Daemons1)
-                .WithRequired(e => e.DaemonInfo1)
-                .HasForeignKey(e => e.IdDaemonInfo)
-                .WillCascadeOnDelete(false);
+            modelBuilder.Entity<DaemonLog>()
+                .Property(e => e.ShortText)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<DaemonLog>()
+                .Property(e => e.LongText)
+                .IsUnicode(false);
 
             modelBuilder.Entity<DaemonPreSharedKey>()
                 .Property(e => e.PreSharedKey)
@@ -94,8 +89,8 @@ namespace Server.Models
                 .WillCascadeOnDelete();
 
             modelBuilder.Entity<Daemon>()
-                .HasMany(e => e.DaemonGroups1)
-                .WithOptional(e => e.Daemon1)
+                .HasMany(e => e.DaemonLogs)
+                .WithRequired(e => e.Daemon)
                 .HasForeignKey(e => e.IdDaemon);
 
             modelBuilder.Entity<Daemon>()
@@ -104,20 +99,10 @@ namespace Server.Models
                 .WillCascadeOnDelete();
 
             modelBuilder.Entity<Daemon>()
-                .HasOptional(e => e.LogedInDaemon1)
-                .WithRequired(e => e.Daemon1)
-                .WillCascadeOnDelete();
-
-            modelBuilder.Entity<Daemon>()
                 .HasMany(e => e.Tasks)
                 .WithOptional(e => e.Daemon)
                 .HasForeignKey(e => e.IdDaemon)
                 .WillCascadeOnDelete();
-
-            modelBuilder.Entity<Daemon>()
-                .HasMany(e => e.Tasks1)
-                .WithOptional(e => e.Daemon1)
-                .HasForeignKey(e => e.IdDaemon);
 
             modelBuilder.Entity<Group>()
                 .Property(e => e.Name)
@@ -130,23 +115,13 @@ namespace Server.Models
             modelBuilder.Entity<Group>()
                 .HasMany(e => e.DaemonGroups)
                 .WithOptional(e => e.Group)
-                .HasForeignKey(e => e.IdGroup);
-
-            modelBuilder.Entity<Group>()
-                .HasMany(e => e.DaemonGroups1)
-                .WithOptional(e => e.Group1)
-                .HasForeignKey(e => e.IdGroup);
+                .HasForeignKey(e => e.IdGroup)
+                .WillCascadeOnDelete();
 
             modelBuilder.Entity<Group>()
                 .HasMany(e => e.GroupPermissions)
                 .WithRequired(e => e.Group)
                 .HasForeignKey(e => e.IdGroup);
-
-            modelBuilder.Entity<Group>()
-                .HasMany(e => e.GroupPermissions1)
-                .WithRequired(e => e.Group1)
-                .HasForeignKey(e => e.IdGroup)
-                .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Group>()
                 .HasMany(e => e.UserGroups)
@@ -168,12 +143,8 @@ namespace Server.Models
             modelBuilder.Entity<LocationCredential>()
                 .HasMany(e => e.Locations)
                 .WithOptional(e => e.LocationCredential)
-                .HasForeignKey(e => e.IdLocationCredentails);
-
-            modelBuilder.Entity<LocationCredential>()
-                .HasMany(e => e.Locations1)
-                .WithOptional(e => e.LocationCredential1)
-                .HasForeignKey(e => e.IdLocationCredentails);
+                .HasForeignKey(e => e.IdLocationCredentails)
+                .WillCascadeOnDelete();
 
             modelBuilder.Entity<Location>()
                 .Property(e => e.Uri)
@@ -182,31 +153,18 @@ namespace Server.Models
             modelBuilder.Entity<Location>()
                 .HasMany(e => e.TaskLocations)
                 .WithOptional(e => e.Location)
-                .HasForeignKey(e => e.IdSource);
+                .HasForeignKey(e => e.IdDestination)
+                .WillCascadeOnDelete();
 
             modelBuilder.Entity<Location>()
                 .HasMany(e => e.TaskLocations1)
                 .WithOptional(e => e.Location1)
-                .HasForeignKey(e => e.IdDestination);
-
-            modelBuilder.Entity<Location>()
-                .HasMany(e => e.TaskLocations2)
-                .WithOptional(e => e.Location2)
-                .HasForeignKey(e => e.IdSource);
-
-            modelBuilder.Entity<Location>()
-                .HasMany(e => e.TaskLocations3)
-                .WithOptional(e => e.Location3)
-                .HasForeignKey(e => e.IdDestination);
+                .HasForeignKey(e => e.IdSource)
+                .WillCascadeOnDelete();
 
             modelBuilder.Entity<LogonType>()
                 .Property(e => e.Name)
                 .IsUnicode(false);
-
-            modelBuilder.Entity<LogonType>()
-                .HasMany(e => e.LocationCredentials)
-                .WithOptional(e => e.LogonType)
-                .HasForeignKey(e => e.IdLogonType);
 
             modelBuilder.Entity<LogType>()
                 .Property(e => e.Name)
@@ -219,18 +177,19 @@ namespace Server.Models
             modelBuilder.Entity<LogType>()
                 .HasMany(e => e.LocationCredentials)
                 .WithOptional(e => e.LogType)
-                .HasForeignKey(e => e.IdLogonType);
+                .HasForeignKey(e => e.IdLogonType)
+                .WillCascadeOnDelete();
 
             modelBuilder.Entity<LogType>()
                 .HasMany(e => e.TaskLocationLogs)
                 .WithOptional(e => e.LogType)
-                .HasForeignKey(e => e.IdLogType);
+                .HasForeignKey(e => e.IdLogType)
+                .WillCascadeOnDelete();
 
             modelBuilder.Entity<LogType>()
                 .HasMany(e => e.UserLogs)
                 .WithRequired(e => e.LogType)
-                .HasForeignKey(e => e.IdLogType)
-                .WillCascadeOnDelete(false);
+                .HasForeignKey(e => e.IdLogType);
 
             modelBuilder.Entity<Permission>()
                 .Property(e => e.Name)
@@ -245,12 +204,6 @@ namespace Server.Models
                 .WithRequired(e => e.Permission)
                 .HasForeignKey(e => e.IdPermission);
 
-            modelBuilder.Entity<Permission>()
-                .HasMany(e => e.GroupPermissions1)
-                .WithRequired(e => e.Permission1)
-                .HasForeignKey(e => e.IdPermission)
-                .WillCascadeOnDelete(false);
-
             modelBuilder.Entity<Protocol>()
                 .Property(e => e.ShortName)
                 .IsUnicode(false);
@@ -262,12 +215,8 @@ namespace Server.Models
             modelBuilder.Entity<Protocol>()
                 .HasMany(e => e.Locations)
                 .WithOptional(e => e.Protocol)
-                .HasForeignKey(e => e.IdProtocol);
-
-            modelBuilder.Entity<Protocol>()
-                .HasMany(e => e.Locations1)
-                .WithOptional(e => e.Protocol1)
-                .HasForeignKey(e => e.IdProtocol);
+                .HasForeignKey(e => e.IdProtocol)
+                .WillCascadeOnDelete();
 
             modelBuilder.Entity<TaskLocationLog>()
                 .Property(e => e.ShortText)
@@ -280,17 +229,12 @@ namespace Server.Models
             modelBuilder.Entity<TaskLocation>()
                 .HasMany(e => e.TaskLocationLogs)
                 .WithOptional(e => e.TaskLocation)
-                .HasForeignKey(e => e.IdTaskLocation);
-
-            modelBuilder.Entity<TaskLocation>()
-                .HasMany(e => e.TaskLocationsTimes)
-                .WithOptional(e => e.TaskLocation)
                 .HasForeignKey(e => e.IdTaskLocation)
                 .WillCascadeOnDelete();
 
             modelBuilder.Entity<TaskLocation>()
-                .HasMany(e => e.TaskLocationsTimes1)
-                .WithOptional(e => e.TaskLocation1)
+                .HasMany(e => e.TaskLocationsTimes)
+                .WithOptional(e => e.TaskLocation)
                 .HasForeignKey(e => e.IdTaskLocation)
                 .WillCascadeOnDelete();
 
@@ -308,11 +252,6 @@ namespace Server.Models
                 .HasForeignKey(e => e.IdTask)
                 .WillCascadeOnDelete();
 
-            modelBuilder.Entity<Task>()
-                .HasMany(e => e.TaskLocations1)
-                .WithOptional(e => e.Task1)
-                .HasForeignKey(e => e.IdTask);
-
             modelBuilder.Entity<Time>()
                 .Property(e => e.Name)
                 .IsUnicode(false);
@@ -320,11 +259,6 @@ namespace Server.Models
             modelBuilder.Entity<Time>()
                 .HasMany(e => e.TaskLocationsTimes)
                 .WithOptional(e => e.Time)
-                .HasForeignKey(e => e.IdTime);
-
-            modelBuilder.Entity<Time>()
-                .HasMany(e => e.TaskLocationsTimes1)
-                .WithOptional(e => e.Time1)
                 .HasForeignKey(e => e.IdTime)
                 .WillCascadeOnDelete();
 
@@ -333,14 +267,6 @@ namespace Server.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<UserLog>()
-                .Property(e => e.LongText)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<DaemonLog>()
-                .Property(e => e.ShortText)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<DaemonLog>()
                 .Property(e => e.LongText)
                 .IsUnicode(false);
 
@@ -359,26 +285,17 @@ namespace Server.Models
             modelBuilder.Entity<User>()
                 .HasMany(e => e.DaemonPreSharedKeys)
                 .WithRequired(e => e.User)
-                .HasForeignKey(e => e.IdUser)
-                .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<User>()
-                .HasMany(e => e.DaemonPreSharedKeys1)
-                .WithRequired(e => e.User1)
-                .HasForeignKey(e => e.IdUser)
-                .WillCascadeOnDelete(false);
+                .HasForeignKey(e => e.IdUser);
 
             modelBuilder.Entity<User>()
                 .HasMany(e => e.Daemons)
                 .WithRequired(e => e.User)
-                .HasForeignKey(e => e.IdUser)
-                .WillCascadeOnDelete(false);
+                .HasForeignKey(e => e.IdUser);
 
             modelBuilder.Entity<User>()
-                .HasMany(e => e.Daemons1)
-                .WithRequired(e => e.User1)
-                .HasForeignKey(e => e.IdUser)
-                .WillCascadeOnDelete(false);
+                .HasOptional(e => e.LogedInUser)
+                .WithRequired(e => e.User)
+                .WillCascadeOnDelete();
 
             modelBuilder.Entity<User>()
                 .HasMany(e => e.UserGroups)
@@ -388,8 +305,7 @@ namespace Server.Models
             modelBuilder.Entity<User>()
                 .HasMany(e => e.UserLogs)
                 .WithRequired(e => e.User)
-                .HasForeignKey(e => e.IdUser)
-                .WillCascadeOnDelete(false);
+                .HasForeignKey(e => e.IdUser);
         }
     }
 }

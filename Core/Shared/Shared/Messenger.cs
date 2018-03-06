@@ -96,6 +96,7 @@ namespace Shared
         {
             var json = JsonConvert.SerializeObject(message);
             HttpResponseMessage reponse = await client.SendAsync(new HttpRequestMessage(httpMethod, "api/" + controller) { Content = new StringContent(json, Encoding.UTF8, "application/json") });
+            this.StatusCode = reponse.StatusCode;
             return await reponse.Content.ReadAsStringAsync();
         }
 
@@ -116,6 +117,7 @@ namespace Shared
             Task<HttpResponseMessage> sendTask = client.SendAsync(new HttpRequestMessage(httpMethod, "api/" + controller) { Content = new StringContent(json, Encoding.UTF8, "application/json") });
             sendTask.Wait();
             var responseMessage = sendTask.Result;
+            this.StatusCode = sendTask.Result.StatusCode;
             Task<string> readTask = responseMessage.Content.ReadAsStringAsync();
             readTask.Wait();
             this.jsonResponse = readTask.Result;

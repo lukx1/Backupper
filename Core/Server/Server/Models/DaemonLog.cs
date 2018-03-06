@@ -1,4 +1,4 @@
-﻿namespace Server.Models
+namespace Server.Models
 {
     using System;
     using System.Collections.Generic;
@@ -28,8 +28,6 @@
         [StringLength(512)]
         public string LongText { get; set; }
 
-        public virtual LogType LogType { get; set; }
-
-        public virtual User User { get; set; }
+        public virtual Daemon Daemon { get; set; }
     }
 }

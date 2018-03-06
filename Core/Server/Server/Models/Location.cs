@@ -14,8 +14,6 @@ namespace Server.Models
         {
             TaskLocations = new HashSet<TaskLocation>();
             TaskLocations1 = new HashSet<TaskLocation>();
-            TaskLocations2 = new HashSet<TaskLocation>();
-            TaskLocations3 = new HashSet<TaskLocation>();
         }
 
         public int Id { get; set; }
@@ -30,22 +28,12 @@ namespace Server.Models
 
         public virtual LocationCredential LocationCredential { get; set; }
 
-        public virtual LocationCredential LocationCredential1 { get; set; }
-
         public virtual Protocol Protocol { get; set; }
-
-        public virtual Protocol Protocol1 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TaskLocation> TaskLocations { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TaskLocation> TaskLocations1 { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TaskLocation> TaskLocations2 { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TaskLocation> TaskLocations3 { get; set; }
     }
 }

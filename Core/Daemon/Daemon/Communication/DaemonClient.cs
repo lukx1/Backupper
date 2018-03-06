@@ -18,23 +18,28 @@ namespace Daemon.Communication
     public class DaemonClient
     {
         private Messenger messenger { get; set; }
-        private IConfig config = new TempConfig();
+        private IConfig config = new StaticConfig();
         private TaskHandler taskHandler = new TaskHandler();
 
         public DaemonClient()
         {
-            messenger = new Messenger("http://localhost:3393/"); 
-            if(config.GetUuid() == null)
+            messenger = new Messenger("http://localhost:57597"); 
+            if(config.Uuid == null)
                 this.Introduce();
             Login();
-            ApplyTasks();
+            TaskTest();
+            //ApplyTasks().Wait();
         }
 
-
+        private void TaskTest()
+        {
+            taskHandler.Tasks = messenger.ReadMessage<TaskResponse>("{\"Tasks\":[{\"id\":1,\"uuidDaemon\":\"50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e\",\"name\":\"DebugTask\",\"description\":\"For debugging\",\"taskLocations\":[{\"id\":1,\"source\":{\"id\":6,\"uri\":\"test.com\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":4,\"host\":\"test.com/myName\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"destination\":{\"id\":7,\"uri\":\"test.com\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":5,\"host\":\"test.com/myName\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"backupType\":{\"Id\":1,\"ShortName\":\"NORM\",\"LongName\":\"Normal\"},\"times\":[{\"id\":3,\"interval\":0,\"name\":\"Dneska\",\"repeat\":false,\"startTime\":\""+DateTime.Now.AddSeconds(5)+"\",\"endTime\":\"0001-01-01T00:00:00\"},{\"id\":4,\"interval\":"+5+",\"name\":\"Kazdy Patek\",\"repeat\":true,\"startTime\":\"2018-02-23T00:00:00\",\"endTime\":\"0001-01-01T00:00:00\"}]}]}],\"ErrorMessages\":[]}").Tasks ;
+            taskHandler.CreateTimers();
+        }
 
         private void CheckLogin()
         {
-            if (config.GetSession() == null)
+            if (config.Session == null)
                 Login();
             //TODO : else if(> 15 min bez kontaktu)
         }
@@ -48,7 +53,7 @@ namespace Daemon.Communication
         private async Task<List<DbTask>> GetAllTaskFromDB()
         {
             CheckLogin();
-            var responseJson = await messenger.SendAsyncGetJson(new TaskMessage(), "task", HttpMethod.Post);
+            var responseJson = await messenger.SendAsyncGetJson(new TaskMessage() {sessionUuid = config.Session }, "task", HttpMethod.Post);
             if(!messenger.IsSuccessStatusCode())
                 throw new HttpRequestException(messenger.StatusCode + " Error"); //TODO: Custom exception
             return messenger.ReadMessage<TaskResponse>(responseJson).Tasks;
@@ -83,12 +88,12 @@ namespace Daemon.Communication
         /// </summary>
         public void Login()
         {
-            LoginMessage loginMessage = new LoginMessage() {password = config.GetPass(),uuid = config.GetUuid() };
+            LoginMessage loginMessage = new LoginMessage() {password = config.Pass,uuid = config.Uuid };
             messenger.Send(loginMessage, "login", HttpMethod.Post);
             if (!messenger.IsSuccessStatusCode())
                 throw new HttpRequestException(messenger.StatusCode+" Error");
             LoginResponse response = messenger.ReadMessage<LoginResponse>();
-            config.SetSession(response.sessionUuid);
+            config.Session = response.sessionUuid;
         }
     }
 }

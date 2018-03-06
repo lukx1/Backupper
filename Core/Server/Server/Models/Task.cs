@@ -13,7 +13,6 @@ namespace Server.Models
         public Task()
         {
             TaskLocations = new HashSet<TaskLocation>();
-            TaskLocations1 = new HashSet<TaskLocation>();
         }
 
         public int Id { get; set; }
@@ -29,12 +28,7 @@ namespace Server.Models
 
         public virtual Daemon Daemon { get; set; }
 
-        public virtual Daemon Daemon1 { get; set; }
-
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TaskLocation> TaskLocations { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TaskLocation> TaskLocations1 { get; set; }
     }
 }

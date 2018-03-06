@@ -8,13 +8,9 @@ namespace Daemon.Utility
 {
     public interface IConfig
     {
-        Guid GetUuid();
-        void SetUuid(Guid uuid);
-
-        string GetPass();
-        void SetPass(string pass);
-
-        Guid GetSession();
-        void SetSession(Guid session);
+        Guid Uuid { get; set; }
+        string Pass { get; set; }
+        Guid Session { get; set; }
+        DateTime LastCommunicator { get; set; }
     }
 }

@@ -18,9 +18,5 @@ namespace Server.Models
         public virtual Daemon Daemon { get; set; }
 
         public virtual Group Group { get; set; }
-
-        public virtual Daemon Daemon1 { get; set; }
-
-        public virtual Group Group1 { get; set; }
     }
 }

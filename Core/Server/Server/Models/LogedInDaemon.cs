@@ -10,6 +10,7 @@ namespace Server.Models
     public partial class LogedInDaemon
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int IdDaemon { get; set; }
 
         [Column(TypeName = "timestamp")]
@@ -18,7 +19,5 @@ namespace Server.Models
         public Guid SessionUuid { get; set; }
 
         public virtual Daemon Daemon { get; set; }
-
-        public virtual Daemon Daemon1 { get; set; }
     }
 }

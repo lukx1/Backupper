@@ -13,9 +13,8 @@ namespace Server.Models
         public Daemon()
         {
             DaemonGroups = new HashSet<DaemonGroup>();
-            DaemonGroups1 = new HashSet<DaemonGroup>();
+            DaemonLogs = new HashSet<DaemonLog>();
             Tasks = new HashSet<Task>();
-            Tasks1 = new HashSet<Task>();
         }
 
         public int Id { get; set; }
@@ -34,25 +33,16 @@ namespace Server.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DaemonGroup> DaemonGroups { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DaemonGroup> DaemonGroups1 { get; set; }
-
         public virtual DaemonInfo DaemonInfo { get; set; }
 
-        public virtual DaemonInfo DaemonInfo1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<DaemonLog> DaemonLogs { get; set; }
 
         public virtual User User { get; set; }
 
-        public virtual User User1 { get; set; }
-
         public virtual LogedInDaemon LogedInDaemon { get; set; }
-
-        public virtual LogedInDaemon LogedInDaemon1 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Task> Tasks { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Task> Tasks1 { get; set; }
     }
 }

@@ -13,9 +13,7 @@ namespace Server.Models
         public User()
         {
             DaemonPreSharedKeys = new HashSet<DaemonPreSharedKey>();
-            DaemonPreSharedKeys1 = new HashSet<DaemonPreSharedKey>();
             Daemons = new HashSet<Daemon>();
-            Daemons1 = new HashSet<Daemon>();
             UserGroups = new HashSet<UserGroup>();
             UserLogs = new HashSet<UserLog>();
         }
@@ -39,13 +37,9 @@ namespace Server.Models
         public virtual ICollection<DaemonPreSharedKey> DaemonPreSharedKeys { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DaemonPreSharedKey> DaemonPreSharedKeys1 { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Daemon> Daemons { get; set; }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Daemon> Daemons1 { get; set; }
+        public virtual LogedInUser LogedInUser { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserGroup> UserGroups { get; set; }

@@ -13,9 +13,7 @@ namespace Server.Models
         public Group()
         {
             DaemonGroups = new HashSet<DaemonGroup>();
-            DaemonGroups1 = new HashSet<DaemonGroup>();
             GroupPermissions = new HashSet<GroupPermission>();
-            GroupPermissions1 = new HashSet<GroupPermission>();
             UserGroups = new HashSet<UserGroup>();
         }
 
@@ -35,13 +33,7 @@ namespace Server.Models
         public virtual ICollection<DaemonGroup> DaemonGroups { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DaemonGroup> DaemonGroups1 { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<GroupPermission> GroupPermissions { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<GroupPermission> GroupPermissions1 { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<UserGroup> UserGroups { get; set; }

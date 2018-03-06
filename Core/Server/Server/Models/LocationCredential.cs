@@ -13,7 +13,6 @@ namespace Server.Models
         public LocationCredential()
         {
             Locations = new HashSet<Location>();
-            Locations1 = new HashSet<Location>();
         }
 
         public int Id { get; set; }
@@ -32,14 +31,9 @@ namespace Server.Models
         [StringLength(72)]
         public string Password { get; set; }
 
-        public virtual LogonType LogonType { get; set; }
-
         public virtual LogType LogType { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Location> Locations { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Location> Locations1 { get; set; }
     }
 }

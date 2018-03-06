@@ -13,7 +13,6 @@ namespace Server.Models
         public Protocol()
         {
             Locations = new HashSet<Location>();
-            Locations1 = new HashSet<Location>();
         }
 
         public int Id { get; set; }
@@ -29,8 +28,5 @@ namespace Server.Models
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Location> Locations { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Location> Locations1 { get; set; }
     }
 }
