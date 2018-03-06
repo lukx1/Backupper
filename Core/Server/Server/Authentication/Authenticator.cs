@@ -41,7 +41,6 @@ namespace Server.Authentication
         /// <returns></returns>
         public Guid LoginUser(string nickname, string password)
         {
-
             User user = mysql.Users.Where(r => r.Nickname == nickname).FirstOrDefault();
             if (user == null)
                 throw new NullReferenceException("Uživatel s daným jménem nebyl nalezen");
@@ -49,7 +48,7 @@ namespace Server.Authentication
                 throw new ArgumentException("Heslo není platné");
             return CreateUuid(user);
         }
-        
+
         /// <summary>
         /// Pomocná třída pro LoginUser
         /// </summary>
@@ -59,9 +58,9 @@ namespace Server.Authentication
         {
             Guid guid = Guid.NewGuid();
             LogedInUser logedInUser = mysql.LogedInUsers.Where(r => r.idUser == user.Id).FirstOrDefault();
-            if(logedInUser == null) //First login
+            if (logedInUser == null) //First login
             {
-                logedInUser = new LogedInUser() { idUser = user.Id, SessionUuid = guid, Expires = DateTime.Now.AddMinutes(15)};
+                logedInUser = new LogedInUser() { idUser = user.Id, SessionUuid = guid, Expires = DateTime.Now.AddMinutes(15) };
                 mysql.LogedInUsers.Add(logedInUser);
             }
             else
@@ -203,7 +202,7 @@ namespace Server.Authentication
         /// <param name="id"></param>
         /// <param name="key"></param>
         /// <returns></returns>
-        public bool IsPresharedValid(int id,string key)
+        public bool IsPresharedValid(int id, string key)
         {
             var preshared = mysql.DaemonPreSharedKeys.Where(r => r.Id == id).FirstOrDefault();
             if (preshared == null)
@@ -220,29 +219,48 @@ namespace Server.Authentication
         /// <param name="IsDaemon"></param>
         /// <param name="refreshTime"></param>
         /// <returns></returns>
-        public bool IsSessionValid(Guid uuid,bool IsDaemon, bool refreshTime = true)
+        public bool IsSessionValid(Guid uuid, bool IsDaemon, bool refreshTime = true)
         {
             if (IsDaemon)
-            {
-                LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == uuid).FirstOrDefault();
-                if (logedInDaemon == null)
-                    return false;
-                if (Util.IsExpired(logedInDaemon.Expires))
-                    return false;
-                logedInDaemon.Expires = DateTime.Now.AddMinutes(15);
-            }
+                return IsDaemonSessionValid(uuid, refreshTime);
             else
-            {
-                LogedInUser logedInUser = mysql.LogedInUsers.Where(r => r.SessionUuid == uuid).FirstOrDefault();
-                if (logedInUser == null)
-                    return false;
-                if (Util.IsExpired(logedInUser.Expires))
-                    return false;
-                logedInUser.Expires = DateTime.Now.AddMinutes(15);
-            }
+                return IsUserSessionValid(uuid, refreshTime);
+        }
+
+        /// <summary>
+        /// Zjistí zda sezení usera je platné
+        /// </summary>
+        /// <param name="uuid"></param>
+        /// <param name="refreshTime"></param>
+        /// <returns></returns>
+        public bool IsUserSessionValid(Guid uuid, bool refreshTime = true)
+        {
+            LogedInUser logedInUser = mysql.LogedInUsers.Where(r => r.SessionUuid == uuid).FirstOrDefault();
+            if (logedInUser == null)
+                return false;
+            if (Util.IsExpired(logedInUser.Expires))
+                return false;
+            logedInUser.Expires = DateTime.Now.AddMinutes(15);
             mysql.SaveChangesAsync();
             return true;
         }
 
+        /// <summary>
+        /// Zjistí zda sezení daemona je platné
+        /// </summary>
+        /// <param name="uuid"></param>
+        /// <param name="refreshTime"></param>
+        /// <returns></returns>
+        public bool IsDaemonSessionValid(Guid uuid, bool refreshTime = true)
+        {
+            LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == uuid).FirstOrDefault();
+            if (logedInDaemon == null)
+                return false;
+            if (Util.IsExpired(logedInDaemon.Expires))
+                return false;
+            logedInDaemon.Expires = DateTime.Now.AddMinutes(15);
+            mysql.SaveChangesAsync();
+            return true;
+        }
     }
 }

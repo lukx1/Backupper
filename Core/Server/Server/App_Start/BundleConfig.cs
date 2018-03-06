@@ -11,9 +11,6 @@ namespace Server
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-3.3.1.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/popper").Include(
-                        "~/Scripts/popper.js"));
-
             bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js"));
 

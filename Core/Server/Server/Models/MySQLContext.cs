@@ -34,6 +34,7 @@ namespace Server.Models
         public virtual DbSet<Time> Times { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<UserLog> UserLogs { get; set; }
+        public virtual DbSet<DaemonLog> DaemonLogs { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -50,6 +51,9 @@ namespace Server.Models
                 .HasMany(e => e.TaskLocations)
                 .WithOptional(e => e.BackupType)
                 .HasForeignKey(e => e.IdBackupTypes);
+
+            modelBuilder.Entity<LogedInUser>()
+                .HasKey(e => e.idUser);
 
             modelBuilder.Entity<BackupType>()
                 .HasMany(e => e.TaskLocations1)
@@ -329,6 +333,14 @@ namespace Server.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<UserLog>()
+                .Property(e => e.LongText)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<DaemonLog>()
+                .Property(e => e.ShortText)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<DaemonLog>()
                 .Property(e => e.LongText)
                 .IsUnicode(false);
 
