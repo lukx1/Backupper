@@ -30,6 +30,6 @@
 
         public virtual LogType LogType { get; set; }
 
-        public virtual Daemon Daemon { get; set; }
+        public virtual User User { get; set; }
     }
 }

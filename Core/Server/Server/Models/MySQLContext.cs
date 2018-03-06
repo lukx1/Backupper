@@ -52,6 +52,9 @@ namespace Server.Models
                 .WithOptional(e => e.BackupType)
                 .HasForeignKey(e => e.IdBackupTypes);
 
+            modelBuilder.Entity<LogedInUser>()
+                .HasKey(e => e.idUser);
+
             modelBuilder.Entity<BackupType>()
                 .HasMany(e => e.TaskLocations1)
                 .WithOptional(e => e.BackupType1)

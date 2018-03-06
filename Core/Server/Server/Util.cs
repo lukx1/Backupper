@@ -19,16 +19,21 @@ namespace Server
 
         public static bool IsUserAlreadyLoggedIn(HttpSessionStateBase session, bool refresh = true)
         {
+            var result = false;
+
             Guid? uuid = (Guid?)session["sessionUuid"];
             if (!uuid.HasValue)
                 return false;
 
-            return Authentication.StaticUserHelper.CheckSessionValidity(uuid.Value, refresh);
+            using (var db = new Models.MySQLContext())
+            {
+                var auth = new Authentication.Authenticator(db);
+                result = auth.IsUserSessionValid(uuid.Value, true);
+            }
+
+            return result;
         }
 
-        public static bool IsExpired(DateTime expires)
-        {
-            return DateTime.Compare(expires, DateTime.Now) <= 0;
-        }
+        public static bool IsExpired(DateTime expires) => expires <= DateTime.Now;
     }
 }
