@@ -326,7 +326,7 @@ ALTER TABLE `GroupPermissions`
 	ADD CONSTRAINT `GroupPermissions_FK_IdPermission_Permissions$Id`			FOREIGN KEY (`IdPermission`)			REFERENCES `Permissions` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `LocationCredentials`
-	ADD CONSTRAINT `LocationCredentials_FK_IdLogonType_LogType$Id`				FOREIGN KEY (`IdLogonType`)				REFERENCES `LogType` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
+	ADD CONSTRAINT `LocationCredentials_FK_IdLogonType_LogonTypes$Id`			FOREIGN KEY (`IdLogonType`)				REFERENCES `LogonTypes` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE `Locations`
 	ADD CONSTRAINT `Locations_FK_IdLocationCredentails_LocationCredentials$Id`	FOREIGN KEY (`IdLocationCredentails`)	REFERENCES `LocationCredentials` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
