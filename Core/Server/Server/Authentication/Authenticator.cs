@@ -46,7 +46,7 @@ namespace Server.Authentication
                 throw new NullReferenceException("Uživatel s daným jménem nebyl nalezen");
             if (!PasswordFactory.ComparePasswordsPbkdf2(password, user.Password))
                 throw new ArgumentException("Heslo není platné");
-            return CreateUuid(user);
+            return GetValidUuid(user);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace Server.Authentication
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        private Guid CreateUuid(User user)
+        private Guid GetValidUuid(User user)
         {
             Guid guid = Guid.NewGuid();
             LogedInUser logedInUser = mysql.LogedInUsers.Where(r => r.IdUser == user.Id).FirstOrDefault();
@@ -65,6 +65,7 @@ namespace Server.Authentication
             }
             else
             {
+				logedInUser.SessionUuid = guid;
                 logedInUser.Expires = DateTime.Now.AddMinutes(15);
             }
             mysql.SaveChanges(); //DONT CHANGE TO ASYNC
