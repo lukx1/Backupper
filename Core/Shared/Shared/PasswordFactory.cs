@@ -96,8 +96,13 @@ namespace Shared
             return b;
         }
 
-        //private static readonly byte[] SALT = new byte[] { 0x26, 0xdc, 0xff, 0x00, 0xad, 0xed, 0x7a, 0xee, 0xc5, 0xfe, 0x07, 0xaf, 0x4d, 0x08, 0x22, 0x3c };
-        //private static readonly byte[] IV = new byte[]   { 1,7,255,0,173,237,122,238,2,254,7,5,77,8,34,60 };
+        public byte[] HashSha1(byte[] bytes)
+        {
+            using (SHA1Managed sha1 = new SHA1Managed())
+            {
+                return sha1.ComputeHash(bytes);
+            }
+        }
 
         /// <summary>
         /// Symetricky zašifruje zprávu pomocí hesla

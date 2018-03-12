@@ -56,6 +56,11 @@
     <Compile Include="Backups\FullBackup.cs" />
     <Compile Include="Backups\IBackup.cs" />
     <Compile Include="Communication\DaemonClient.cs" />
+    <Compile Include="LoginSettings1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>LoginSettings.settings</DependentUpon>
+    </Compile>
     <Compile Include="Service1.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -65,12 +70,17 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaskHandler.cs" />
+    <Compile Include="TimedBackups.cs" />
     <Compile Include="Utility\IConfig.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\TempConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="LoginSettings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>LoginSettings1.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Shared\Shared.csproj">

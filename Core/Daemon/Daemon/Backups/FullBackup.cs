@@ -11,8 +11,8 @@ namespace Daemon.Backups
     {
         public string DestinationPath { get; set; }
         public string SourcePath { get; set; }
-        public bool ShouldZip { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public int ID { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public bool ShouldZip { get; set; }
+        public int ID { get; set; }
 
         /// <summary>
         /// 

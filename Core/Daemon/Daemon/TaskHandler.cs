@@ -14,33 +14,80 @@ namespace Daemon
     {
         public List<DbTask> Tasks { get; set; }
 
-        private List<Timer> timers = new List<Timer>();
+        private List<TimedBackup> notGarbage = new List<TimedBackup>();
+        private List<TimedBackup> tBackups = new List<TimedBackup>();
         private BackupFactory backupFactory = new BackupFactory();
 
-        private Timer CreateTimer(DbTaskLocation taskLocation,DbTime time)
+        private bool IsBackupBeingDebuged()
         {
-            return new Timer((e) =>
-            {
-                if (ConfigurationManager.AppSettings["TimerDontBackup"] == "True" || ConfigurationManager.AppSettings["TimerDontBackup"] == null)
-                {
-                    PlaceHolderMethod();
-                    return;
-                }
-                var backupInstance = CreateBackupInstance(taskLocation);
-                backupInstance.StartBackup();
-            }, null, time.startTime.TimeOfDay, new TimeSpan(0, 0, 0, (int)time.interval, 0));
+            return ConfigurationManager.AppSettings["TimerDontBackup"] == "True" || ConfigurationManager.AppSettings["TimerDontBackup"] == null;
         }
 
-        public void CreateTimers(bool clear = true)
+        private TimedBackup CreateTimedBackup(DbTaskLocation taskLocation,DbTime time, int idTask) //TODO: Reformatovat
         {
-            timers.Clear();
+            TimedBackup timedBackup = new TimedBackup // Nastaví zálkatdní hodnoty
+            {
+                IdTask = idTask,
+                TaskLocation = taskLocation
+            };
+            timedBackup.Backup = CreateBackupInstance(taskLocation);
+            var timer = new Timer((e) => // Sestaví timer
+            { //Tělo timeru
+
+                if (!timedBackup.ShouldRun.Value) // Kontroluje jestli by měl běžet
+                {
+                    timedBackup.Dispose(); // Zničí timer
+                    return;
+                }
+
+                if (IsBackupBeingDebuged())// Debug řádek
+                {
+                    DebugMethod(timedBackup.Backup);
+                }
+                else // Normální
+                {
+                    timedBackup.IsRunning.Value = true;
+                    timedBackup.Backup.StartBackup();
+                    timedBackup.IsRunning.Value = false;
+                }
+
+            }, null, time.startTime.TimeOfDay/*Převádí DateTime na TimeSpan*/, new TimeSpan(0, 0, 0, (int)time.interval, 0)/*viz. pred.*/);
+            return timedBackup;
+        }
+
+        private void ClearTObj()
+        {
+            notGarbage.RemoveAll(r => // Odstraní všechny objekty které doběhly
+            {
+                if (!r.IsRunning.Value)
+                    return false;
+                r.Dispose();
+                return true;
+            }
+            );
+            foreach (var t in tBackups)
+            {
+                t.ShouldRun.Value = false;
+                if (!t.IsRunning.Value)
+                    t.Dispose();
+                else
+                {
+                    notGarbage.Add(t);
+                }
+            }
+            tBackups.Clear();
+        }
+
+        public void CreateTimers()
+        {
+            ClearTObj();
             foreach (var task in Tasks)
             {
                 foreach (var taskLocation in task.taskLocations)
                 {
                     foreach (var time in taskLocation.times)
                     {
-                        
+                        var timedBackup = CreateTimedBackup(taskLocation, time,task.id);
                     }
                 }
                 
@@ -60,9 +107,10 @@ namespace Daemon
             return backupFactory.CreateFromBackupType();
         }
         //TODO : Finish
-        private void PlaceHolderMethod()
+        private void DebugMethod(IBackup backup)
         {
-            Console.WriteLine(DateTime.Now+": PLACE HOLDER 11234786321");
+            Console.WriteLine(DateTime.Now + ": DEBUG Backup 11234786321\r\n" +
+                String.Format("{0}: {1} -> {2} (ZIP={3})",backup.ID,backup.SourcePath,backup.DestinationPath,backup.ShouldZip));
         }
 
     }
