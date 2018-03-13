@@ -25,7 +25,7 @@ namespace Daemon.Backups
 
         public FullBackup CreateFullBackup()
         {
-            FullBackup fullBackup = new FullBackup(DestinationPath, SourcePath);
+            FullBackup fullBackup = new FullBackup(SourcePath);
             return fullBackup;
         }
 

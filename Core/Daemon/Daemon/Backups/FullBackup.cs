@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.IO.Compression;
 
 namespace Daemon.Backups
 {
@@ -13,20 +14,25 @@ namespace Daemon.Backups
         public string SourcePath { get; set; }
         public bool ShouldZip { get; set; }
         public int ID { get; set; }
+        public BackupInfo backupInfo { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="Cilova Destinace"></param>
         /// <param name="Destinace Zalohovanych souboru"></param>
-        public FullBackup(string destinationPath, string sourcePath)
+
+        public FullBackup(string sourcePath, bool shouldZip = false)
         {
-            this.DestinationPath = destinationPath;
             this.SourcePath = sourcePath;
+            ShouldZip = shouldZip;
+            backupInfo = new BackupInfo(this);
         }
 
-        void Backup(DirectoryInfo dir,string Destination)
+        void Backup(DirectoryInfo dir, string Destination)
         {
+            if (!Directory.Exists(Destination))
+                Directory.CreateDirectory(Destination);
             foreach (FileInfo item in dir.GetFiles())
                 File.Copy(item.FullName, Destination + "/" + item.Name);
             foreach (DirectoryInfo item in dir.GetDirectories())
@@ -36,9 +42,20 @@ namespace Daemon.Backups
             }
         }
 
-        public void StartBackup()
+        void ZipBackup(string path)
         {
-            Backup(new DirectoryInfo(SourcePath), DestinationPath);
+            if (!Directory.Exists(path))
+                Directory.CreateDirectory(path);
+            ZipFile.CreateFromDirectory(SourcePath, path + "/Backup.zip");
+        }
+
+        public void StartBackup(string path)
+        {
+            if (ShouldZip)
+                ZipBackup(path);
+            else
+                Backup(new DirectoryInfo(SourcePath), path);
+            backupInfo.CreateFile();
         }
     }
 }

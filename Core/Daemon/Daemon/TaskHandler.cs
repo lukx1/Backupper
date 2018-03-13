@@ -75,7 +75,7 @@ namespace Daemon
                 {
                     timedBackup.BackupStarted();
                     timedBackup.IsRunning.Value = true;
-                    timedBackup.Backup.StartBackup();
+                    //timedBackup.Backup.StartBackup(); TODO - Na Backup class, ne na IBackup 
                     timedBackup.IsRunning.Value = false;
                     timedBackup.BackupEnded();
                 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using Daemon.Backups;
 
 namespace Daemon
 {
@@ -15,19 +16,27 @@ namespace Daemon
         /// </summary>
         static void Main()
         {
-            var service = new Service1();
-            if(Environment.UserInteractive)
-            {
-                service.OnPubStart();
-                Console.WriteLine("Press any key to stop");
-                DaemonClient daemonClient = new DaemonClient();
-                Console.Read();
-                service.OnPubStop();
-            }
-            else
-            {
-                ServiceBase.Run(service);
-            }
+            //var service = new Service1();
+            //if(Environment.UserInteractive)
+            //{
+            //    service.OnPubStart();
+            //    Console.WriteLine("Press any key to stop");
+            //    DaemonClient daemonClient = new DaemonClient();
+            //    Console.Read();
+            //    service.OnPubStop();
+            //}
+            //else
+            //{
+            //    ServiceBase.Run(service);
+            //}
+
+            Backup test = new Backup(0);
+            test.AddBackup(new FullBackup("C:/Users/rambo_000/Desktop/TESTFOLDER/TestBackup"));
+            test.AddDestination("C:/Users/rambo_000/Desktop/TESTFOLDER/BACKUPS");
+            test.AddDestination("C:/Users/rambo_000/Desktop/TESTFOLDER/TestDestination");
+            test.BackupAll();
+            Console.WriteLine("DONE");
+            Console.Read();
         }
     }
 }
