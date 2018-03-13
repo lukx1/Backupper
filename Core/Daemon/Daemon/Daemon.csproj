@@ -55,7 +55,9 @@
     <Compile Include="Backups\FileBackupedInfo.cs" />
     <Compile Include="Backups\FullBackup.cs" />
     <Compile Include="Backups\IBackup.cs" />
+    <Compile Include="BadResponseException.cs" />
     <Compile Include="Communication\DaemonClient.cs" />
+    <Compile Include="DynamicConfig.cs" />
     <Compile Include="LoginSettings1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -70,7 +72,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TaskHandler.cs" />
-    <Compile Include="TimedBackups.cs" />
+    <Compile Include="TimedBackup.cs" />
     <Compile Include="Utility\IConfig.cs" />
     <Compile Include="Utility\Logger.cs" />
     <Compile Include="Utility\TempConfig.cs" />

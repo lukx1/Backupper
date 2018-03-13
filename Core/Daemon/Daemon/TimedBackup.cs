@@ -9,12 +9,29 @@ using System.Threading.Tasks;
 
 namespace Daemon
 {
+    /// <summary>
+    /// Provádí zálohu v daný čas
+    /// </summary>
     public class TimedBackup : IDisposable
     {//TODO : event?
 
+        /// <summary>
+        /// Pro identifikace zdroje
+        /// </summary>
         public int IdTask { get; set; }
+        /// <summary>
+        /// Informace o záloze
+        /// </summary>
         public DbTaskLocation TaskLocation { get; set; }
+        /// <summary>
+        /// Časovač
+        /// </summary>
+        /// Nedoporučuje se na timeru ručně volat Dispose
         public Timer Timer { get; set; }
+        /// <summary>
+        /// Zálohovač
+        /// </summary>
+        /// Nedoporučuje se na timeru ručně volat StartBackup
         public IBackup Backup { get; set; }
 
         /// <summary>
@@ -25,16 +42,32 @@ namespace Daemon
             if (IsRunning.Value)
                 throw new InvalidOperationException("IsRunning = true");
             Timer.Dispose();
-            TaskLocation = null;
         }
 
         
-
+        /// <summary>
+        /// Bool reference
+        /// </summary>
         public class BoolWrapper
         {
             public bool Value { get; set; }
             public BoolWrapper(bool value) { this.Value = value; }
         }
+
+        /// <summary>
+        /// Delegát změny stavu běhu
+        /// </summary>
+        public delegate void RunChange();
+    
+        /// <summary>
+        /// Zálohování začlo
+        /// </summary>
+        public RunChange BackupStarted;
+
+        /// <summary>
+        /// Zálohování skončilo
+        /// </summary>
+        public RunChange BackupEnded;
 
         /// <summary>
         /// Pokud je nastaveno na false, bude tento objekt zničen při

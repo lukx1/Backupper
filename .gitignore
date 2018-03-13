@@ -16,6 +16,9 @@
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
+#Daemon login
+**/LoginSettings.settings
+
 # Server ini
 **/ServerConfig.ini
 

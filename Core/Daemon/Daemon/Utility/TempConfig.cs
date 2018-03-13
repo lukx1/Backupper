@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Daemon.Utility
 {
-    public class StaticConfig : IConfig
+    
+    /*public class StaticConfig : IConfig
     {
         private string pass = "VO0e+84BW4wqVYsuUpGeWw==";
         private Guid session;
@@ -17,5 +18,5 @@ namespace Daemon.Utility
         public string Pass { get => pass; set => pass=value; }
         public Guid Session { get => session; set => session=value; }
         public DateTime LastCommunicator { get => lastCommunication; set => lastCommunication = value; }
-    }
+    }*/
 }

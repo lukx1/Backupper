@@ -26,12 +26,12 @@ namespace Daemon {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string LoginKey {
+        public string SessionUuid {
             get {
-                return ((string)(this["LoginKey"]));
+                return ((string)(this["SessionUuid"]));
             }
             set {
-                this["LoginKey"] = value;
+                this["SessionUuid"] = value;
             }
         }
         
@@ -44,6 +44,89 @@ namespace Daemon {
             }
             set {
                 this["Debug"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Password {
+            get {
+                return ((string)(this["Password"]));
+            }
+            set {
+                this["Password"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime LastCommunication {
+            get {
+                return ((global::System.DateTime)(this["LastCommunication"]));
+            }
+            set {
+                this["LastCommunication"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Uuid {
+            get {
+                return ((string)(this["Uuid"]));
+            }
+            set {
+                this["Uuid"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:57597")]
+        public string Server {
+            get {
+                return ((string)(this["Server"]));
+            }
+            set {
+                this["Server"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        public int SessionLengthMinutes {
+            get {
+                return ((int)(this["SessionLengthMinutes"]));
+            }
+            set {
+                this["SessionLengthMinutes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int SessionLengthPaddingMinutes {
+            get {
+                return ((int)(this["SessionLengthPaddingMinutes"]));
+            }
+            set {
+                this["SessionLengthPaddingMinutes"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool TimerDebugOnly {
+            get {
+                return ((bool)(this["TimerDebugOnly"]));
+            }
+            set {
+                this["TimerDebugOnly"] = value;
             }
         }
     }
