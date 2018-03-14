@@ -1,0 +1,23 @@
+﻿@model global::Server.Models.User
+
+@{
+	ViewBag.Title = "Delete User - Confirmation Page";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@Html.LabelFor(m => m.Nickname)
+@Html.DisplayFor(m => m.Nickname)
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+	@Html.HiddenFor(m => m.Id)
+	
+	<button class="btn" type="submit">
+		Confirm
+	</button>
+	
+	<button class="btn" type="submit" formaction="/AdminUsers">
+		Cancel
+	</button>
+}

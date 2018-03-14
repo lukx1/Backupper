@@ -1,0 +1,12 @@
+﻿@{ 
+	Layout = "~/Views/Shared/_Layout.cshtml";
+	HtmlHelper.UnobtrusiveJavaScriptEnabled = true;
+}
+
+<div class="alert alert-info" role="alert">
+	@{
+		@Html.Raw(TempData["customMessage"]?.ToString() ?? "NO MESSAGE");
+	}
+</div>
+
+@RenderBody()

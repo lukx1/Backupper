@@ -63,5 +63,38 @@ namespace Server.Controllers
                 return RedirectToAction("Index", "AdminError");
             }
         }
-    }
+
+		[HttpGet]
+		public ActionResult Delete(int id)
+		{
+			try
+			{
+				using (var db = new Models.MySQLContext())
+					return View(db.Users.Where(x => x.Id == id).FirstOrDefault());
+			}
+			catch (Exception e)
+			{
+				//TODO: LOG
+				return RedirectToAction("Index", "AdminError");
+			}
+		}
+
+		[HttpPost]
+		public ActionResult Delete(Models.User model)
+		{
+			try
+			{
+				using (var db = new Models.MySQLContext())
+				{
+					TempData["customMessage"] = "User deleted is OK";
+					return RedirectToAction("Index", "AdminUsers");
+				}
+			}
+			catch (Exception e)
+			{
+				//TODO: LOG
+				return RedirectToAction("Index", "AdminError");
+			}
+		}
+	}
 }
