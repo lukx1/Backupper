@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages
 {
-    public class AccessorLogResponse : INetMessage
+    public class AccessorLogResponse : INetMessage, INetError
     {
         /// <summary>
         /// Logy pokud byli odeslány
         /// </summary>
         /// Jsou odeslány pouze pokud se uživatel zeptá na logy
-        List<DbAccessorLog> AccessorLogs;
-        List<ErrorMessage> ErrorMessages;
+        public List<DbAccessorLog> AccessorLogs;
+        public List<ErrorMessage> ErrorMessages { get; set; }
     }
 }

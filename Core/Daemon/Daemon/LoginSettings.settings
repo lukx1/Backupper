@@ -2,8 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Daemon" GeneratedClassName="LoginSettings">
   <Profiles />
   <Settings>
-    <Setting Name="SessionUuid" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="SessionUuid" Type="System.Guid" Scope="User">
+      <Value Profile="(Default)">00000000-0000-0000-0000-000000000000</Value>
     </Setting>
     <Setting Name="Debug" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
@@ -14,8 +14,8 @@
     <Setting Name="LastCommunication" Type="System.DateTime" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Uuid" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="Uuid" Type="System.Guid" Scope="User">
+      <Value Profile="(Default)">00000000-0000-0000-0000-000000000000</Value>
     </Setting>
     <Setting Name="Server" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://localhost:57597</Value>
@@ -28,6 +28,12 @@
     </Setting>
     <Setting Name="TimerDebugOnly" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="PreSharedKeyWithIdSemiColSep" Type="System.String" Scope="User">
+      <Value Profile="(Default)">tRnhF0IfmkDrIZU6dbCusQ==;1</Value>
+    </Setting>
+    <Setting Name="Version" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">1</Value>
     </Setting>
   </Settings>
 </SettingsFile>

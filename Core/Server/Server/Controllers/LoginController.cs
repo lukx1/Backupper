@@ -13,7 +13,6 @@ namespace Server.Controllers
     public class LoginController : ApiController
     {
         private DaemonLoginer daemonLoginer;
-        
 
         private LoginResponse TryLogin(LoginMessage loginMessage)
         {
@@ -30,8 +29,8 @@ namespace Server.Controllers
         public HttpResponseMessage Post([FromBody]LoginMessage loginMessage)
         {
             LoginResponse responseMessage = TryLogin(loginMessage);
-            if(responseMessage.errorMessage != null)
-                return Util.MakeHttpResponseMessage((HttpStatusCode)responseMessage.errorMessage.id,responseMessage);
+            if(responseMessage.ErrorMessages != null)
+                return Util.MakeHttpResponseMessage((HttpStatusCode)responseMessage.ErrorMessages[0].id,responseMessage);
             return Util.MakeHttpResponseMessage(HttpStatusCode.Created, responseMessage);
         }
     }

@@ -25,10 +25,10 @@ namespace Daemon {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SessionUuid {
+        [global::System.Configuration.DefaultSettingValueAttribute("00000000-0000-0000-0000-000000000000")]
+        public global::System.Guid SessionUuid {
             get {
-                return ((string)(this["SessionUuid"]));
+                return ((global::System.Guid)(this["SessionUuid"]));
             }
             set {
                 this["SessionUuid"] = value;
@@ -72,10 +72,10 @@ namespace Daemon {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Uuid {
+        [global::System.Configuration.DefaultSettingValueAttribute("00000000-0000-0000-0000-000000000000")]
+        public global::System.Guid Uuid {
             get {
-                return ((string)(this["Uuid"]));
+                return ((global::System.Guid)(this["Uuid"]));
             }
             set {
                 this["Uuid"] = value;
@@ -127,6 +127,30 @@ namespace Daemon {
             }
             set {
                 this["TimerDebugOnly"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("tRnhF0IfmkDrIZU6dbCusQ==;1")]
+        public string PreSharedKeyWithIdSemiColSep {
+            get {
+                return ((string)(this["PreSharedKeyWithIdSemiColSep"]));
+            }
+            set {
+                this["PreSharedKeyWithIdSemiColSep"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int Version {
+            get {
+                return ((int)(this["Version"]));
+            }
+            set {
+                this["Version"] = value;
             }
         }
     }

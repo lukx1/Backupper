@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages
 {
-    public class IntroductionResponse : INetMessage
+    public class IntroductionResponse : INetMessage, INetError
     {
         public Guid uuid;
         public string password;
-        public ErrorMessage errorMessage;
+
+        public List<ErrorMessage> ErrorMessages { get; set; }
     }
 }

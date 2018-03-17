@@ -4,6 +4,7 @@ using Shared.NetMessages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using static Server.Authentication.Authenticator;
 
@@ -48,9 +49,13 @@ namespace Server.Authentication
         public IntroductionResponse AddToDBMakeResponse()
         {
             if (matchingLogin == null)
-                return new IntroductionResponse { errorMessage = new ErrorMessage() { message = "Login se neshoduje", value = "login"} };
+            {
+                var resp = new IntroductionResponse { ErrorMessages = new List<ErrorMessage>() };
+                resp.ErrorMessages.Add(new ErrorMessage() { id=(int)HttpStatusCode.BadRequest, message = "Login se neshoduje", value = "login" });
+                return resp;
+            }
             UuidPass uuidPass = EnterDBGetPass(matchingLogin);
-            IntroductionResponse response = new IntroductionResponse { uuid = new Guid(uuidPass.name), password = uuidPass.pass };
+            IntroductionResponse response = new IntroductionResponse { uuid = new Guid(uuidPass.name), password = uuidPass.pass, ErrorMessages = new List<ErrorMessage>() };
             uuidPass.pass = null;
             message = null;
             return response;

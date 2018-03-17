@@ -12,9 +12,9 @@ namespace Daemon
         private LoginSettings loginSettings = new LoginSettings();
 
         public string Server { get => loginSettings.Server; set => loginSettings.Server = value; }
-        public Guid Uuid { get => new Guid(loginSettings.Uuid); set => loginSettings.Uuid = value.ToString(); }
+        public Guid Uuid { get => loginSettings.Uuid; set => loginSettings.Uuid = value; }
         public string Pass { get => loginSettings.Password; set => loginSettings.Password =value; }
-        public Guid Session { get => new Guid(loginSettings.SessionUuid); set => loginSettings.SessionUuid = value.ToString(); }
+        public Guid Session { get => loginSettings.SessionUuid; set => loginSettings.SessionUuid = value; }
         public DateTime LastCommunicator { get => loginSettings.LastCommunication; set => loginSettings.LastCommunication=value; }
         public bool Debug { get => loginSettings.Debug; set => loginSettings.Debug =value; }
         public int SessionLength { get => loginSettings.SessionLengthMinutes; set => loginSettings.SessionLengthMinutes = value; }

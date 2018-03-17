@@ -47,37 +47,16 @@ namespace Shared
         /// s přijmutým jsonem
         /// <typeparam name="T"> result message</typeparam>
         /// <returns>Message</returns>
-        public T ReadMessage<T>()
-        {
-            return ReadMessage<T>(jsonResponse);
-        }
-
-        /// <summary>
-        /// Přečte zprávu genericky
-        /// </summary>
-        /// Není možné přeložit pomocí interfacu. T musí být identický 
-        /// s přijmutým jsonem
-        /// <typeparam name="T"> result message</typeparam>
-        /// <returns>Message</returns>
-        public T ReadMessage<T>(string message)
+        public static T ReadMessage<T>(string message)
         {
             return JsonConvert.DeserializeObject<T>(message);
-        }
-
-        /// <summary>
-        /// Pokud je kód vetší nebo rovno 200 a menší než 300 vrací true jinak false
-        /// </summary>
-        /// <returns></returns>
-        public bool IsSuccessStatusCode()
-        {
-            return ((int)StatusCode >= 200 && (int)StatusCode < 300);
         }
 
         /// <summary>
         /// Univerzálně přečte zprávu
         /// </summary>
         /// <returns></returns>
-        public Dictionary<string, string> ReadMessageAsDict()
+        public static Dictionary<string, string> ReadMessageAsDict(string jsonResponse)
         {
             return JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
         }
@@ -87,45 +66,63 @@ namespace Shared
         /// </summary>
         /// 
         ///     Exceptiony:
-        ///         V případu chyby HTTP hází Aggregate Exception který
-        ///         obsahuje HttpRequestException který obsahuje SocketException
-        ///         
+        ///         HTTP:
+        ///             V případu chyby HTTP hází Aggregate Exception který
+        ///             obsahuje HttpRequestException který obsahuje SocketException
+        ///         INet:
+        ///             Pokud je status kód špatný (není v rozmezí 200-299) je hozen
+        ///             INetException
+        ///         JSon:
+        ///             Pokud je špatně zadán generický parametr může být hozen
+        ///             JsonException
         /// <param name="message">Zpráva k odeslání</param>
         /// <param name="controller">Jméno kontroleru</param>
         /// <param name="httpMethod">Druh http zprávy</param>>
         /// 
-        /// <returns>Odpověď JSon string</returns>
-        public async Task<string> SendAsyncGetJson(INetMessage message, string controller, HttpMethod httpMethod)
+        /// <returns>Odpověď serveru</returns>
+        public async Task<ServerMessage<TResponse>> SendAsync<TResponse>(INetMessage message, string controller, HttpMethod httpMethod)
         {
             var json = JsonConvert.SerializeObject(message);
             HttpResponseMessage reponse = await client.SendAsync(new HttpRequestMessage(httpMethod, "api/" + controller) { Content = new StringContent(json, Encoding.UTF8, "application/json") });
-            this.StatusCode = reponse.StatusCode;
-            return await reponse.Content.ReadAsStringAsync();
+            var serverJson = await reponse.Content.ReadAsStringAsync();
+            var resp = new ServerMessage<TResponse>(serverJson, (int)reponse.StatusCode);
+            if (!IsSuccessStatusCode((int)resp.StatusCode))
+            {
+                if (resp.ErrorMessages.Count > 0)
+                    throw new INetException<TResponse>(resp, resp.ErrorMessages[0].message, resp.ErrorMessages);
+                else
+                    throw new INetException<TResponse>(resp, "Neúspěch", resp.ErrorMessages);
+            }
+            return resp;
         }
 
-        /// <summary>
-        /// Synchroní odeslání zprávy
-        /// </summary>
-        /// 
-        ///     Exceptiony:
-        ///         V případu chyby HTTP hází Aggregate Exception který
-        ///         obsahuje HttpRequestException který obsahuje SocketException    
-        ///         
-        /// <param name="message">Zpráva k odeslání</param>
-        /// <param name="controller">Jméno kontroleru</param>
-        /// <param name="httpMethod">Druh http zprávy</param>>
-        public void Send(INetMessage message, string controller, HttpMethod httpMethod)
+        public bool IsSuccessStatusCode(int code) => code >= 200 && code < 300;
+
+        public class ServerMessage<T>
         {
-            var json = JsonConvert.SerializeObject(message);
-            Task<HttpResponseMessage> sendTask = client.SendAsync(new HttpRequestMessage(httpMethod, "api/" + controller) { Content = new StringContent(json, Encoding.UTF8, "application/json") });
-            sendTask.Wait();
-            var responseMessage = sendTask.Result;
-            this.StatusCode = sendTask.Result.StatusCode;
-            Task<string> readTask = responseMessage.Content.ReadAsStringAsync();
-            readTask.Wait();
-            this.jsonResponse = readTask.Result;
-        }
+            public T ServerResponse;
 
+            public HttpStatusCode StatusCode { get; private set; }
+
+            public List<ErrorMessage> ErrorMessages
+            {
+                get
+                {
+                    if (errorMessages == null) // Send nemusí kontrolovat pro null
+                        return new List<ErrorMessage>();
+                    return errorMessages;
+                }
+            }
+            private List<ErrorMessage> errorMessages = new List<ErrorMessage>();
+
+            public ServerMessage(string serverResponseJson,int statusCode)
+            {
+                this.StatusCode = StatusCode;
+                this.ServerResponse = JsonConvert.DeserializeObject<T>(serverResponseJson);
+                if (ServerResponse is INetError)
+                    this.errorMessages = ((INetError)ServerResponse).ErrorMessages;
+            }
+        }
 
     }
 }

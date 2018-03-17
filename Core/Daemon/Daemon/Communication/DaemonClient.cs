@@ -18,7 +18,7 @@ namespace Daemon.Communication
     public class DaemonClient
     {
         private Messenger messenger { get; set; }
-        private IConfig config = new DynamicConfig();
+        private LoginSettings settings = new LoginSettings();
         private TaskHandler taskHandler = new TaskHandler();
 
         /// <summary>
@@ -31,18 +31,23 @@ namespace Daemon.Communication
             e.ErrorMessages.ForEach(r => Console.WriteLine(r.id + ":" + r.message + "->" + r.value));
         }
 
+        private void AttemptLogin()
+        {
+
+        }
+
         /// <summary>
         /// Připojí se a začne provádět tasky
         /// </summary>
         public DaemonClient()
         {
-            messenger = new Messenger(config.Server);
+            messenger = new Messenger(settings.Server);
             try
             {
-                if (config.Uuid == null)// Daemon nema Uuid
+                if (settings.Uuid == null)// Daemon nema Uuid
                     Introduce();
 
-                Login(); // Ziska session id
+                Login().Wait(); // Ziska session id
             }
             catch(BadResponseException e)
             {
@@ -51,7 +56,7 @@ namespace Daemon.Communication
                 return;
             }
 
-            if(config.Debug)
+            if(settings.Debug)
                 TaskTest();
             else
                 ApplyTasks().Wait();
@@ -62,7 +67,7 @@ namespace Daemon.Communication
         /// </summary>
         private void TaskTest()
         {
-            taskHandler.Tasks = messenger.ReadMessage<TaskResponse>("{\"Tasks\":[{\"id\":1,\"uuidDaemon\":\"50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e\",\"name\":\"DebugTask\",\"description\":\"For debugging\",\"taskLocations\":[{\"id\":1,\"source\":{\"id\":6,\"uri\":\"test.com/docs/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":4,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"destination\":{\"id\":7,\"uri\":\"test.com/backups/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":5,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"backupType\":{\"Id\":1,\"ShortName\":\"NORM\",\"LongName\":\"Normal\"},\"times\":[{\"id\":3,\"interval\":0,\"name\":\"Dneska\",\"repeat\":false,\"startTime\":\""+DateTime.Now.AddSeconds(5)+"\",\"endTime\":\"0001-01-01T00:00:00\"},{\"id\":4,\"interval\":"+5+",\"name\":\"Kazdy Patek\",\"repeat\":true,\"startTime\":\"2018-02-23T00:00:00\",\"endTime\":\"0001-01-01T00:00:00\"}]}]}],\"ErrorMessages\":[]}").Tasks ;
+            taskHandler.Tasks = Messenger.ReadMessage<TaskResponse>("{\"Tasks\":[{\"id\":1,\"uuidDaemon\":\"50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e\",\"name\":\"DebugTask\",\"description\":\"For debugging\",\"taskLocations\":[{\"id\":1,\"source\":{\"id\":6,\"uri\":\"test.com/docs/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":4,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"destination\":{\"id\":7,\"uri\":\"test.com/backups/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":5,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"backupType\":{\"Id\":1,\"ShortName\":\"NORM\",\"LongName\":\"Normal\"},\"times\":[{\"id\":3,\"interval\":0,\"name\":\"Dneska\",\"repeat\":false,\"startTime\":\""+DateTime.Now.AddSeconds(5)+"\",\"endTime\":\"0001-01-01T00:00:00\"},{\"id\":4,\"interval\":"+5+",\"name\":\"Kazdy Patek\",\"repeat\":true,\"startTime\":\"2018-02-23T00:00:00\",\"endTime\":\"0001-01-01T00:00:00\"}]}]}],\"ErrorMessages\":[]}").Tasks ;
             taskHandler.CreateTimers();
         }
 
@@ -74,7 +79,7 @@ namespace Daemon.Communication
         private bool IsSessionStillValid(DateTime lastCheck)
         {
             return DateTime.Compare(DateTime.Now.AddMinutes(
-                config.SessionLength-config.SessionLengthPadding), lastCheck) == -1;
+                settings.SessionLengthMinutes-settings.SessionLengthPaddingMinutes), lastCheck) == -1;
                 
         }
 
@@ -83,8 +88,8 @@ namespace Daemon.Communication
         /// </summary>
         private void CheckLogin()
         {
-            if (config.Session == null || !IsSessionStillValid(config.LastCommunicator/*???jmeno*/))
-                Login();
+            if (settings.SessionUuid == null || !IsSessionStillValid(settings.LastCommunication))
+                Login().Wait();
         }
 
         /// <summary>
@@ -111,11 +116,28 @@ namespace Daemon.Communication
         private async Task<List<DbTask>> GetAllTaskFromDB()
         {
             CheckLogin();
-            var responseJson = await messenger.SendAsyncGetJson(new TaskMessage() {sessionUuid = config.Session }, "task", HttpMethod.Post);
-            var resp = messenger.ReadMessage<TaskResponse>(responseJson);
-            if (!messenger.IsSuccessStatusCode()) // TODO: Tohle nemuze byt v async metode pokud neni messenger locknut
-                throw new BadResponseException(messenger.StatusCode + " Error",resp.ErrorMessages); //TODO: Custom exception
-            return resp.Tasks;
+            var resp = await messenger.SendAsync<TaskResponse>(new TaskMessage() {sessionUuid = settings.SessionUuid }, "task", HttpMethod.Post);
+            return resp.ServerResponse.Tasks;
+        }
+
+        private bool IsKeyIdValid(string[] keyId)
+        {
+            if (keyId == null)
+                return false;
+            if (keyId.Length != 2)
+                return false;
+            return int.TryParse(keyId[1], out int a);
+        }
+
+        private struct KeyId
+        {
+            public string Key;
+            public int Id;
+            public KeyId(string[] parts)
+            {
+                Key = parts[0];
+                Id = int.Parse(parts[1]);
+            }
         }
 
         /// <summary>
@@ -123,37 +145,38 @@ namespace Daemon.Communication
         /// </summary>
         public async void Introduce()
         {
-            String firstMacAddress = NetworkInterface
+            string firstMacAddress = NetworkInterface
                 .GetAllNetworkInterfaces()
                 .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
                 .Select(nic => nic.GetPhysicalAddress().ToString())
                 .FirstOrDefault();
 
+            string[] keyId = settings.PreSharedKeyWithIdSemiColSep.Split(';');
+            if (!IsKeyIdValid(keyId))
+                throw new FormatException("Introduction string nemohl být přečten");
+            KeyId kid = new KeyId(keyId);
+
             IntroductionMessage introductionMessage = new IntroductionMessage()
             {
-                preSharedKey = "tRnhF0IfmkDrIZU6dbCusQ==",
-                id = 1,
+                preSharedKey = kid.Key,
+                id = kid.Id,
                 macAdress = firstMacAddress.ToCharArray(),
                 os = Environment.OSVersion.ToString(),
-                version = 23
+                version = new Shared.Version() {Minor=1 }
             };
 
-            string response = await messenger.SendAsyncGetJson(introductionMessage, "IntroductionController", System.Net.Http.HttpMethod.Post);
-            Console.WriteLine(response);
+            var resp = await messenger.SendAsync<IntroductionResponse>(introductionMessage, "Introduction", System.Net.Http.HttpMethod.Put);
+            Console.WriteLine("OK INTRODUCTION");
         }
 
         /// <summary>
         /// Přihlásí uživatele a zaznamená si session do configu
         /// </summary>
-        public void Login()
+        public async Task Login()
         {
-            
-            LoginMessage loginMessage = new LoginMessage() {password = config.Pass,uuid = config.Uuid };
-            messenger.Send(loginMessage, "login", HttpMethod.Post);
-            LoginResponse response = messenger.ReadMessage<LoginResponse>();
-            if (!messenger.IsSuccessStatusCode())
-                throw new BadResponseException(messenger.StatusCode + " Error", response.errorMessage);
-            config.Session = response.sessionUuid;
+            LoginMessage loginMessage = new LoginMessage() {password = settings.Password,uuid = settings.Uuid };
+            var resp = await messenger.SendAsync<LoginResponse>(loginMessage, "login", HttpMethod.Post);
+            settings.SessionUuid = resp.ServerResponse.sessionUuid;
         }
     }
 }

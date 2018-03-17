@@ -15,7 +15,7 @@ namespace Daemon
         /// </summary>
         static void Main()
         {
-            var service = new Service1();
+            var service = new Service();
             if(Environment.UserInteractive)
             {
                 service.OnPubStart();

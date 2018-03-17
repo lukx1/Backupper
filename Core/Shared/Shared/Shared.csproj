@@ -51,11 +51,13 @@
   <ItemGroup>
     <Compile Include="Crc32.cs" />
     <Compile Include="DeserializeOnly.cs" />
+    <Compile Include="INetException.cs" />
     <Compile Include="IniReader.cs" />
     <Compile Include="Messenger.cs" />
     <Compile Include="NetMessages\AccessorLogMessage.cs" />
     <Compile Include="NetMessages\AccessorLogResponse.cs" />
     <Compile Include="NetMessages\AccessorMessages\DbAccessorLog.cs" />
+    <Compile Include="NetMessages\INetError.cs" />
     <Compile Include="NetMessages\UserMessage.cs" />
     <Compile Include="NetMessages\OtherMessages\DbUser.cs" />
     <Compile Include="NetMessages\OtherMessages\DbPreSharedKey.cs" />

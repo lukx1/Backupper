@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages
 {
-    public class LoginResponse : INetMessage, INetError
+    public interface INetError
     {
-        public Guid sessionUuid;
-        public List<ErrorMessage> ErrorMessages { get; set; }
+        List<ErrorMessage> ErrorMessages { get; }
     }
 }

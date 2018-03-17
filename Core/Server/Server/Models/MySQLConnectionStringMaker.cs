@@ -9,8 +9,6 @@ namespace Server.Models
 {
     public static class MySQLConnectionStringMaker
     {
-        private const string fileName = "SQLConnect.ini";
-
         public static string GetConnectionString()
         {
             var ini = new SQLConnectionIni();

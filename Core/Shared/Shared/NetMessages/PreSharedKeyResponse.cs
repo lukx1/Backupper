@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages
 {
-    public class PreSharedKeyResponse : INetMessage
+    public class PreSharedKeyResponse : INetMessage, INetError
     {
         public List<DbPreSharedKey> Keys;
-        public List<ErrorMessage> ErrorMessages;
+        public List<ErrorMessage> ErrorMessages { get; set; }
     }
 }

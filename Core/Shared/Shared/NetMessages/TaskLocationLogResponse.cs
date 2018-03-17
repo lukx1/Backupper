@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages
 {
-    public class TaskLocationLogResponse : INetMessage
+    public class TaskLocationLogResponse : INetMessage, INetError
     {
         public List<DbTaskLocationLog> TaskLocationLogs;
-        public List<ErrorMessage> ErrorMessages;
+        public List<ErrorMessage> ErrorMessages { get; set; }
     }
 }
