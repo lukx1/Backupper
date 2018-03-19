@@ -58,6 +58,9 @@
     <Compile Include="BadResponseException.cs" />
     <Compile Include="Communication\DaemonClient.cs" />
     <Compile Include="DynamicConfig.cs" />
+    <Compile Include="Logging\ILog.cs" />
+    <Compile Include="Logging\IntroductionLog.cs" />
+    <Compile Include="Logging\LogType.cs" />
     <Compile Include="LoginSettings1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -74,7 +77,7 @@
     <Compile Include="TaskHandler.cs" />
     <Compile Include="TimedBackup.cs" />
     <Compile Include="Utility\IConfig.cs" />
-    <Compile Include="Utility\Logger.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="Utility\TempConfig.cs" />
   </ItemGroup>
   <ItemGroup>

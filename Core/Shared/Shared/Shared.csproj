@@ -95,6 +95,7 @@
     <Compile Include="IniManipulator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Util.cs" />
+    <Compile Include="Version.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

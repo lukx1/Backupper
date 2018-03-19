@@ -43,7 +43,7 @@ namespace Server.Authentication
             Daemon daemon = mysql.Daemons.Where(r => r.Uuid == uuid).FirstOrDefault();
 
             if (daemon == null)
-                return LoginErrMaker(HttpStatusCode.NotFound, "Daemon s daným uuid nebyl nalezen", uuid.ToString())
+                return LoginErrMaker(HttpStatusCode.NotFound, "Daemon s daným uuid nebyl nalezen", uuid.ToString());
             if (!IsPasswordValid(password, daemon))
                 return LoginErrMaker(HttpStatusCode.Forbidden, "Login je neplatný");
 

@@ -1,4 +1,5 @@
 ﻿using Daemon.Communication;
+using Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,20 @@ namespace Daemon
             {
                 service.OnPubStart();
                 Console.WriteLine("Press any key to stop");
-                DaemonClient daemonClient = new DaemonClient();
+                try
+                {
+                    DaemonClient daemonClient = new DaemonClient();
+                    daemonClient.Run().Wait();
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine($"Nečekaná chyba{Util.Newline}" +
+                        $"Chyba :{e.Message}{Util.Newline}" +
+                        $"ST    :{e.StackTrace}{Util.Newline}" +
+                        $"Aplikace nemůže pokračovat");
+                    return;
+                    //Logger.log
+                }
                 Console.Read();
                 service.OnPubStop();
             }

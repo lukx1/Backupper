@@ -9,13 +9,13 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="Password" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">VO0e+84BW4wqVYsuUpGeWw==</Value>
     </Setting>
     <Setting Name="LastCommunication" Type="System.DateTime" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="Uuid" Type="System.Guid" Scope="User">
-      <Value Profile="(Default)">00000000-0000-0000-0000-000000000000</Value>
+      <Value Profile="(Default)">50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e</Value>
     </Setting>
     <Setting Name="Server" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://localhost:57597</Value>
@@ -32,8 +32,17 @@
     <Setting Name="PreSharedKeyWithIdSemiColSep" Type="System.String" Scope="User">
       <Value Profile="(Default)">tRnhF0IfmkDrIZU6dbCusQ==;1</Value>
     </Setting>
-    <Setting Name="Version" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">1</Value>
+    <Setting Name="Version" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.1.0</Value>
+    </Setting>
+    <Setting Name="LoginFailureWaitPeriodMs" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">300000</Value>
+    </Setting>
+    <Setting Name="TaskRefreshPeriodMs" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">900000</Value>
+    </Setting>
+    <Setting Name="LoggingLevel" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">8</Value>
     </Setting>
   </Settings>
 </SettingsFile>

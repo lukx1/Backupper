@@ -9,6 +9,8 @@ using System.Net.NetworkInformation;
 using Shared.NetMessages.TaskMessages;
 using Daemon.Utility;
 using System.Net.Http;
+using System.Threading;
+using Daemon.Logging;
 
 namespace Daemon.Communication
 {
@@ -20,6 +22,8 @@ namespace Daemon.Communication
         private Messenger messenger { get; set; }
         private LoginSettings settings = new LoginSettings();
         private TaskHandler taskHandler = new TaskHandler();
+        private Task LoginTickerTask;
+        private Task TaskTickerTask;
 
         /// <summary>
         /// Vypíše všechno v BRE
@@ -31,9 +35,102 @@ namespace Daemon.Communication
             e.ErrorMessages.ForEach(r => Console.WriteLine(r.id + ":" + r.message + "->" + r.value));
         }
 
-        private void AttemptLogin()
+        private async Task<bool> AttemptLogin()
         {
+            try
+            {
+                await Login(); // Ziska session id
+                return true;
+            }
+            catch (INetException<LoginResponse> e)
+            {
+                Console.WriteLine("Chyba při pokusu o přihlášení :" + e.Message);
+                e.ErrorMessages.ForEach(r => Console.WriteLine(r.id + ":" + r.message + "->" + r.value));
+                return false;
+            }
+        }
 
+
+        /// <summary>
+        /// Pokud je nutno tak se introducne a načte existující tasky
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> Startup() //TODO : returnovat log + standardizace logu interface
+        {
+            if (settings.Uuid == null)// Daemon nema Uuid -> musi se introducnout
+            {
+                try
+                {
+                    await Introduce();
+                }
+                catch(INetException<IntroductionResponse> e)
+                {
+                    Console.WriteLine(
+                        $"Nebylo možné se představit{Util.Newline}" +
+                        $"Error #1-{e.ErrorMessages[0].id}{Util.Newline}" +
+                        $"Příčina : {e.ErrorMessages[0].message}{Util.Newline}" +
+                        $"Nelze pokračovat"
+                        );
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public async Task Run()
+        {
+            bool canStart = await Startup();
+            if (!canStart) 
+                return;// Nešlo zapnout aplikace a nelze pokračovat
+            while (! await AttemptLogin()) // Pokouší se příhlásit dokut se to nepovede
+            {
+                Thread.Sleep(settings.LoginFailureWaitPeriodMs);
+            }
+            LoginTickerTask = Task.Run(() => LoginTicker());// Opakuje login aby session nevyprsel
+            TaskTickerTask = Task.Run(() => TaskTicker());//Refreshuje tasky aby byli aktualni se serverem
+        }
+
+        private async Task TaskTicker()
+        {
+            while (true)
+            {
+                await LoadTasks();
+                if (settings.LoggingLevel >= (int)LogType.DEBUG) //TODO: Tohle
+                    Console.WriteLine($"{DateTime.Now} Tasky nacteny");
+                Thread.Sleep(settings.TaskRefreshPeriodMs);
+            }
+        }
+
+        private async Task LoginTicker()
+        {
+            while (true)
+            {
+                Thread.Sleep((settings.SessionLengthMinutes - settings.SessionLengthPaddingMinutes)* 60000/*min to ms*/);
+                await AttemptLogin();
+                if(settings.LoggingLevel >= (int)LogType.DEBUG)//TODO: tohle
+                    Console.WriteLine($"{DateTime.Now} Login refreshnut");
+            } 
+        }
+
+        private async Task<bool> LoadTasks()
+        {
+            try
+            {
+                if (settings.Debug)
+                    TaskTest();
+                else
+                    await ApplyTasks();
+                return true;
+            }
+            catch(INetException<TaskResponse> e)
+            {
+                Console.WriteLine(
+                        $"Nebylo možná načíst tasky{Util.Newline}" +
+                        $"Error #2-{e.ErrorMessages[0].id}{Util.Newline}" +
+                        $"Příčina : {e.ErrorMessages[0].message}{Util.Newline}"
+                        );
+                return false;
+            }
         }
 
         /// <summary>
@@ -42,24 +139,6 @@ namespace Daemon.Communication
         public DaemonClient()
         {
             messenger = new Messenger(settings.Server);
-            try
-            {
-                if (settings.Uuid == null)// Daemon nema Uuid
-                    Introduce();
-
-                Login().Wait(); // Ziska session id
-            }
-            catch(BadResponseException e)
-            {
-                Console.WriteLine("Chyba při pokusu o přihlášení :"+e.Message);
-                e.ErrorMessages.ForEach(r => Console.WriteLine(r.id + ":" + r.message + "->" + r.value));
-                return;
-            }
-
-            if(settings.Debug)
-                TaskTest();
-            else
-                ApplyTasks().Wait();
         }
 
         /// <summary>
@@ -143,7 +222,7 @@ namespace Daemon.Communication
         /// <summary>
         /// Introduces Daemon to the server
         /// </summary>
-        public async void Introduce()
+        public async Task Introduce()
         {
             string firstMacAddress = NetworkInterface
                 .GetAllNetworkInterfaces()
@@ -162,11 +241,12 @@ namespace Daemon.Communication
                 id = kid.Id,
                 macAdress = firstMacAddress.ToCharArray(),
                 os = Environment.OSVersion.ToString(),
-                version = new Shared.Version() {Minor=1 }
+                version = Shared.Version.Parse(settings.Version)
             };
 
             var resp = await messenger.SendAsync<IntroductionResponse>(introductionMessage, "Introduction", System.Net.Http.HttpMethod.Put);
-            Console.WriteLine("OK INTRODUCTION");
+            settings.Uuid = resp.ServerResponse.uuid;
+            settings.Password = resp.ServerResponse.password;
         }
 
         /// <summary>

@@ -117,7 +117,7 @@ namespace Shared
 
             public ServerMessage(string serverResponseJson,int statusCode)
             {
-                this.StatusCode = StatusCode;
+                this.StatusCode = (HttpStatusCode)statusCode;
                 this.ServerResponse = JsonConvert.DeserializeObject<T>(serverResponseJson);
                 if (ServerResponse is INetError)
                     this.errorMessages = ((INetError)ServerResponse).ErrorMessages;

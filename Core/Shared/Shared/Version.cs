@@ -13,7 +13,7 @@ namespace Shared
         public int Patch;
         public string Extesion = "";
 
-        public Version Parse(string s)
+        public static Version Parse(string s)
         {
             string[] parts = s.Split('.');
             if (parts.Length != 3)
