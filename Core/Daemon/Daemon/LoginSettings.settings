@@ -2,11 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Daemon" GeneratedClassName="LoginSettings">
   <Profiles />
   <Settings>
-    <Setting Name="SessionUuid" Type="System.Guid" Scope="User">
-      <Value Profile="(Default)">00000000-0000-0000-0000-000000000000</Value>
-    </Setting>
     <Setting Name="Debug" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Password" Type="System.String" Scope="User">
       <Value Profile="(Default)">VO0e+84BW4wqVYsuUpGeWw==</Value>
@@ -43,6 +40,9 @@
     </Setting>
     <Setting Name="LoggingLevel" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">8</Value>
+    </Setting>
+    <Setting Name="SessionUuid" Type="System.Guid" Scope="User">
+      <Value Profile="(Default)">00000000-0000-0000-0000-000000000000</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -19,37 +19,31 @@ namespace Daemon.Communication
     /// </summary>
     public class DaemonClient
     {
-        private Messenger messenger { get; set; }
+        private Messenger messenger;
         private LoginSettings settings = new LoginSettings();
         private TaskHandler taskHandler = new TaskHandler();
-        private Task LoginTickerTask;
+        private Authenticator authenticator;
+        private SessionRefresher sessionRefresher;
+        private ILogger logger = LoggerFactory.CreateAppropriate();
         private Task TaskTickerTask;
+
+        /// <summary>
+        /// Připojí se a začne provádět tasky
+        /// </summary>
+        public DaemonClient()
+        {
+            messenger = new Messenger(settings.Server);
+        }
 
         /// <summary>
         /// Vypíše všechno v BRE
         /// </summary>
         /// <param name="e"></param>
-        private void DumpErrorMsgs(BadResponseException e)
+        private void DumpErrorMsgs<T>(INetException<T> e, LogType logType = LogType.ERROR)
         {
-            Console.WriteLine(e.Message);
-            e.ErrorMessages.ForEach(r => Console.WriteLine(r.id + ":" + r.message + "->" + r.value));
+            logger.Log(e.Message, logType);
+            e.ErrorMessages.ForEach(r => logger.Log(r.id + ":" + r.message + "->" + r.value, logType));
         }
-
-        private async Task<bool> AttemptLogin()
-        {
-            try
-            {
-                await Login(); // Ziska session id
-                return true;
-            }
-            catch (INetException<LoginResponse> e)
-            {
-                Console.WriteLine("Chyba při pokusu o přihlášení :" + e.Message);
-                e.ErrorMessages.ForEach(r => Console.WriteLine(r.id + ":" + r.message + "->" + r.value));
-                return false;
-            }
-        }
-
 
         /// <summary>
         /// Pokud je nutno tak se introducne a načte existující tasky
@@ -57,19 +51,29 @@ namespace Daemon.Communication
         /// <returns></returns>
         private async Task<bool> Startup() //TODO : returnovat log + standardizace logu interface
         {
+            authenticator = new Authenticator(messenger);
             if (settings.Uuid == null)// Daemon nema Uuid -> musi se introducnout
             {
                 try
                 {
-                    await Introduce();
+                    await authenticator.Introduce();
                 }
                 catch(INetException<IntroductionResponse> e)
                 {
-                    Console.WriteLine(
+                    logger.Log(
                         $"Nebylo možné se představit{Util.Newline}" +
                         $"Error #1-{e.ErrorMessages[0].id}{Util.Newline}" +
                         $"Příčina : {e.ErrorMessages[0].message}{Util.Newline}" +
-                        $"Nelze pokračovat"
+                        $"Nelze pokračovat",LogType.CRITICAL
+                        );
+                    return false;
+                }
+                catch (FormatException e)
+                {
+                    logger.Log($"Nebylo možné se představit{Util.Newline}" +
+                        $"Error #2-{e.Message}{Util.Newline}" +
+                        $"Příčina : {e.StackTrace}{Util.Newline}" +
+                        $"Nelze pokračovat",LogType.CRITICAL
                         );
                     return false;
                 }
@@ -80,37 +84,37 @@ namespace Daemon.Communication
         public async Task Run()
         {
             bool canStart = await Startup();
-            if (!canStart) 
+            if (!canStart)
                 return;// Nešlo zapnout aplikace a nelze pokračovat
-            while (! await AttemptLogin()) // Pokouší se příhlásit dokut se to nepovede
+            while (true) // Pokouší se příhlásit dokut se to nepovede
             {
+                var guid = await authenticator.AttemptLogin();
+                if(guid != Guid.Empty)
+                {
+                    settings.SessionUuid = guid;
+                    settings.Save();
+                    break;
+                }
+                logger.Log("Přihlášení se nepovedlo, bude se opakovat za " + settings.LoginFailureWaitPeriodMs, LogType.ERROR);
                 Thread.Sleep(settings.LoginFailureWaitPeriodMs);
             }
-            LoginTickerTask = Task.Run(() => LoginTicker());// Opakuje login aby session nevyprsel
+            sessionRefresher = new SessionRefresher(authenticator);// Opakuje login aby session nevyprsel
+            sessionRefresher.Run();
             TaskTickerTask = Task.Run(() => TaskTicker());//Refreshuje tasky aby byli aktualni se serverem
         }
 
         private async Task TaskTicker()
         {
+            Thread.CurrentThread.Name = "TaskTicker";
             while (true)
             {
                 await LoadTasks();
-                if (settings.LoggingLevel >= (int)LogType.DEBUG) //TODO: Tohle
-                    Console.WriteLine($"{DateTime.Now} Tasky nacteny");
+                logger.Log("Tasky načteny", LogType.INFORMATION);
                 Thread.Sleep(settings.TaskRefreshPeriodMs);
             }
         }
 
-        private async Task LoginTicker()
-        {
-            while (true)
-            {
-                Thread.Sleep((settings.SessionLengthMinutes - settings.SessionLengthPaddingMinutes)* 60000/*min to ms*/);
-                await AttemptLogin();
-                if(settings.LoggingLevel >= (int)LogType.DEBUG)//TODO: tohle
-                    Console.WriteLine($"{DateTime.Now} Login refreshnut");
-            } 
-        }
+        
 
         private async Task<bool> LoadTasks()
         {
@@ -124,28 +128,24 @@ namespace Daemon.Communication
             }
             catch(INetException<TaskResponse> e)
             {
-                Console.WriteLine(
+                logger.Log(
                         $"Nebylo možná načíst tasky{Util.Newline}" +
                         $"Error #2-{e.ErrorMessages[0].id}{Util.Newline}" +
-                        $"Příčina : {e.ErrorMessages[0].message}{Util.Newline}"
+                        $"Příčina : {e.ErrorMessages[0].message}{Util.Newline}",LogType.ERROR
                         );
                 return false;
             }
+            
         }
 
-        /// <summary>
-        /// Připojí se a začne provádět tasky
-        /// </summary>
-        public DaemonClient()
-        {
-            messenger = new Messenger(settings.Server);
-        }
+        
 
         /// <summary>
         /// Pro testování tasků
         /// </summary>
         private void TaskTest()
         {
+            logger.Log("Probíhá debugovací metoda taskTest", LogType.DEBUG);
             taskHandler.Tasks = Messenger.ReadMessage<TaskResponse>("{\"Tasks\":[{\"id\":1,\"uuidDaemon\":\"50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e\",\"name\":\"DebugTask\",\"description\":\"For debugging\",\"taskLocations\":[{\"id\":1,\"source\":{\"id\":6,\"uri\":\"test.com/docs/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":4,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"destination\":{\"id\":7,\"uri\":\"test.com/backups/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":5,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"backupType\":{\"Id\":1,\"ShortName\":\"NORM\",\"LongName\":\"Normal\"},\"times\":[{\"id\":3,\"interval\":0,\"name\":\"Dneska\",\"repeat\":false,\"startTime\":\""+DateTime.Now.AddSeconds(5)+"\",\"endTime\":\"0001-01-01T00:00:00\"},{\"id\":4,\"interval\":"+5+",\"name\":\"Kazdy Patek\",\"repeat\":true,\"startTime\":\"2018-02-23T00:00:00\",\"endTime\":\"0001-01-01T00:00:00\"}]}]}],\"ErrorMessages\":[]}").Tasks ;
             taskHandler.CreateTimers();
         }
@@ -163,15 +163,6 @@ namespace Daemon.Communication
         }
 
         /// <summary>
-        /// Zkontroluje jestli je login platný
-        /// </summary>
-        private void CheckLogin()
-        {
-            if (settings.SessionUuid == null || !IsSessionStillValid(settings.LastCommunication))
-                Login().Wait();
-        }
-
-        /// <summary>
         /// Získá tasky z db a zapne je
         /// </summary>
         /// <returns></returns>
@@ -182,7 +173,7 @@ namespace Daemon.Communication
                 taskHandler.Tasks = await GetAllTaskFromDB();
                 taskHandler.CreateTimers();
             }
-            catch(BadResponseException e)
+            catch(INetException<TaskResponse> e)
             {
                 DumpErrorMsgs(e);
             }
@@ -194,69 +185,10 @@ namespace Daemon.Communication
         /// <returns></returns>
         private async Task<List<DbTask>> GetAllTaskFromDB()
         {
-            CheckLogin();
             var resp = await messenger.SendAsync<TaskResponse>(new TaskMessage() {sessionUuid = settings.SessionUuid }, "task", HttpMethod.Post);
+            sessionRefresher.ExternalyRefreshed();
             return resp.ServerResponse.Tasks;
         }
 
-        private bool IsKeyIdValid(string[] keyId)
-        {
-            if (keyId == null)
-                return false;
-            if (keyId.Length != 2)
-                return false;
-            return int.TryParse(keyId[1], out int a);
-        }
-
-        private struct KeyId
-        {
-            public string Key;
-            public int Id;
-            public KeyId(string[] parts)
-            {
-                Key = parts[0];
-                Id = int.Parse(parts[1]);
-            }
-        }
-
-        /// <summary>
-        /// Introduces Daemon to the server
-        /// </summary>
-        public async Task Introduce()
-        {
-            string firstMacAddress = NetworkInterface
-                .GetAllNetworkInterfaces()
-                .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                .Select(nic => nic.GetPhysicalAddress().ToString())
-                .FirstOrDefault();
-
-            string[] keyId = settings.PreSharedKeyWithIdSemiColSep.Split(';');
-            if (!IsKeyIdValid(keyId))
-                throw new FormatException("Introduction string nemohl být přečten");
-            KeyId kid = new KeyId(keyId);
-
-            IntroductionMessage introductionMessage = new IntroductionMessage()
-            {
-                preSharedKey = kid.Key,
-                id = kid.Id,
-                macAdress = firstMacAddress.ToCharArray(),
-                os = Environment.OSVersion.ToString(),
-                version = Shared.Version.Parse(settings.Version)
-            };
-
-            var resp = await messenger.SendAsync<IntroductionResponse>(introductionMessage, "Introduction", System.Net.Http.HttpMethod.Put);
-            settings.Uuid = resp.ServerResponse.uuid;
-            settings.Password = resp.ServerResponse.password;
-        }
-
-        /// <summary>
-        /// Přihlásí uživatele a zaznamená si session do configu
-        /// </summary>
-        public async Task Login()
-        {
-            LoginMessage loginMessage = new LoginMessage() {password = settings.Password,uuid = settings.Uuid };
-            var resp = await messenger.SendAsync<LoginResponse>(loginMessage, "login", HttpMethod.Post);
-            settings.SessionUuid = resp.ServerResponse.sessionUuid;
-        }
     }
 }

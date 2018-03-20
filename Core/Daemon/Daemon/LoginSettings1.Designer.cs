@@ -25,19 +25,7 @@ namespace Daemon {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("00000000-0000-0000-0000-000000000000")]
-        public global::System.Guid SessionUuid {
-            get {
-                return ((global::System.Guid)(this["SessionUuid"]));
-            }
-            set {
-                this["SessionUuid"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool Debug {
             get {
                 return ((bool)(this["Debug"]));
@@ -187,6 +175,18 @@ namespace Daemon {
             }
             set {
                 this["LoggingLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("00000000-0000-0000-0000-000000000000")]
+        public global::System.Guid SessionUuid {
+            get {
+                return ((global::System.Guid)(this["SessionUuid"]));
+            }
+            set {
+                this["SessionUuid"] = value;
             }
         }
     }

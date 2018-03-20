@@ -39,6 +39,8 @@ namespace Daemon
         /// </summary>
         public void Dispose()
         {
+            if (Timer == null)
+                return;
             if (IsRunning.Value)
                 throw new InvalidOperationException("IsRunning = true");
             Timer.Dispose();
