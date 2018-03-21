@@ -30,8 +30,9 @@ namespace Daemon
             //    ServiceBase.Run(service);
             //}
 
-            Backup test = new Backup(0);
-            test.AddBackup(new FullBackup("C:/Users/rambo_000/Desktop/TESTFOLDER/TestBackup"));
+            Backup test = new Backup(0,BackupType.NORM);
+            test.Zipped = true;
+            test.AddSource("C:/Users/rambo_000/Desktop/TESTFOLDER/TestBackup");
             test.AddDestination("C:/Users/rambo_000/Desktop/TESTFOLDER/BACKUPS");
             test.AddDestination("C:/Users/rambo_000/Desktop/TESTFOLDER/TestDestination");
             test.BackupAll();

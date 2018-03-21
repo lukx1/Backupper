@@ -21,11 +21,11 @@ namespace Daemon.Backups
             files = new List<FileBackupedInfo>();
         }
 
-        public void CreateFile()
+        public void CreateFile(string destination)
         {
             timeCreated = DateTime.Now;
             CreateBackupInfo("");
-            StreamWriter writer = new StreamWriter(pBackup.DestinationPath + ".log");
+            StreamWriter writer = new StreamWriter(destination + ".log");
             writer.WriteLine(timeCreated.ToString());
             writer.WriteLine(pBackup.ID);
             writer.WriteLine(pBackup.SourcePath);

@@ -7,17 +7,22 @@ using System.IO;
 
 namespace Daemon.Backups
 {
+    
     public class Backup
     {
         List<string> BackupDestinations = new List<string>();
+        List<string> BackupSources = new List<string>();
         public int ID { get; set; }
         List<IBackup> AllBackups { get; set; }
+        public BackupType backupType { get; set; }
+        public bool Zipped = false;
 
 
-        public Backup(int id)
+        public Backup(int id,BackupType type)
         {
             AllBackups = new List<IBackup>();
             this.ID = id;
+            this.backupType = type;
         }
 
         public void AddDestination(string destination)
@@ -31,8 +36,11 @@ namespace Daemon.Backups
             {
                 if (!Directory.Exists(pathItem + "/"  +  ID))
                     Directory.CreateDirectory(pathItem + "/" + ID);
-                foreach (IBackup item in AllBackups)
-                    item.StartBackup(pathItem + "/" + ID + "/" + item.ID + "/Backup");
+
+                for (int i = 0; i < BackupSources.Count; i++)
+                {
+                    new FullBackup(BackupSources[i], Zipped).StartBackup(pathItem + "/" + ID + "/" + i + "/Backup");
+                }
             }
           
         }
@@ -42,6 +50,11 @@ namespace Daemon.Backups
             backup.ID = AllBackups.Count;
             backup.DestinationPath = "";
             AllBackups.Add(backup);
+        }
+
+        public void AddSource(string sourcePath)
+        {
+            BackupSources.Add(sourcePath);
         }
     }
 }

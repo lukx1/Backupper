@@ -55,7 +55,7 @@ namespace Daemon.Backups
                 ZipBackup(path);
             else
                 Backup(new DirectoryInfo(SourcePath), path);
-            backupInfo.CreateFile();
+            backupInfo.CreateFile(path);
         }
     }
 }

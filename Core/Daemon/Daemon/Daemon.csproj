@@ -53,6 +53,7 @@
     <Compile Include="Backups\BackupFactory.cs" />
     <Compile Include="Backups\BackupInfo.cs" />
     <Compile Include="Backups\BackupLog.cs" />
+    <Compile Include="Backups\BackupManager.cs" />
     <Compile Include="Backups\BackupType.cs" />
     <Compile Include="Backups\FileBackupedInfo.cs" />
     <Compile Include="Backups\FullBackup.cs" />
