@@ -7,30 +7,54 @@ using System.IO;
 
 namespace Daemon.Backups
 {
+    
     public class Backup
     {
-        public static string BackupMainDirectory = "C:/Users/rambo_000/Desktop/TESTFOLDER/BACKUPS/";
+        List<string> BackupDestinations = new List<string>();
+        List<string> BackupSources = new List<string>();
         public int ID { get; set; }
         List<IBackup> AllBackups { get; set; }
+        public BackupType backupType { get; set; }
+        public bool Zipped = false;
 
-        public Backup()
+
+        public Backup(int id,BackupType type)
         {
             AllBackups = new List<IBackup>();
+            this.ID = id;
+            this.backupType = type;
+        }
+
+        public void AddDestination(string destination)
+        {
+            BackupDestinations.Add(destination);
         }
 
         public void BackupAll()
         {
-            if (!Directory.Exists(BackupMainDirectory + ID))
-                Directory.CreateDirectory(BackupMainDirectory + ID);
-            foreach (IBackup item in AllBackups)
-                item.StartBackup();
+            foreach (string pathItem in BackupDestinations)
+            {
+                if (!Directory.Exists(pathItem + "/"  +  ID))
+                    Directory.CreateDirectory(pathItem + "/" + ID);
+
+                for (int i = 0; i < BackupSources.Count; i++)
+                {
+                    new FullBackup(BackupSources[i], Zipped).StartBackup(pathItem + "/" + ID + "/" + i + "/Backup");
+                }
+            }
+          
         }
 
         public void AddBackup(IBackup backup)
         {
             backup.ID = AllBackups.Count;
-            backup.DestinationPath = BackupMainDirectory + ID + "/" + backup.ID + "/Backup";
+            backup.DestinationPath = "";
             AllBackups.Add(backup);
+        }
+
+        public void AddSource(string sourcePath)
+        {
+            BackupSources.Add(sourcePath);
         }
     }
 }

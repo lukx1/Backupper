@@ -56,7 +56,7 @@ namespace Server.Controllers
             if (taskHandler.errors.Any(r => r != null))
                 return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.BadRequest, new TaskResponse() { ErrorMessages = taskHandler.errors });
             else
-                return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.OK, new TaskResponse() { ErrorMessages = new List<ErrorMessage>(),Tasks =tasks });
+                return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.Created, new TaskResponse() { ErrorMessages = new List<ErrorMessage>(),Tasks =tasks });
         }
 
         /// <summary>

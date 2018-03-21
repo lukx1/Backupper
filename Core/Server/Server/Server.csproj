@@ -212,7 +212,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Admin\DaemonInfoModel.cs" />
     <Compile Include="Models\Admin\LoginModel.cs" />
+    <Compile Include="Models\Admin\TaskLocationsModel.cs" />
     <Compile Include="Models\BackupType.cs" />
     <Compile Include="Models\Daemon.cs" />
     <Compile Include="Models\DaemonGroup.cs" />
@@ -322,6 +324,15 @@
     <Content Include="Views\AdminUsers\AddEdit.cshtml" />
     <Content Include="Views\AdminUsers\Delete.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\AdminTasks\NewTask.cshtml" />
+    <Content Include="Views\AdminTasks\NewTaskLocation.cshtml" />
+    <Content Include="Views\AdminTasks\NewTaskLocationTime.cshtml" />
+    <Content Include="Views\AdminTasks\NewTime.cshtml" />
+    <Content Include="Views\AdminTasks\NewLocationCredentials.cshtml" />
+    <Content Include="Views\AdminDaemons\DaemonInfo.cshtml" />
+    <Content Include="Views\AdminTasks\EditTask.cshtml" />
+    <Content Include="Views\AdminTasks\DeleteTask.cshtml" />
+    <Content Include="Views\AdminTasks\TaskLocations.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

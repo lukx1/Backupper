@@ -8,12 +8,28 @@ namespace Server.Controllers
 {
     public class AdminDaemonsController : Controller
     {
+        public ActionResult DaemonInfo(int id)
+        {
+            try
+            {
+                var daemon = new Models.Admin.DaemonInfoModel();
+                daemon.Id = id;
+                daemon.Populate();
+
+                return View(daemon);
+            }
+            catch (Exception e)
+            {
+                TempData["customMessage"] = e.Message;
+                return RedirectToAction("Index", "AdminDaemons");
+            }
+        }
+
         public ActionResult Index()
         {
             try
             {
-                using (var db = new Models.MySQLContext())
-                    return View(db.Daemons.ToList());
+                return View(Models.Admin.DaemonInfoModel.GetAllOnlyBasicInfo());
             }
             catch (Exception e)
             {
