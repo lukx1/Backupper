@@ -9,6 +9,8 @@ using System.Net.NetworkInformation;
 using Shared.NetMessages.TaskMessages;
 using Daemon.Utility;
 using System.Net.Http;
+using System.Threading;
+using Daemon.Logging;
 
 namespace Daemon.Communication
 {
@@ -17,52 +19,134 @@ namespace Daemon.Communication
     /// </summary>
     public class DaemonClient
     {
-        private Messenger messenger { get; set; }
-        private IConfig config = new DynamicConfig();
+        private Messenger messenger;
+        private LoginSettings settings = new LoginSettings();
         private TaskHandler taskHandler = new TaskHandler();
-
-        /// <summary>
-        /// Vypíše všechno v BRE
-        /// </summary>
-        /// <param name="e"></param>
-        private void DumpErrorMsgs(BadResponseException e)
-        {
-            Console.WriteLine(e.Message);
-            e.ErrorMessages.ForEach(r => Console.WriteLine(r.id + ":" + r.message + "->" + r.value));
-        }
+        private Authenticator authenticator;
+        private SessionRefresher sessionRefresher;
+        private ILogger logger = LoggerFactory.CreateAppropriate();
+        private Task TaskTickerTask;
 
         /// <summary>
         /// Připojí se a začne provádět tasky
         /// </summary>
         public DaemonClient()
         {
-            messenger = new Messenger(config.Server);
+            messenger = new Messenger(settings.Server);
+        }
+
+        /// <summary>
+        /// Vypíše všechno v BRE
+        /// </summary>
+        /// <param name="e"></param>
+        private void DumpErrorMsgs<T>(INetException<T> e, LogType logType = LogType.ERROR)
+        {
+            logger.Log(e.Message, logType);
+            e.ErrorMessages.ForEach(r => logger.Log(r.id + ":" + r.message + "->" + r.value, logType));
+        }
+
+        /// <summary>
+        /// Pokud je nutno tak se introducne a načte existující tasky
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> Startup() //TODO : returnovat log + standardizace logu interface
+        {
+            authenticator = new Authenticator(messenger);
+            if (settings.Uuid == null)// Daemon nema Uuid -> musi se introducnout
+            {
+                try
+                {
+                    await authenticator.Introduce();
+                }
+                catch(INetException<IntroductionResponse> e)
+                {
+                    logger.Log(
+                        $"Nebylo možné se představit{Util.Newline}" +
+                        $"Error #1-{e.ErrorMessages[0].id}{Util.Newline}" +
+                        $"Příčina : {e.ErrorMessages[0].message}{Util.Newline}" +
+                        $"Nelze pokračovat",LogType.CRITICAL
+                        );
+                    return false;
+                }
+                catch (FormatException e)
+                {
+                    logger.Log($"Nebylo možné se představit{Util.Newline}" +
+                        $"Error #2-{e.Message}{Util.Newline}" +
+                        $"Příčina : {e.StackTrace}{Util.Newline}" +
+                        $"Nelze pokračovat",LogType.CRITICAL
+                        );
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public async Task Run()
+        {
+            bool canStart = await Startup();
+            if (!canStart)
+                return;// Nešlo zapnout aplikace a nelze pokračovat
+            while (true) // Pokouší se příhlásit dokut se to nepovede
+            {
+                var guid = await authenticator.AttemptLogin();
+                if(guid != Guid.Empty)
+                {
+                    settings.SessionUuid = guid;
+                    settings.Save();
+                    break;
+                }
+                logger.Log("Přihlášení se nepovedlo, bude se opakovat za " + settings.LoginFailureWaitPeriodMs, LogType.ERROR);
+                Thread.Sleep(settings.LoginFailureWaitPeriodMs);
+            }
+            sessionRefresher = new SessionRefresher(authenticator);// Opakuje login aby session nevyprsel
+            sessionRefresher.Run();
+            TaskTickerTask = Task.Run(() => TaskTicker());//Refreshuje tasky aby byli aktualni se serverem
+        }
+
+        private async Task TaskTicker()
+        {
+            Thread.CurrentThread.Name = "TaskTicker";
+            while (true)
+            {
+                await LoadTasks();
+                logger.Log("Tasky načteny", LogType.INFORMATION);
+                Thread.Sleep(settings.TaskRefreshPeriodMs);
+            }
+        }
+
+        
+
+        private async Task<bool> LoadTasks()
+        {
             try
             {
-                if (config.Uuid == null)// Daemon nema Uuid
-                    Introduce();
-
-                Login(); // Ziska session id
+                if (settings.Debug)
+                    TaskTest();
+                else
+                    await ApplyTasks();
+                return true;
             }
-            catch(BadResponseException e)
+            catch(INetException<TaskResponse> e)
             {
-                Console.WriteLine("Chyba při pokusu o přihlášení :"+e.Message);
-                e.ErrorMessages.ForEach(r => Console.WriteLine(r.id + ":" + r.message + "->" + r.value));
-                return;
+                logger.Log(
+                        $"Nebylo možná načíst tasky{Util.Newline}" +
+                        $"Error #2-{e.ErrorMessages[0].id}{Util.Newline}" +
+                        $"Příčina : {e.ErrorMessages[0].message}{Util.Newline}",LogType.ERROR
+                        );
+                return false;
             }
-
-            if(config.Debug)
-                TaskTest();
-            else
-                ApplyTasks().Wait();
+            
         }
+
+        
 
         /// <summary>
         /// Pro testování tasků
         /// </summary>
         private void TaskTest()
         {
-            taskHandler.Tasks = messenger.ReadMessage<TaskResponse>("{\"Tasks\":[{\"id\":1,\"uuidDaemon\":\"50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e\",\"name\":\"DebugTask\",\"description\":\"For debugging\",\"taskLocations\":[{\"id\":1,\"source\":{\"id\":6,\"uri\":\"test.com/docs/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":4,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"destination\":{\"id\":7,\"uri\":\"test.com/backups/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":5,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"backupType\":{\"Id\":1,\"ShortName\":\"NORM\",\"LongName\":\"Normal\"},\"times\":[{\"id\":3,\"interval\":0,\"name\":\"Dneska\",\"repeat\":false,\"startTime\":\""+DateTime.Now.AddSeconds(5)+"\",\"endTime\":\"0001-01-01T00:00:00\"},{\"id\":4,\"interval\":"+5+",\"name\":\"Kazdy Patek\",\"repeat\":true,\"startTime\":\"2018-02-23T00:00:00\",\"endTime\":\"0001-01-01T00:00:00\"}]}]}],\"ErrorMessages\":[]}").Tasks ;
+            logger.Log("Probíhá debugovací metoda taskTest", LogType.DEBUG);
+            taskHandler.Tasks = Messenger.ReadMessage<TaskResponse>("{\"Tasks\":[{\"id\":1,\"uuidDaemon\":\"50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e\",\"name\":\"DebugTask\",\"description\":\"For debugging\",\"taskLocations\":[{\"id\":1,\"source\":{\"id\":6,\"uri\":\"test.com/docs/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":4,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"destination\":{\"id\":7,\"uri\":\"test.com/backups/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":5,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"backupType\":{\"Id\":1,\"ShortName\":\"NORM\",\"LongName\":\"Normal\"},\"times\":[{\"id\":3,\"interval\":0,\"name\":\"Dneska\",\"repeat\":false,\"startTime\":\""+DateTime.Now.AddSeconds(5)+"\",\"endTime\":\"0001-01-01T00:00:00\"},{\"id\":4,\"interval\":"+5+",\"name\":\"Kazdy Patek\",\"repeat\":true,\"startTime\":\"2018-02-23T00:00:00\",\"endTime\":\"0001-01-01T00:00:00\"}]}]}],\"ErrorMessages\":[]}").Tasks ;
             taskHandler.CreateTimers();
         }
 
@@ -74,17 +158,8 @@ namespace Daemon.Communication
         private bool IsSessionStillValid(DateTime lastCheck)
         {
             return DateTime.Compare(DateTime.Now.AddMinutes(
-                config.SessionLength-config.SessionLengthPadding), lastCheck) == -1;
+                settings.SessionLengthMinutes-settings.SessionLengthPaddingMinutes), lastCheck) == -1;
                 
-        }
-
-        /// <summary>
-        /// Zkontroluje jestli je login platný
-        /// </summary>
-        private void CheckLogin()
-        {
-            if (config.Session == null || !IsSessionStillValid(config.LastCommunicator/*???jmeno*/))
-                Login();
         }
 
         /// <summary>
@@ -98,7 +173,7 @@ namespace Daemon.Communication
                 taskHandler.Tasks = await GetAllTaskFromDB();
                 taskHandler.CreateTimers();
             }
-            catch(BadResponseException e)
+            catch(INetException<TaskResponse> e)
             {
                 DumpErrorMsgs(e);
             }
@@ -110,50 +185,10 @@ namespace Daemon.Communication
         /// <returns></returns>
         private async Task<List<DbTask>> GetAllTaskFromDB()
         {
-            CheckLogin();
-            var responseJson = await messenger.SendAsyncGetJson(new TaskMessage() {sessionUuid = config.Session }, "task", HttpMethod.Post);
-            var resp = messenger.ReadMessage<TaskResponse>(responseJson);
-            if (!messenger.IsSuccessStatusCode()) // TODO: Tohle nemuze byt v async metode pokud neni messenger locknut
-                throw new BadResponseException(messenger.StatusCode + " Error",resp.ErrorMessages); //TODO: Custom exception
-            return resp.Tasks;
+            var resp = await messenger.SendAsync<TaskResponse>(new TaskMessage() {sessionUuid = settings.SessionUuid }, "task", HttpMethod.Post);
+            sessionRefresher.ExternalyRefreshed();
+            return resp.ServerResponse.Tasks;
         }
 
-        /// <summary>
-        /// Introduces Daemon to the server
-        /// </summary>
-        public async void Introduce()
-        {
-            String firstMacAddress = NetworkInterface
-                .GetAllNetworkInterfaces()
-                .Where(nic => nic.OperationalStatus == OperationalStatus.Up && nic.NetworkInterfaceType != NetworkInterfaceType.Loopback)
-                .Select(nic => nic.GetPhysicalAddress().ToString())
-                .FirstOrDefault();
-
-            IntroductionMessage introductionMessage = new IntroductionMessage()
-            {
-                preSharedKey = "tRnhF0IfmkDrIZU6dbCusQ==",
-                id = 1,
-                macAdress = firstMacAddress.ToCharArray(),
-                os = Environment.OSVersion.ToString(),
-                version = 23
-            };
-
-            string response = await messenger.SendAsyncGetJson(introductionMessage, "IntroductionController", System.Net.Http.HttpMethod.Post);
-            Console.WriteLine(response);
-        }
-
-        /// <summary>
-        /// Přihlásí uživatele a zaznamená si session do configu
-        /// </summary>
-        public void Login()
-        {
-            
-            LoginMessage loginMessage = new LoginMessage() {password = config.Pass,uuid = config.Uuid };
-            messenger.Send(loginMessage, "login", HttpMethod.Post);
-            LoginResponse response = messenger.ReadMessage<LoginResponse>();
-            if (!messenger.IsSuccessStatusCode())
-                throw new BadResponseException(messenger.StatusCode + " Error", response.errorMessage);
-            config.Session = response.sessionUuid;
-        }
     }
 }

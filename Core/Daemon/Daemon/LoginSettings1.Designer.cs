@@ -25,19 +25,7 @@ namespace Daemon {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string SessionUuid {
-            get {
-                return ((string)(this["SessionUuid"]));
-            }
-            set {
-                this["SessionUuid"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool Debug {
             get {
                 return ((bool)(this["Debug"]));
@@ -49,7 +37,7 @@ namespace Daemon {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("VO0e+84BW4wqVYsuUpGeWw==")]
         public string Password {
             get {
                 return ((string)(this["Password"]));
@@ -72,10 +60,10 @@ namespace Daemon {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Uuid {
+        [global::System.Configuration.DefaultSettingValueAttribute("50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e")]
+        public global::System.Guid Uuid {
             get {
-                return ((string)(this["Uuid"]));
+                return ((global::System.Guid)(this["Uuid"]));
             }
             set {
                 this["Uuid"] = value;
@@ -127,6 +115,78 @@ namespace Daemon {
             }
             set {
                 this["TimerDebugOnly"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("tRnhF0IfmkDrIZU6dbCusQ==;1")]
+        public string PreSharedKeyWithIdSemiColSep {
+            get {
+                return ((string)(this["PreSharedKeyWithIdSemiColSep"]));
+            }
+            set {
+                this["PreSharedKeyWithIdSemiColSep"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.1.0")]
+        public string Version {
+            get {
+                return ((string)(this["Version"]));
+            }
+            set {
+                this["Version"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300000")]
+        public int LoginFailureWaitPeriodMs {
+            get {
+                return ((int)(this["LoginFailureWaitPeriodMs"]));
+            }
+            set {
+                this["LoginFailureWaitPeriodMs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("900000")]
+        public int TaskRefreshPeriodMs {
+            get {
+                return ((int)(this["TaskRefreshPeriodMs"]));
+            }
+            set {
+                this["TaskRefreshPeriodMs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8")]
+        public int LoggingLevel {
+            get {
+                return ((int)(this["LoggingLevel"]));
+            }
+            set {
+                this["LoggingLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("00000000-0000-0000-0000-000000000000")]
+        public global::System.Guid SessionUuid {
+            get {
+                return ((global::System.Guid)(this["SessionUuid"]));
+            }
+            set {
+                this["SessionUuid"] = value;
             }
         }
     }

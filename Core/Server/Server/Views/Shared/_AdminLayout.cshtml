@@ -1,0 +1,12 @@
+﻿@{ 
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (TempData["customMessage"] != null)
+{
+    <div class="alert alert-info" role="alert">
+        @TempData["customMessage"]
+    </div>
+}
+
+@RenderBody()

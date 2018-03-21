@@ -38,6 +38,7 @@ namespace Server.Controllers
             else
                 return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.OK, new UserResponse() { ErrorMessages = userHandler.Errors });
         }
+
         public HttpResponseMessage Delete([FromBody]UserMessage userMessage)
         {
             userHandler.DeleteUsers(userMessage);

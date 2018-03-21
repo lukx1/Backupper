@@ -145,30 +145,32 @@ namespace Server.Objects
                         LongName = taskLocation.BackupType.LongName,
                         ShortName = taskLocation.BackupType.ShortName
                     };
+                    var protocol = new Shared.NetMessages.TaskMessages.DbProtocol()
+                    {
+                        Id = taskLocation.Location.Protocol.Id,
+                        LongName = taskLocation.Location.Protocol.LongName,
+                        ShortName = taskLocation.Location.Protocol.ShortName
+                    };
+                    var locCred  = new Shared.NetMessages.TaskMessages.DbLocationCredential()
+                    {
+                        Id = taskLocation.Location.LocationCredential.Id,
+                        host = taskLocation.Location.LocationCredential.Host,
+                        password = taskLocation.Location.LocationCredential.Password,
+                        port = taskLocation.Location.LocationCredential.Port == null ? 0: (int)taskLocation.Location.LocationCredential.Port,
+                        username = taskLocation.Location.LocationCredential.Username,
+                        LogonType = new Shared.NetMessages.TaskMessages.DbLogonType()
+                        {
+                            Id = taskLocation.Location.LocationCredential.LogonType.Id,
+                            Name = taskLocation.Location.LocationCredential.LogonType.Name
+                        }
+                    };
                     dbTaskLocation.source = new Shared.NetMessages.TaskMessages.DbLocation()
                     {
                         id = taskLocation.Location.Id,
                         uri = taskLocation.Location.Uri,
-                        protocol = new Shared.NetMessages.TaskMessages.DbProtocol()
-                        {
-                            Id = taskLocation.Location.Protocol.Id,
-                            LongName = taskLocation.Location.Protocol.LongName,
-                            ShortName = taskLocation.Location.Protocol.ShortName
-                        },
-                        LocationCredential = new Shared.NetMessages.TaskMessages.DbLocationCredential()
-                        {
-                            Id = taskLocation.Location.LocationCredential.Id,
-                            host = taskLocation.Location.LocationCredential.Host,
-                            password = taskLocation.Location.LocationCredential.Password,
-                            port = (int)taskLocation.Location.LocationCredential.Port,
-                            username = taskLocation.Location.LocationCredential.Username,
-                            LogonType = new Shared.NetMessages.TaskMessages.DbLogonType()
-                            {
-                                Id = taskLocation.Location.LocationCredential.LogonType.Id,
-                                Name = taskLocation.Location.LocationCredential.LogonType.Name
-                            }
-                        }
                     };
+                dbTaskLocation.source.protocol = protocol;
+                dbTaskLocation.source.LocationCredential = locCred;
                 dbTaskLocation.destination = new Shared.NetMessages.TaskMessages.DbLocation()
                 {
                     id = taskLocation.Location1.Id,
@@ -184,7 +186,7 @@ namespace Server.Objects
                         Id = taskLocation.Location1.LocationCredential.Id,
                         host = taskLocation.Location1.LocationCredential.Host,
                         password = taskLocation.Location1.LocationCredential.Password,
-                        port = (int)taskLocation.Location1.LocationCredential.Port,
+                        port = taskLocation.Location.LocationCredential.Port == null ? 0 : (int)taskLocation.Location.LocationCredential.Port,
                         username = taskLocation.Location1.LocationCredential.Username,
                         LogonType = new Shared.NetMessages.TaskMessages.DbLogonType()
                         {

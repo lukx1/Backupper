@@ -23,6 +23,13 @@ namespace Server.Authentication
             mysql = new MySQLContext();
         }
 
+        private LoginResponse LoginErrMaker(HttpStatusCode code, string msg, string val = null)
+        {
+            LoginResponse response = new LoginResponse();
+            response.ErrorMessages = new List<ErrorMessage>();
+            response.ErrorMessages.Add(new ErrorMessage() { id = (int)code, message = msg, value = val });
+            return response;
+        }
 
         /// <summary>
         /// Prihlasi daemona, hazi ArgumentException nebo ArgumentNullexception pokud nastane chyba
@@ -36,9 +43,9 @@ namespace Server.Authentication
             Daemon daemon = mysql.Daemons.Where(r => r.Uuid == uuid).FirstOrDefault();
 
             if (daemon == null)
-                return new LoginResponse() { errorMessage = new ErrorMessage {id = (int)HttpStatusCode.NotFound, message = "Daemon s daným uuid nebyl nalezen",value=uuid.ToString() } };
+                return LoginErrMaker(HttpStatusCode.NotFound, "Daemon s daným uuid nebyl nalezen", uuid.ToString());
             if (!IsPasswordValid(password, daemon))
-                return new LoginResponse() { errorMessage = new ErrorMessage { id = (int)HttpStatusCode.Forbidden, message = "Login je neplatný" } };
+                return LoginErrMaker(HttpStatusCode.Forbidden, "Login je neplatný");
 
             LogedInDaemon logedInDaemon = GetLogedInDaemonWithUuid(uuid);
 

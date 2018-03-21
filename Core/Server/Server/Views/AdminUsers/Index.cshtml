@@ -1,25 +1,23 @@
 ﻿@model IEnumerable<global::Server.Models.User>
 
 @{
-    ViewBag.Title = "Users";
+	ViewBag.Title = "Users - List Page";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
-<h2>Users</h2>
-
 <table style="width:100%">
 	<tr>
-		<th>ID</th>
 		<th>Nickname</th>
 		<th>FullName</th>
-		<th>Hashed Password</th>
 	</tr>
 	@foreach (var item in Model)
 	{
-	<tr>
-		<td>@item.Id</td>
-		<td>@item.Nickname</td>
-		<td>@item.FullName</td>
-		<td>@item.Password</td>
-	</tr>
+		<tr>
+			<td>@item.Nickname</td>
+			<td>@item.FullName</td>
+			<td>
+				<button class="btn" formdata="get" type="submit"  formaction="/AdminUsers/AddEdit?id=@item.Id">Edit</button>
+				<button class="btn" formdata="get" type="submit" href="/AdminUsers/Delete?id=@item.Id">Delete</button>
+			</td>
+		</tr>
 	}
 </table>

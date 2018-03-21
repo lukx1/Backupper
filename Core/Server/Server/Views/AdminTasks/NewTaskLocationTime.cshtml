@@ -1,0 +1,17 @@
+﻿@model global::Server.Models.TaskLocationsTime
+
+@{
+    ViewBag.Title = "New Task Location Time";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+    Html.LabelFor(x => x.IdTaskLocation);
+    Html.TextBoxFor(x => x.IdTaskLocation);
+    Html.LabelFor(x => x.IdTime);
+    Html.TextBoxFor(x => x.IdTime);
+
+    <input type="submit" value="Confirm" />
+    <input type="reset" value="Clear" />
+}

@@ -11,7 +11,12 @@ namespace Server
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-3.3.1.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
+			bundles.Add(new ScriptBundle("~/bundles/jquery_validate").Include(
+						"~/Scripts/jquery.validate.js",
+						"~/Scripts/jquery.validate.unobtrusive.js"
+						));
+
+			bundles.Add(new ScriptBundle("~/bundles/bootstrap").Include(
                       "~/Scripts/bootstrap.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(

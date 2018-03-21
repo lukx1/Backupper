@@ -8,7 +8,7 @@ namespace Server.Models
     public partial class MySQLContext : DbContext
     {
         public MySQLContext()
-            : base("name=MySQLContext")
+            : base(MySQLConnectionStringMaker.GetConnectionString())
         {
         }
 

@@ -60,7 +60,7 @@ namespace Server.Controllers
         }
 
         /// <summary>
-        /// Creates tasks
+        /// Vytvoří tasky
         /// </summary>
         /// <param name="taskMessage"></param>
         /// <returns></returns>
@@ -70,7 +70,7 @@ namespace Server.Controllers
         }
 
         /// <summary>
-        /// Creates tasks
+        /// Získá tasky pro daemona
         /// </summary>
         /// <param name="taskMessage"></param>
         /// <returns></returns>

@@ -31,7 +31,7 @@ namespace Shared.NetMessages
         /// <summary>
         /// Verze komunikačního protokolu
         /// </summary>
-        public uint version;
+        public Version version;
     }
 }
 

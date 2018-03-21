@@ -1,0 +1,33 @@
+﻿@model global::Server.Models.Task
+
+@{
+	ViewBag.Title = "Edit Task";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("EditTask", "AdminTasks", FormMethod.Post))
+{
+	<table>
+		@Html.HiddenFor(x => x.Id)
+		@Html.HiddenFor(x => x.IdDaemon)
+		<tr>
+			<td>
+				@Html.LabelFor(x => x.Name)
+			</td>
+			<td>
+				@Html.TextBoxFor(x => x.Name)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				@Html.LabelFor(x => x.Description)
+			</td>
+			<td>
+				@Html.TextAreaFor(x => x.Description)
+			</td>
+		</tr>
+	</table>
+
+	<input type="submit" value="Confirm" />
+	<input type="reset" value="Clear" />
+}

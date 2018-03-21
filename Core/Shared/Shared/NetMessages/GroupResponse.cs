@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages
 {
-    public class GroupResponse : INetMessage
+    public class GroupResponse : INetMessage, INetError
     {
         public List<DbGroup> Groups;
-        public List<ErrorMessage> ErrorMessages;
+        public List<ErrorMessage> ErrorMessages { get;set; }
     }
 }
