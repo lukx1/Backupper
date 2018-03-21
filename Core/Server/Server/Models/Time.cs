@@ -17,7 +17,7 @@ namespace Server.Models
 
         public int Id { get; set; }
 
-        public int? Interval { get; set; }
+        public int Interval { get; set; }
 
         [Required]
         [StringLength(40)]

@@ -24,9 +24,12 @@ namespace Server.Models
         [StringLength(64)]
         public string ShortText { get; set; }
 
-        [Required]
         [StringLength(512)]
         public string LongText { get; set; }
+
+        [Required]
+        [StringLength(32)]
+        public string Origin { get; set; }
 
         public virtual Daemon Daemon { get; set; }
     }

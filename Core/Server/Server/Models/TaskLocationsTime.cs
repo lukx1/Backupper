@@ -11,9 +11,9 @@ namespace Server.Models
     {
         public int Id { get; set; }
 
-        public int? IdTaskLocation { get; set; }
+        public int IdTaskLocation { get; set; }
 
-        public int? IdTime { get; set; }
+        public int IdTime { get; set; }
 
         public virtual TaskLocation TaskLocation { get; set; }
 

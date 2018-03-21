@@ -17,7 +17,7 @@ namespace Server.Models
 
         public int Id { get; set; }
 
-        public int? IdDaemon { get; set; }
+        public int IdDaemon { get; set; }
 
         [Required]
         [StringLength(40)]

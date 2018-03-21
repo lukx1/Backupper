@@ -22,9 +22,9 @@ namespace Server.Models
         [StringLength(1024)]
         public string Uri { get; set; }
 
-        public int? IdProtocol { get; set; }
+        public int IdProtocol { get; set; }
 
-        public int? IdLocationCredentails { get; set; }
+        public int IdLocationCredentails { get; set; }
 
         public virtual LocationCredential LocationCredential { get; set; }
 

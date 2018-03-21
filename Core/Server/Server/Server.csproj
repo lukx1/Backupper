@@ -236,6 +236,7 @@
     <Compile Include="Models\TaskLocationLog.cs" />
     <Compile Include="Models\TaskLocationsTime.cs" />
     <Compile Include="Models\Time.cs" />
+    <Compile Include="Models\UniversalLog.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserGroup.cs" />
     <Compile Include="Models\UserLog.cs" />

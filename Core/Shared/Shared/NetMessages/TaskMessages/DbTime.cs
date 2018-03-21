@@ -16,7 +16,7 @@ namespace Shared.NetMessages.TaskMessages
         /// <summary>
         /// Interval záloh v sekundách
         /// </summary>
-        public int? interval;
+        public int interval;
 
         /// <summary>
         /// Jméno času

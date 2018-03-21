@@ -11,9 +11,9 @@ namespace Server.Models
     {
         public int Id { get; set; }
 
-        public int? IdDaemon { get; set; }
+        public int IdDaemon { get; set; }
 
-        public int? IdGroup { get; set; }
+        public int IdGroup { get; set; }
 
         public virtual Daemon Daemon { get; set; }
 

@@ -18,13 +18,13 @@ namespace Server.Models
 
         public int Id { get; set; }
 
-        public int? IdTask { get; set; }
+        public int IdTask { get; set; }
 
-        public int? IdSource { get; set; }
+        public int IdSource { get; set; }
 
-        public int? IdDestination { get; set; }
+        public int IdDestination { get; set; }
 
-        public int? IdBackupTypes { get; set; }
+        public int IdBackupTypes { get; set; }
 
         public virtual BackupType BackupType { get; set; }
 
