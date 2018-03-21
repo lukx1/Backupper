@@ -54,8 +54,7 @@ namespace Daemon
             }
             catch (Exception e)
             {
-                DumpErr(e);
-                
+                DumpErr(e);              
             }
         }
 

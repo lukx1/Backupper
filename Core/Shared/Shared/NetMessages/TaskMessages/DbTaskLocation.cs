@@ -30,6 +30,11 @@ namespace Shared.NetMessages.TaskMessages
         public DbBackupType backupType;
 
         /// <summary>
+        /// Detaily o tom jak má zálohování proběhnout
+        /// </summary>
+        public TaskLocationDetails taskLocationDetails;
+
+        /// <summary>
         /// Kdy kopírovat
         /// </summary>
         public List<DbTime> times;

@@ -58,6 +58,7 @@
     <Compile Include="NetMessages\AccessorLogResponse.cs" />
     <Compile Include="NetMessages\AccessorMessages\DbAccessorLog.cs" />
     <Compile Include="NetMessages\INetError.cs" />
+    <Compile Include="NetMessages\TaskMessages\TaskLocationDetails.cs" />
     <Compile Include="NetMessages\UserMessage.cs" />
     <Compile Include="NetMessages\OtherMessages\DbUser.cs" />
     <Compile Include="NetMessages\OtherMessages\DbPreSharedKey.cs" />

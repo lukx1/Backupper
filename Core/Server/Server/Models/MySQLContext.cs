@@ -28,6 +28,7 @@ namespace Server.Models
         public virtual DbSet<LogType> LogTypes { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Protocol> Protocols { get; set; }
+        public virtual DbSet<TaskLocationDetail> TaskLocationDetails { get; set; }
         public virtual DbSet<TaskLocationLog> TaskLocationLogs { get; set; }
         public virtual DbSet<TaskLocation> TaskLocations { get; set; }
         public virtual DbSet<TaskLocationsTime> TaskLocationsTimes { get; set; }
@@ -213,6 +214,15 @@ namespace Server.Models
                 .HasMany(e => e.Locations)
                 .WithRequired(e => e.Protocol)
                 .HasForeignKey(e => e.IdProtocol);
+
+            modelBuilder.Entity<TaskLocationDetail>()
+                .Property(e => e.ZipAlgorithm)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<TaskLocationDetail>()
+                .HasMany(e => e.TaskLocations)
+                .WithRequired(e => e.TaskLocationDetail)
+                .HasForeignKey(e => e.IdTaskLocationDetails);
 
             modelBuilder.Entity<TaskLocationLog>()
                 .Property(e => e.ShortText)

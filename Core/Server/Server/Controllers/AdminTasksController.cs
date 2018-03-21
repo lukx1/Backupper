@@ -28,7 +28,7 @@ namespace Server.Controllers
                 }
 
                 TempData["customMessage"] = "Adding was success";
-                return RedirectToAction("DaemonInfo", "AdminDaemons", new { id = task.IdDaemon.Value });
+                return RedirectToAction("DaemonInfo", "AdminDaemons", new { id = task.IdDaemon });
             }
             catch (Exception e)
             {
@@ -69,7 +69,7 @@ namespace Server.Controllers
                 }
 
                 TempData["customMessage"] = "Update was success";
-                return RedirectToAction("DaemonInfo", "AdminDaemons", new { id = task.IdDaemon.Value });
+                return RedirectToAction("DaemonInfo", "AdminDaemons", new { id = task.IdDaemon });
             }
             catch (Exception e)
             {

@@ -27,5 +27,6 @@ namespace Shared.NetMessages.TaskMessages
         /// Přídavné informace k připojení
         /// </summary>
         public DbLocationCredential LocationCredential;
+
     }
 }

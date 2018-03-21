@@ -235,6 +235,7 @@
     <Compile Include="Models\Protocol.cs" />
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\TaskLocation.cs" />
+    <Compile Include="Models\TaskLocationDetail.cs" />
     <Compile Include="Models\TaskLocationLog.cs" />
     <Compile Include="Models\TaskLocationsTime.cs" />
     <Compile Include="Models\Time.cs" />

@@ -111,7 +111,7 @@ namespace Daemon
                     }
                 }
 
-            }, null, dueTime, TimeSpan.FromMilliseconds(time.interval == null ? 0 : (int)time.interval)/*viz. pred.*/);
+            }, null, dueTime, TimeSpan.FromMilliseconds(time.interval));
             return timedBackup;
         }
 
@@ -176,7 +176,7 @@ namespace Daemon
             backupFactory.BackupType = BackupType.Parse(taskLocation.backupType);
             backupFactory.DestinationPath = taskLocation.destination.uri;
             backupFactory.SourcePath = taskLocation.source.uri;
-            backupFactory.IsZip = false; //TODO : Pridat TaskLocation details do db
+            backupFactory.IsZip = taskLocation.taskLocationDetails != null; //TODO : Pridat TaskLocation details do db
 
             return backupFactory.CreateFromBackupType();
         }
