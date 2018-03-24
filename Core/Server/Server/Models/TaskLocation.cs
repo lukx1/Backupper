@@ -13,7 +13,6 @@ namespace Server.Models
         public TaskLocation()
         {
             TaskLocationLogs = new HashSet<TaskLocationLog>();
-            TaskLocationsTimes = new HashSet<TaskLocationsTime>();
         }
 
         public int Id { get; set; }
@@ -40,8 +39,5 @@ namespace Server.Models
         public virtual ICollection<TaskLocationLog> TaskLocationLogs { get; set; }
 
         public virtual Task Task { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TaskLocationsTime> TaskLocationsTimes { get; set; }
     }
 }

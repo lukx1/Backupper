@@ -31,7 +31,6 @@ namespace Server.Models
         public virtual DbSet<TaskLocationDetail> TaskLocationDetails { get; set; }
         public virtual DbSet<TaskLocationLog> TaskLocationLogs { get; set; }
         public virtual DbSet<TaskLocation> TaskLocations { get; set; }
-        public virtual DbSet<TaskLocationsTime> TaskLocationsTimes { get; set; }
         public virtual DbSet<Task> Tasks { get; set; }
         public virtual DbSet<Time> Times { get; set; }
         public virtual DbSet<UniversalLog> UniversalLogs { get; set; }
@@ -68,15 +67,11 @@ namespace Server.Models
                 .HasForeignKey(e => e.IdDaemonInfo);
 
             modelBuilder.Entity<DaemonLog>()
-                .Property(e => e.ShortText)
+                .Property(e => e.Header)
                 .IsUnicode(false);
 
             modelBuilder.Entity<DaemonLog>()
-                .Property(e => e.LongText)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<DaemonLog>()
-                .Property(e => e.Origin)
+                .Property(e => e.Content)
                 .IsUnicode(false);
 
             modelBuilder.Entity<DaemonPreSharedKey>()
@@ -225,20 +220,15 @@ namespace Server.Models
                 .HasForeignKey(e => e.IdTaskLocationDetails);
 
             modelBuilder.Entity<TaskLocationLog>()
-                .Property(e => e.ShortText)
+                .Property(e => e.Header)
                 .IsUnicode(false);
 
             modelBuilder.Entity<TaskLocationLog>()
-                .Property(e => e.LongText)
+                .Property(e => e.Content)
                 .IsUnicode(false);
 
             modelBuilder.Entity<TaskLocation>()
                 .HasMany(e => e.TaskLocationLogs)
-                .WithRequired(e => e.TaskLocation)
-                .HasForeignKey(e => e.IdTaskLocation);
-
-            modelBuilder.Entity<TaskLocation>()
-                .HasMany(e => e.TaskLocationsTimes)
                 .WithRequired(e => e.TaskLocation)
                 .HasForeignKey(e => e.IdTaskLocation);
 
@@ -260,24 +250,24 @@ namespace Server.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<Time>()
-                .HasMany(e => e.TaskLocationsTimes)
+                .HasMany(e => e.Tasks)
                 .WithRequired(e => e.Time)
                 .HasForeignKey(e => e.IdTime);
 
             modelBuilder.Entity<UniversalLog>()
-                .Property(e => e.ShortText)
+                .Property(e => e.Header)
                 .IsUnicode(false);
 
             modelBuilder.Entity<UniversalLog>()
-                .Property(e => e.LongText)
+                .Property(e => e.Content)
                 .IsUnicode(false);
 
             modelBuilder.Entity<UserLog>()
-                .Property(e => e.ShortText)
+                .Property(e => e.Header)
                 .IsUnicode(false);
 
             modelBuilder.Entity<UserLog>()
-                .Property(e => e.LongText)
+                .Property(e => e.Content)
                 .IsUnicode(false);
 
             modelBuilder.Entity<User>()

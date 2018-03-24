@@ -41,7 +41,15 @@ namespace Server.Objects
             {
                 Daemon = daemon,
                 Name = task.name,
-                Description = task.description
+                Description = task.description,
+                Time = new Time()
+                {
+                    EndTime = task.time.endTime,
+                    Interval = task.time.interval,
+                    Name = task.time.name,
+                    Repeat = task.time.repeat,
+                    StartTime = task.time.startTime,
+                }
             };
         }
 
@@ -114,16 +122,6 @@ namespace Server.Objects
             {
                 Models.TaskLocation rTaskLocation = CreateTaskLocationFromTaskLocation(taskLocation, rTask);
                 mysql.TaskLocations.Add(rTaskLocation);
-
-                foreach (var time in taskLocation.times)
-                {
-                    Models.Time rTime = CreateTimeFromTime(time);
-                    mysql.Times.Add(rTime);
-
-                    Models.TaskLocationsTime rTaskLocationsTime = CreateTaskLocationsTimeFromTaskLocationsTime(rTaskLocation, rTime);
-                    mysql.TaskLocationsTimes.Add(rTaskLocationsTime);
-
-                }
             }
             mysql.SaveChanges();
         }
@@ -174,7 +172,16 @@ namespace Server.Objects
                 name = task.Name,
                 description = task.Description,
                 id = task.Id, uuidDaemon = task.Daemon.Uuid,
-                lastChanged = task.LastChanged
+                lastChanged = task.LastChanged,
+                time = new Shared.NetMessages.TaskMessages.DbTime()
+                {
+                    id = task.Time.Id,
+                    endTime = task.Time.EndTime,
+                    interval = task.Time.Interval,
+                    name = task.Time.Name,
+                    repeat = task.Time.Repeat,
+                    startTime = task.Time.StartTime
+                }
             };
 
             List<Shared.NetMessages.TaskMessages.DbTaskLocation> taskLocations = new List<Shared.NetMessages.TaskMessages.DbTaskLocation>();
@@ -204,21 +211,6 @@ namespace Server.Objects
                     ZipAlgorithm = taskLocation.TaskLocationDetail.ZipAlgorithm
                 };
 
-                //Přidání časů
-                List<Shared.NetMessages.TaskMessages.DbTime> times = new List<Shared.NetMessages.TaskMessages.DbTime>();
-                foreach (var taskLocationTime in mysql.TaskLocationsTimes.Where(r => r.IdTaskLocation == taskLocation.Id))
-                {
-                    times.Add(new Shared.NetMessages.TaskMessages.DbTime()
-                    {
-                        id = taskLocationTime.Time.Id,
-                        endTime = taskLocationTime.Time.EndTime,
-                        interval = taskLocationTime.Time.Interval,
-                        name = taskLocationTime.Time.Name,
-                        repeat = taskLocationTime.Time.Repeat,
-                        startTime = taskLocationTime.Time.StartTime
-                    });
-                }
-                dbTaskLocation.times = times;
             }
             return dbTask;
         }

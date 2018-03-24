@@ -29,9 +29,13 @@ namespace Server.Models
         [Column(TypeName = "timestamp")]
         public DateTime LastChanged { get; set; }
 
+        public int IdTime { get; set; }
+
         public virtual Daemon Daemon { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TaskLocation> TaskLocations { get; set; }
+
+        public virtual Time Time { get; set; }
     }
 }

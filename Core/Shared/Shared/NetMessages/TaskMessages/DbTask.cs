@@ -43,6 +43,11 @@ namespace Shared.NetMessages.TaskMessages
         public List<DbTaskLocation> taskLocations;
 
         /// <summary>
+        /// Kdy má task proběhnout
+        /// </summary>
+        public DbTime time;
+
+        /// <summary>
         /// Naposledy změněno
         /// </summary>
         public DateTime lastChanged;

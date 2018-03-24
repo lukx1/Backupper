@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 22, 2018 at 10:54 PM
+-- Generation Time: Mar 24, 2018 at 01:37 PM
 -- Server version: 5.5.55-0+deb7u1
 -- PHP Version: 5.4.45-0+deb7u8
 
@@ -96,9 +96,8 @@ CREATE TABLE IF NOT EXISTS `DaemonLogs` (
   `IdLogType` int(11) NOT NULL,
   `Code` int(11) NOT NULL,
   `DateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `ShortText` varchar(64) NOT NULL,
-  `LongText` varchar(512) DEFAULT NULL,
-  `Origin` varchar(32) NOT NULL COMMENT 'Kde byl log vytvořen'
+  `Header` varchar(64) NOT NULL,
+  `Content` varchar(512) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -423,8 +422,8 @@ CREATE TABLE IF NOT EXISTS `TaskLocationLogs` (
   `IdLogType` int(11) NOT NULL,
   `Code` int(11) NOT NULL,
   `DateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `ShortText` varchar(64) NOT NULL,
-  `LongText` varchar(512) NOT NULL
+  `Header` varchar(64) NOT NULL,
+  `Content` varchar(512) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -452,26 +451,6 @@ INSERT INTO `TaskLocations` (`Id`, `IdTask`, `IdSource`, `IdDestination`, `IdBac
 -- --------------------------------------------------------
 
 --
--- Table structure for table `TaskLocationsTimes`
---
-
-CREATE TABLE IF NOT EXISTS `TaskLocationsTimes` (
-`Id` int(11) NOT NULL,
-  `IdTaskLocation` int(11) NOT NULL,
-  `IdTime` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `TaskLocationsTimes`
---
-
-INSERT INTO `TaskLocationsTimes` (`Id`, `IdTaskLocation`, `IdTime`) VALUES
-(1, 1, 3),
-(2, 1, 4);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `Tasks`
 --
 
@@ -480,17 +459,18 @@ CREATE TABLE IF NOT EXISTS `Tasks` (
   `IdDaemon` int(11) NOT NULL,
   `Name` varchar(40) NOT NULL,
   `Description` varchar(200) DEFAULT NULL,
-  `LastChanged` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Při jakékoliv změně'
+  `LastChanged` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Při jakékoliv změně',
+  `Time` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `Tasks`
 --
 
-INSERT INTO `Tasks` (`Id`, `IdDaemon`, `Name`, `Description`, `LastChanged`) VALUES
-(1, 1, 'DebugTask', 'For debugging', '2018-03-04 23:00:00'),
-(13, 1, 'wafwaf', 'wafafwaf', '2018-03-04 23:00:00'),
-(14, 1, 'awfwaf', NULL, '2018-03-11 23:00:00');
+INSERT INTO `Tasks` (`Id`, `IdDaemon`, `Name`, `Description`, `LastChanged`, `Time`) VALUES
+(1, 1, 'DebugTask', 'For debugging', '2018-03-04 23:00:00', 1),
+(13, 1, 'wafwaf', 'wafafwaf', '2018-03-04 23:00:00', 1),
+(14, 1, 'awfwaf', NULL, '2018-03-11 23:00:00', 1);
 
 -- --------------------------------------------------------
 
@@ -528,8 +508,8 @@ CREATE TABLE IF NOT EXISTS `UniversalLogs` (
   `IdLogType` int(11) NOT NULL,
   `Code` int(11) NOT NULL,
   `DateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `ShortText` varchar(64) NOT NULL,
-  `LongText` varchar(512) DEFAULT NULL
+  `Header` varchar(64) NOT NULL,
+  `Content` varchar(512) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -556,8 +536,8 @@ CREATE TABLE IF NOT EXISTS `UserLogs` (
   `IdLogType` int(11) NOT NULL,
   `Code` int(11) NOT NULL,
   `DateCreated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `ShortText` varchar(64) NOT NULL,
-  `LongText` varchar(512) NOT NULL
+  `Header` varchar(64) NOT NULL,
+  `Content` varchar(512) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -721,16 +701,10 @@ ALTER TABLE `TaskLocations`
  ADD PRIMARY KEY (`Id`), ADD KEY `IX_IdTask` (`IdTask`), ADD KEY `IX_IdSource` (`IdSource`), ADD KEY `IX_IdDestination` (`IdDestination`), ADD KEY `IX_IdBackupTypes` (`IdBackupTypes`), ADD KEY `IdTaskLocationDetails` (`IdTaskLocationDetails`);
 
 --
--- Indexes for table `TaskLocationsTimes`
---
-ALTER TABLE `TaskLocationsTimes`
- ADD PRIMARY KEY (`Id`), ADD KEY `IX_IdTaskLocation` (`IdTaskLocation`), ADD KEY `IX_IdTime` (`IdTime`);
-
---
 -- Indexes for table `Tasks`
 --
 ALTER TABLE `Tasks`
- ADD PRIMARY KEY (`Id`), ADD KEY `IX_IdDaemon` (`IdDaemon`);
+ ADD PRIMARY KEY (`Id`), ADD KEY `IX_IdDaemon` (`IdDaemon`), ADD KEY `Time` (`Time`);
 
 --
 -- Indexes for table `Times`
@@ -852,11 +826,6 @@ MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `TaskLocations`
 MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 --
--- AUTO_INCREMENT for table `TaskLocationsTimes`
---
-ALTER TABLE `TaskLocationsTimes`
-MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
---
 -- AUTO_INCREMENT for table `Tasks`
 --
 ALTER TABLE `Tasks`
@@ -961,16 +930,10 @@ ADD CONSTRAINT `TaskLocations_FK_IdSource_Locations$Id` FOREIGN KEY (`IdSource`)
 ADD CONSTRAINT `TaskLocations_FK_IdTask_Tasks$Id` FOREIGN KEY (`IdTask`) REFERENCES `Tasks` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `TaskLocationsTimes`
---
-ALTER TABLE `TaskLocationsTimes`
-ADD CONSTRAINT `TaskLocationsTimes_FK_IdTaskLocation_TaskLocations$Id` FOREIGN KEY (`IdTaskLocation`) REFERENCES `TaskLocations` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `TaskLocationsTimes_FK_IdTime_Times$Id` FOREIGN KEY (`IdTime`) REFERENCES `Times` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Constraints for table `Tasks`
 --
 ALTER TABLE `Tasks`
+ADD CONSTRAINT `Tasks_ibfk_1` FOREIGN KEY (`Time`) REFERENCES `Times` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
 ADD CONSTRAINT `Tasks_FK_IdDaemon_Daemons$Id` FOREIGN KEY (`IdDaemon`) REFERENCES `Daemons` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --

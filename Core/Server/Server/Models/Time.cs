@@ -12,7 +12,7 @@ namespace Server.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Time()
         {
-            TaskLocationsTimes = new HashSet<TaskLocationsTime>();
+            Tasks = new HashSet<Task>();
         }
 
         public int Id { get; set; }
@@ -30,6 +30,6 @@ namespace Server.Models
         public DateTime? EndTime { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TaskLocationsTime> TaskLocationsTimes { get; set; }
+        public virtual ICollection<Task> Tasks { get; set; }
     }
 }

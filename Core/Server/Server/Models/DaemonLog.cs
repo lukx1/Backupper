@@ -22,14 +22,11 @@ namespace Server.Models
 
         [Required]
         [StringLength(64)]
-        public string ShortText { get; set; }
-
-        [StringLength(512)]
-        public string LongText { get; set; }
+        public string Header { get; set; }
 
         [Required]
-        [StringLength(32)]
-        public string Origin { get; set; }
+        [StringLength(512)]
+        public string Content { get; set; }
 
         public virtual Daemon Daemon { get; set; }
     }
