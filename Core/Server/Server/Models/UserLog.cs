@@ -22,11 +22,11 @@ namespace Server.Models
 
         [Required]
         [StringLength(64)]
-        public string ShortText { get; set; }
+        public string Header { get; set; }
 
         [Required]
         [StringLength(512)]
-        public string LongText { get; set; }
+        public string Content { get; set; }
 
         public virtual LogType LogType { get; set; }
 

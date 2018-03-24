@@ -238,6 +238,7 @@
     <Compile Include="Models\TaskLocationDetail.cs" />
     <Compile Include="Models\TaskLocationLog.cs" />
     <Compile Include="Models\TaskLocationsTime.cs" />
+    <Compile Include="Models\TaskTime.cs" />
     <Compile Include="Models\Time.cs" />
     <Compile Include="Models\UniversalLog.cs" />
     <Compile Include="Models\User.cs" />

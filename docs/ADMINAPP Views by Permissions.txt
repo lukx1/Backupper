@@ -1,7 +1,7 @@
 /*
 NOTES
 
-IF user have SKIP permission then it is like having all permissions
+IF user has SKIP permission then it is like having all permissions
 AddEditDelete POST operations are additionaly checked on server if they are not violating permissions
 */
 

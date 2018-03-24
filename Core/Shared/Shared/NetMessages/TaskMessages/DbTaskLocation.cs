@@ -34,9 +34,5 @@ namespace Shared.NetMessages.TaskMessages
         /// </summary>
         public TaskLocationDetails taskLocationDetails;
 
-        /// <summary>
-        /// Kdy kopírovat
-        /// </summary>
-        public List<DbTime> times;
     }
 }
