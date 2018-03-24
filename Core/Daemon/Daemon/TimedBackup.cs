@@ -19,10 +19,7 @@ namespace Daemon
         /// Pro identifikace zdroje
         /// </summary>
         public int IdTask { get; set; }
-        /// <summary>
-        /// Informace o záloze
-        /// </summary>
-        public DbTaskLocation TaskLocation { get; set; }
+
         /// <summary>
         /// Časovač
         /// </summary>

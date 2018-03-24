@@ -65,14 +65,14 @@ namespace Daemon
         /// <param name="time">Kdy má proběhnout</param>
         /// <param name="idTask">Jakému tasku patří</param>
         /// <returns></returns>
-        private TimedBackup CreateTimedBackup(DbTaskLocation taskLocation,DbTime time, int idTask) //TODO: Reformatovat
+        private TimedBackup CreateTimedBackup(IEnumerable<DbTaskLocation> taskLocation,DbTime time, int idTask) //TODO: Reformatovat
         {
             TimedBackup timedBackup = new TimedBackup // Nastaví zálkatdní hodnoty
             {
                 IdTask = idTask,
-                TaskLocation = taskLocation
             };
-            timedBackup.Backup = CreateBackupInstance(taskLocation,taskLocation.id*time.id);
+
+            timedBackup.Backup = CreateBackupInstance(null,idTask*time.id);
             var dueTime = CalculateDueTime(time.startTime, time.interval);
             if (dueTime.Milliseconds != 0)
                 logger.Log($"Záloha proběhne za {dueTime}",LogType.DEBUG);
@@ -98,8 +98,10 @@ namespace Daemon
                 else // Normální
                 {
                     timedBackup.BackupStarted();
-                    timedBackup.IsRunning.Value = true;
-                    //timedBackup.Backup.StartBackup(); TODO - Na Backup class, ne na IBackup 
+                    timedBackup.IsRunning.Value = true; 
+                    logger.Log($"Nyní by proběhl backup ale tato funkcionalita nebyla dodělána{Util.Newline}Thread bude 5 sekund spát", LogType.ALERT);
+                    Thread.Sleep(5000);//Nechapu co tohle todo znamena
+                    //timedBackup.Backup.StartBackup(); // TODO : Na Backup class, ne na IBackup 
                     timedBackup.IsRunning.Value = false;
                     timedBackup.BackupEnded();
                     if (!time.repeat)
@@ -151,17 +153,12 @@ namespace Daemon
             ClearTObjs();
             foreach (var task in Tasks)
             {
-                foreach (var taskLocation in task.taskLocations)
+                foreach (var time in task.times)
                 {
-                    foreach (var time in taskLocation.times)
-                    {
-                        logger.Log($"Vytvořen timer pro task #{task.id}, taskLoc #{taskLocation.id}, time #{time.id}{Util.Newline}Čas start:{time.startTime}, interval:{time.interval}s,opakovat:{time.repeat}, konec:{time.endTime}",LogType.DEBUG);
-                        tBackups.Add(CreateTimedBackup(taskLocation, time,task.id));
-                    }
+                    logger.Log($"Vytvořen timer pro task #{task.id},time #{time.id}{Util.Newline}Čas start:{time.startTime}, interval:{time.interval}s,opakovat:{time.repeat}, konec:{time.endTime}", LogType.DEBUG);
+                    tBackups.Add(CreateTimedBackup(task.taskLocations, time, task.id));
                 }
-                
             }
-            
         }
 
         //TODO : Finish
@@ -170,15 +167,11 @@ namespace Daemon
         /// </summary>
         /// <param name="taskLocation">Jak zálohovat</param>
         /// <returns>IBackup</returns>
-        private IBackup CreateBackupInstance(DbTaskLocation taskLocation, int id = -1)
+        private IBackup CreateBackupInstance(IEnumerable<DbTaskLocation> taskLocations, int id = -1)
         {
-            backupFactory.ID = id == -1 ? taskLocation.id : id;
-            backupFactory.BackupType = BackupType.Parse(taskLocation.backupType);
-            backupFactory.DestinationPath = taskLocation.destination.uri;
-            backupFactory.SourcePath = taskLocation.source.uri;
-            backupFactory.IsZip = taskLocation.taskLocationDetails != null; //TODO : Pridat TaskLocation details do db
-
-            return backupFactory.CreateFromBackupType();
+            //return BackupFactory.MakeBackup(taskLocations) // Takhle by měla vypadat dokončená verze
+            logger.Log("Byla použita funkce CreateBackupInstance která není dokončena a vrací null", LogType.WARNING);
+            return null;
         }
         
         /// <summary>
@@ -187,7 +180,13 @@ namespace Daemon
         /// <param name="backup"></param>
         private void DebugMethod(IBackup backup)
         {
-            logger.Log($"{backup.ID}: {backup.SourcePath} -> {backup.DestinationPath} (ZIP={backup.ShouldZip})",LogType.DEBUG);
+            StringBuilder builder = new StringBuilder();
+            builder.Append(backup.ID).Append(" :").Append(Util.Newline);
+            foreach (var loc in backup.TaskLocations)
+            {
+                builder.Append($"{loc.source} -> {loc.destination} (ZIP={loc.taskLocationDetails.ZipAlgorithm != null}){Util.Newline}");
+            }
+            logger.Log(builder.ToString(),LogType.DEBUG);
         }
 
     }

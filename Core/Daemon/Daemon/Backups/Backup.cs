@@ -48,7 +48,7 @@ namespace Daemon.Backups
         public void AddBackup(IBackup backup)
         {
             backup.ID = AllBackups.Count;
-            backup.DestinationPath = "";
+            //backup.DestinationPath = "";
             AllBackups.Add(backup);
         }
 
