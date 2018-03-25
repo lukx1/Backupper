@@ -13,6 +13,16 @@ namespace Server
     public static class Util
     {
 
+        public static List<ErrorMessage> EList(params ErrorMessage[] e)
+        {
+            List<ErrorMessage> err = new List<ErrorMessage>();
+            foreach (var ee in e)
+            {
+                err.Add(ee);
+            }
+            return err;
+        }
+
         public static HttpResponseMessage MakeHttpResponseMessage<T>(HttpStatusCode statusCode,T message) where T:INetMessage
         {
             return new HttpResponseMessage(statusCode) { Content = new StringContent(JsonConvert.SerializeObject(message)) };

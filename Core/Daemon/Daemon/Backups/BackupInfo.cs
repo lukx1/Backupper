@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Daemon.Logging;
 
 namespace Daemon.Backups
 {
@@ -14,6 +15,7 @@ namespace Daemon.Backups
         public List<FileBackupedInfo> files { get; set; }
         public string rootFolderPath { get; set; }
         public string rootBackupPath { get; set; }
+        ILogger logger = LoggerFactory.CreateAppropriate();
 
         public BackupInfo(IBackup backup)
         {
@@ -28,7 +30,8 @@ namespace Daemon.Backups
             StreamWriter writer = new StreamWriter(destination + ".log");
             writer.WriteLine(timeCreated.ToString());
             writer.WriteLine(pBackup.ID);
-            writer.WriteLine(pBackup.SourcePath);
+            logger.Log("Řádka 34 v BackupInfo vykomentována", Shared.LogType.CRITICAL);
+            //writer.WriteLine(pBackup.SourcePath);
             foreach (FileBackupedInfo item in files)
             {
                 writer.WriteLine($"{item.subRootPath};{item.name};{item.size}");
@@ -38,7 +41,8 @@ namespace Daemon.Backups
 
         public void CreateBackupInfo(string sub)
         {
-            string dir = pBackup.SourcePath;
+            logger.Log("Řádka 45 v BackupInfo upravena aby necrashovala", Shared.LogType.CRITICAL);
+            string dir = 1 == 1 ? null : "" /*pBackup.SourcePath*/;
             string subDir = sub;
 
             foreach (FileInfo item in new DirectoryInfo(dir + subDir).GetFiles())

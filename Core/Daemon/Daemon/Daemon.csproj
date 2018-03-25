@@ -60,12 +60,12 @@
     <Compile Include="Backups\IBackup.cs" />
     <Compile Include="Communication\DaemonClient.cs" />
     <Compile Include="Communication\Authenticator.cs" />
+    <Compile Include="Communication\LogCommunicator.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\IntroductionLog.cs" />
     <Compile Include="Logging\LoggerFactory.cs" />
-    <Compile Include="Logging\LogType.cs" />
     <Compile Include="LoginSettings1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>

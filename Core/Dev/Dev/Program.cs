@@ -104,16 +104,12 @@ namespace Dev
             Console.ReadLine();
         }
 
-        interface A
-        {
-            int a { get; set; }
+        public class B {
+            public string c;
         }
 
-        class B : A
-        {
-            private int a = 10;
-            int A.a { get => a; set => a = value; }
-        }
+        private void Test() { 
+}
 
         public static void Main(string[] args)
         {
@@ -124,9 +120,6 @@ namespace Dev
             //var taskMessage = new TaskMessage() { sessionUuid = login.sessionUuid };
             //messenger.Send(taskMessage, "task", HttpMethod.Post);
             //var res = messenger.ReadMessage<TaskResponse>();
-            B b = new B();
-            var json = JsonConvert.SerializeObject(b);
-            A res = JsonConvert.DeserializeObject<A>(json);
             Console.WriteLine();
             Console.ReadLine();
         }

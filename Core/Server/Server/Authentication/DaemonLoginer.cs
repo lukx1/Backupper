@@ -46,6 +46,8 @@ namespace Server.Authentication
                 return LoginErrMaker(HttpStatusCode.NotFound, "Daemon s daným uuid nebyl nalezen", uuid.ToString());
             if (!IsPasswordValid(password, daemon))
                 return LoginErrMaker(HttpStatusCode.Forbidden, "Login je neplatný");
+            if(!new Authenticator(mysql).IsDaemonAllowed(daemon.Uuid,Permission.LOGIN))
+                return LoginErrMaker(HttpStatusCode.Forbidden, "Daemon nemá pravomoce se přihlásit");
 
             LogedInDaemon logedInDaemon = GetLogedInDaemonWithUuid(uuid);
 
