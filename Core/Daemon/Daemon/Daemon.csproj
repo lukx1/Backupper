@@ -82,9 +82,7 @@
     <Compile Include="SessionRefresher.cs" />
     <Compile Include="TaskHandler.cs" />
     <Compile Include="TimedBackup.cs" />
-    <Compile Include="Utility\IConfig.cs" />
     <Compile Include="Logging\FileLogger.cs" />
-    <Compile Include="Utility\TempConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -98,6 +96,9 @@
       <Project>{f627124e-e950-4a06-ba35-bade392c1074}</Project>
       <Name>Shared</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utility\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -10,6 +10,8 @@ namespace Daemon.Backups
     public interface IBackup
     {
         void StartBackup();
+        DbBackupType BackupType { get; set; }
+        DbTaskDetails TaskDetails { get; set; }
         IEnumerable<DbTaskLocation> TaskLocations { get; set; }
         int ID { get; set; }
     }

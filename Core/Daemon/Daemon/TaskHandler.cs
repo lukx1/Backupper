@@ -65,14 +65,14 @@ namespace Daemon
         /// <param name="time">Kdy má proběhnout</param>
         /// <param name="idTask">Jakému tasku patří</param>
         /// <returns></returns>
-        private TimedBackup CreateTimedBackup(IEnumerable<DbTaskLocation> taskLocation,DbTime time, int idTask) //TODO: Reformatovat
+        private TimedBackup CreateTimedBackup(IEnumerable<DbTaskLocation> taskLocations,DbTime time,DbBackupType dbBackupType,DbTaskDetails details, int idTask) //TODO: Reformatovat
         {
             TimedBackup timedBackup = new TimedBackup // Nastaví zálkatdní hodnoty
             {
                 IdTask = idTask,
             };
 
-            timedBackup.Backup = CreateBackupInstance(null,idTask*time.id);
+            timedBackup.Backup = CreateBackupInstance(taskLocations,dbBackupType,details,idTask*time.id);
             var dueTime = CalculateDueTime(time.startTime, time.interval);
             if (dueTime.Milliseconds != 0)
                 logger.Log($"Záloha proběhne za {dueTime}",LogType.DEBUG);
@@ -156,7 +156,7 @@ namespace Daemon
                 foreach (var time in task.times)
                 {
                     logger.Log($"Vytvořen timer pro task #{task.id},time #{time.id}{Util.Newline}Čas start:{time.startTime}, interval:{time.interval}s,opakovat:{time.repeat}, konec:{time.endTime}", LogType.DEBUG);
-                    tBackups.Add(CreateTimedBackup(task.taskLocations, time, task.id));
+                    tBackups.Add(CreateTimedBackup(task.taskLocations, time,task.backupType,task.details, task.id));
                 }
             }
         }
@@ -167,7 +167,7 @@ namespace Daemon
         /// </summary>
         /// <param name="taskLocation">Jak zálohovat</param>
         /// <returns>IBackup</returns>
-        private IBackup CreateBackupInstance(IEnumerable<DbTaskLocation> taskLocations, int id = -1)
+        private IBackup CreateBackupInstance(IEnumerable<DbTaskLocation> taskLocations,DbBackupType backupType, DbTaskDetails taskDetails, int id = -1)
         {
             //return BackupFactory.MakeBackup(taskLocations) // Takhle by měla vypadat dokončená verze
             logger.Log("Byla použita funkce CreateBackupInstance která není dokončena a vrací null", LogType.WARNING);

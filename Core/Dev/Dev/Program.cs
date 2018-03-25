@@ -104,16 +104,31 @@ namespace Dev
             Console.ReadLine();
         }
 
+        interface A
+        {
+            int a { get; set; }
+        }
+
+        class B : A
+        {
+            private int a = 10;
+            int A.a { get => a; set => a = value; }
+        }
+
         public static void Main(string[] args)
         {
-            //DoHash("Admin123456");
-            Messenger messenger = new Messenger(@"http://localhost:57597");
-            messenger.Send(new LoginMessage() { uuid = new Guid("50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e"), password = "VO0e+84BW4wqVYsuUpGeWw==" }, "login", HttpMethod.Post);
-            var login = messenger.ReadMessage<LoginResponse>();
-            var taskMessage = new TaskMessage() { sessionUuid = login.sessionUuid };
-            messenger.Send(taskMessage, "task", HttpMethod.Post);
-            var res = messenger.ReadMessage<TaskResponse>();
+            ////DoHash("Admin123456");
+            //Messenger messenger = new Messenger(@"http://localhost:57597");
+            //messenger.Send(new LoginMessage() { uuid = new Guid("50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e"), password = "VO0e+84BW4wqVYsuUpGeWw==" }, "login", HttpMethod.Post);
+            //var login = messenger.ReadMessage<LoginResponse>();
+            //var taskMessage = new TaskMessage() { sessionUuid = login.sessionUuid };
+            //messenger.Send(taskMessage, "task", HttpMethod.Post);
+            //var res = messenger.ReadMessage<TaskResponse>();
+            B b = new B();
+            var json = JsonConvert.SerializeObject(b);
+            A res = JsonConvert.DeserializeObject<A>(json);
             Console.WriteLine();
+            Console.ReadLine();
         }
 
         /*static void Main(string[] args)

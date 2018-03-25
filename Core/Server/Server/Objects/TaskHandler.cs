@@ -66,7 +66,7 @@ namespace Server.Objects
             var source = new Models.Location()
             {
 
-
+                
                 Uri = taskLocation.source.uri,
                 IdProtocol = taskLocation.source.protocol.Id,
                 LocationCredential = new Models.LocationCredential()
@@ -96,7 +96,6 @@ namespace Server.Objects
                 Task = task,
                 Location = source,
                 Location1 = destination,
-                IdBackupTypes = taskLocation.backupType.Id
             };
         }
 
@@ -178,6 +177,18 @@ namespace Server.Objects
             var dbTask = new DbTask()
             {
                 name = task.Name,
+                backupType = new DbBackupType()
+                {
+                    Id = task.BackupType.Id,
+                    LongName = task.BackupType.LongName,
+                    ShortName = task.BackupType.ShortName
+                },
+                details = new DbTaskDetails()
+                {
+                    Id = task.TaskDetail.Id,
+                    CompressionLevel =task.TaskDetail.CompressionLevel,
+                    ZipAlgorithm = task.TaskDetail.ZipAlgorithm
+                },
                 description = task.Description,
                 id = task.Id, uuidDaemon = task.Daemon.Uuid,
                 lastChanged = task.LastChanged,
@@ -206,23 +217,12 @@ namespace Server.Objects
                 taskLocations.Add(dbTaskLocation);
                 //Nastavení tasklocationu
                 dbTaskLocation.id = taskLocation.Id;
-                dbTaskLocation.backupType = new Shared.NetMessages.TaskMessages.DbBackupType()
-                {
-                    Id = taskLocation.BackupType.Id,
-                    LongName = taskLocation.BackupType.LongName,
-                    ShortName = taskLocation.BackupType.ShortName
-                };
                 //Přidání lokací
                 dbTaskLocation.source = CreateLocation(taskLocation, true);
                 dbTaskLocation.destination = CreateLocation(taskLocation, false);
 
                 //Tasklocationdetails
-                dbTaskLocation.taskLocationDetails = new TaskLocationDetails()
-                {
-                    Id = taskLocation.TaskLocationDetail.Id,
-                    CompressionLevel = taskLocation.TaskLocationDetail.CompressionLevel,
-                    ZipAlgorithm = taskLocation.TaskLocationDetail.ZipAlgorithm
-                };
+                
 
             }
             return dbTask;

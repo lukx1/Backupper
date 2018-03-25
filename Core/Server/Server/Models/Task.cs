@@ -27,10 +27,18 @@ namespace Server.Models
         [StringLength(200)]
         public string Description { get; set; }
 
+        public int IdTaskDetails { get; set; }
+
+        public int IdBackupTypes { get; set; }
+
         [Column(TypeName = "timestamp")]
         public DateTime LastChanged { get; set; }
 
+        public virtual BackupType BackupType { get; set; }
+
         public virtual Daemon Daemon { get; set; }
+
+        public virtual TaskDetail TaskDetail { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TaskLocation> TaskLocations { get; set; }

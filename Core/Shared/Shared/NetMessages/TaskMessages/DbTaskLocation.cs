@@ -32,7 +32,7 @@ namespace Shared.NetMessages.TaskMessages
         /// <summary>
         /// Detaily o tom jak má zálohování proběhnout
         /// </summary>
-        public TaskLocationDetails taskLocationDetails;
+        public DbTaskDetails taskLocationDetails;
 
     }
 }

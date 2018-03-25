@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.IO.Compression;
+using Shared.NetMessages.TaskMessages;
 
 namespace Daemon.Backups
 {
@@ -15,6 +16,9 @@ namespace Daemon.Backups
         public bool ShouldZip { get; set; }
         public int ID { get; set; }
         public BackupInfo backupInfo { get; set; }
+        public IEnumerable<DbTaskLocation> TaskLocations { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DbBackupType BackupType { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public DbTaskDetails TaskDetails { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         /// <summary>
         /// 
@@ -56,6 +60,11 @@ namespace Daemon.Backups
             else
                 Backup(new DirectoryInfo(SourcePath), path);
             backupInfo.CreateFile(path);
+        }
+
+        public void StartBackup()
+        {
+            throw new NotImplementedException();
         }
     }
 }

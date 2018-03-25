@@ -8,7 +8,7 @@ namespace Server.Models
     public partial class MySQLContext : DbContext
     {
         public MySQLContext()
-            : base("name=MySQLContext")
+            : base(MySQLConnectionStringMaker.GetConnectionString())
         {
         }
 
@@ -28,7 +28,7 @@ namespace Server.Models
         public virtual DbSet<LogType> LogTypes { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Protocol> Protocols { get; set; }
-        public virtual DbSet<TaskLocationDetail> TaskLocationDetails { get; set; }
+        public virtual DbSet<TaskDetail> TaskDetails { get; set; }
         public virtual DbSet<TaskLocationLog> TaskLocationLogs { get; set; }
         public virtual DbSet<TaskLocation> TaskLocations { get; set; }
         public virtual DbSet<Task> Tasks { get; set; }
@@ -50,7 +50,7 @@ namespace Server.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<BackupType>()
-                .HasMany(e => e.TaskLocations)
+                .HasMany(e => e.Tasks)
                 .WithRequired(e => e.BackupType)
                 .HasForeignKey(e => e.IdBackupTypes);
 
@@ -211,14 +211,14 @@ namespace Server.Models
                 .WithRequired(e => e.Protocol)
                 .HasForeignKey(e => e.IdProtocol);
 
-            modelBuilder.Entity<TaskLocationDetail>()
+            modelBuilder.Entity<TaskDetail>()
                 .Property(e => e.ZipAlgorithm)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<TaskLocationDetail>()
-                .HasMany(e => e.TaskLocations)
-                .WithRequired(e => e.TaskLocationDetail)
-                .HasForeignKey(e => e.IdTaskLocationDetails);
+            modelBuilder.Entity<TaskDetail>()
+                .HasMany(e => e.Tasks)
+                .WithRequired(e => e.TaskDetail)
+                .HasForeignKey(e => e.IdTaskDetails);
 
             modelBuilder.Entity<TaskLocationLog>()
                 .Property(e => e.Header)

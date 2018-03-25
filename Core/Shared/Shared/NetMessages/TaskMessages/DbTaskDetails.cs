@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages.TaskMessages
 {
-    public class TaskLocationDetails
+    public class DbTaskDetails
     {
         public int Id;
         public string ZipAlgorithm;

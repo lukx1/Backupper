@@ -9,12 +9,18 @@ namespace Daemon.Backups
 {
     public class BackupFactory
     {
-        public BackupType BackupType;
+        /*public BackupType BackupType;
         public string DestinationPath;
         public string SourcePath;
         public bool IsZip;
-        public int ID;
+        public int ID;*/
 
+        public static IBackup CreateBackup(IEnumerable<DbTaskLocation> taskLocation, DbBackupType backupType, DbTaskDetails details)
+        {
+            throw new NotImplementedException();
+        }
+
+        /*
         public IBackup CreateFromBackupType()
         {
             if (BackupType == BackupType.NORM)
@@ -27,7 +33,7 @@ namespace Daemon.Backups
         {
             FullBackup fullBackup = new FullBackup(SourcePath);
             return fullBackup;
-        }
+        }*/
 
     }
 }

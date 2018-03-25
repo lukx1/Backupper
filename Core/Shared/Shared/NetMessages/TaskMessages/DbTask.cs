@@ -48,6 +48,16 @@ namespace Shared.NetMessages.TaskMessages
         public List<DbTime> times;
 
         /// <summary>
+        /// Jaký druh backupu toto je
+        /// </summary>
+        public DbBackupType backupType;
+
+        /// <summary>
+        /// Detaily o zálohování
+        /// </summary>
+        public DbTaskDetails details;
+
+        /// <summary>
         /// Naposledy změněno
         /// </summary>
         public DateTime lastChanged;
