@@ -258,10 +258,11 @@ namespace Server.Objects
                 return FetchAll(message);
             else
             {
-                List<DbTask> tasks = new List<DbTask>();
+                throw new NotImplementedException("Tato část není dokončena");
+                List<DbTask> tasks = new List<DbTask>(); 
                 for (int i = 0; i < message.tasks.Count; i++)
                 {
-                    tasks.Add(ExtractData(mysql.Tasks.Where(r => r.Id == message.tasks[i].id).FirstOrDefault()));
+                    tasks.Add(ExtractData(mysql.Tasks.Where(r => r.Id == message.tasks[i].id).FirstOrDefault())); //TODO: Fixnout tenhle fetch
                 }
                 return tasks;
             }

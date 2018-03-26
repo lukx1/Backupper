@@ -1,4 +1,5 @@
 using Daemon.Logging;
+using Shared;
 using System;
 using System.IO;
 

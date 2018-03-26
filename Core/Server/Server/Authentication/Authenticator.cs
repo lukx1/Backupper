@@ -1,5 +1,6 @@
 ﻿using Server.Models;
 using Shared;
+using Shared.NetMessages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,9 @@ namespace Server.Authentication
     /// </summary>
     public class Authenticator
     {
+
+        public static readonly ErrorMessage BAD_SESSION = new ErrorMessage() { id = 403,message = "Session není platný" };
+        public static readonly ErrorMessage EXPIRED_SESSION = new ErrorMessage() { id = 403, message = "Session již vypršel" };
 
         private MySQLContext mysql;
 
@@ -135,6 +139,41 @@ namespace Server.Authentication
             return new UuidPass() { name = dbDaemon.Uuid.ToString(), pass = unhashedPass };
         }
 
+        public IEnumerable<Permission> GetPermissionsDaemon(Guid daemonUuid)
+        {
+            /* var perms = from groupPermissions in mysql.GroupPermissions
+                         join ppermissions in mysql.Permissions on groupPermissions.IdPermission equals ppermissions.Id
+                         join daemonGroups in mysql.DaemonGroups on groupPermissions.IdGroup equals daemonGroups.IdGroup
+                         join daemons in mysql.Daemons on daemonGroups.IdDaemon equals daemons.Id
+                         where daemons.Uuid == uuid
+                         select ppermissions.Id;
+             List<Permission> permissions = new List<Permission>();
+             foreach (var perm in perms)
+             {
+                 permissions.Add((Permission)perm);
+             }
+             return permissions;*/
+            List<Permission> permissions = new List<Permission>();
+            var daemon = mysql.Daemons.Where(r => r.Uuid == daemonUuid).FirstOrDefault();
+            if (daemon == null)
+                throw new ArgumentNullException("daemon");
+            var daemonGroups = mysql.DaemonGroups.Where(r => r.IdDaemon == daemon.Id);
+            foreach (var dGroups in daemonGroups)
+            {
+                var groups = mysql.Groups.Where(r => r.Id == dGroups.IdGroup);
+                foreach (var group in groups)
+                {
+                    var groupPermissions = mysql.GroupPermissions.Where(r => r.IdGroup == dGroups.Id);
+                    foreach (var groupPermission in groupPermissions)
+                    {
+                        permissions.Add((Permission)groupPermission.IdPermission);
+                    }
+                }
+
+            }
+            return permissions;
+        }
+
         /// <summary>
         /// Zjistí jestli daemon s daným uuid může udělat danou věc
         /// </summary>
@@ -146,17 +185,22 @@ namespace Server.Authentication
             var daemon = mysql.Daemons.FirstOrDefault(r => r.Uuid == uuid);
             if (daemon == null)
                 return false;
-            var groups = mysql.DaemonGroups.Where(r => r.IdDaemon == daemon.Id);
-            foreach (var group in groups)
+            var daemonGroups = mysql.DaemonGroups.Where(r => r.IdDaemon == daemon.Id);
+            foreach (var dGroups in daemonGroups)
             {
-                var groupPermissions = mysql.GroupPermissions.Where(r => r.IdGroup == group.Id);
-                foreach (var groupPermission in groupPermissions)
+                var groups = mysql.Groups.Where(r => r.Id == dGroups.IdGroup);
+                foreach (var group in groups)
                 {
-                    if (groupPermission.IdPermission == (int)permission)
-                        return true;
-                    else if (groupPermission.IdPermission == (int)Permission.SKIP)
-                        return true;
+                    var groupPermissions = mysql.GroupPermissions.Where(r => r.IdGroup == dGroups.Id);
+                    foreach (var groupPermission in groupPermissions)
+                    {
+                        if (groupPermission.IdPermission == (int)permission)
+                            return true;
+                        else if (groupPermission.IdPermission == (int)Permission.SKIP)
+                            return true;
+                    }
                 }
+                
             }
             return false;
         }

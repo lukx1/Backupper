@@ -24,15 +24,5 @@ namespace Shared.NetMessages.TaskMessages
         /// </summary>
         public DbLocation destination;
 
-        /// <summary>
-        /// Jakým způsobem kopírovat
-        /// </summary>
-        public DbBackupType backupType;
-
-        /// <summary>
-        /// Detaily o tom jak má zálohování proběhnout
-        /// </summary>
-        public DbTaskDetails taskLocationDetails;
-
     }
 }

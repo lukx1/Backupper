@@ -19,5 +19,6 @@ namespace Server.Authentication
         MANAGEOTHERDAEMONS = 7,
         MANAGEPERMISSION = 8,
         MANAGEGROUPS = 9,
+        DAEMONFETCHTASKS = 10,
     }
 }

@@ -201,8 +201,10 @@
     <Compile Include="Controllers\AdminUsersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IntroductionController.cs" />
+    <Compile Include="Controllers\SpecificLogController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
+    <Compile Include="Controllers\UniversalLogController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="DatabaseSettings.Designer.cs">
       <DependentUpon>DatabaseSettings.settings</DependentUpon>
@@ -246,6 +248,7 @@
     <Compile Include="Models\UserGroup.cs" />
     <Compile Include="Models\UserLog.cs" />
     <Compile Include="Objects\MagicStrings.cs" />
+    <Compile Include="Objects\LogHandler.cs" />
     <Compile Include="Objects\TaskHandler.cs" />
     <Compile Include="Objects\UserHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

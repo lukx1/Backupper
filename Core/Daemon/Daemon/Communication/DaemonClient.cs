@@ -11,6 +11,7 @@ using Daemon.Utility;
 using System.Net.Http;
 using System.Threading;
 using Daemon.Logging;
+using Shared.LogObjects;
 
 namespace Daemon.Communication
 {
@@ -83,6 +84,7 @@ namespace Daemon.Communication
 
         public async Task Run()
         {
+            logger.Log("Daemon byl spuštěn", LogType.DEBUG);
             bool canStart = await Startup();
             if (!canStart)
                 return;// Nešlo zapnout aplikace a nelze pokračovat
@@ -98,6 +100,12 @@ namespace Daemon.Communication
                 logger.Log("Přihlášení se nepovedlo, bude se opakovat za " + settings.LoginFailureWaitPeriodMs, LogType.ERROR);
                 Thread.Sleep(settings.LoginFailureWaitPeriodMs);
             }
+
+            logger.Log("Test odesílání logů...", LogType.DEBUG);
+            LogCommunicator logCommunicator = new LogCommunicator(messenger);
+            var resp = logCommunicator.SendLog(new DebugLog());
+            logger.Log("Log odeslán bez chyby", LogType.DEBUG);
+
             sessionRefresher = new SessionRefresher(authenticator);// Opakuje login aby session nevyprsel
             sessionRefresher.Run();
             TaskTickerTask = Task.Run(() => TaskTicker());//Refreshuje tasky aby byli aktualni se serverem

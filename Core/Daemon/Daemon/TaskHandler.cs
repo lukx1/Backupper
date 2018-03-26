@@ -184,7 +184,7 @@ namespace Daemon
             builder.Append(backup.ID).Append(" :").Append(Util.Newline);
             foreach (var loc in backup.TaskLocations)
             {
-                builder.Append($"{loc.source} -> {loc.destination} (ZIP={loc.taskLocationDetails.ZipAlgorithm != null}){Util.Newline}");
+                builder.Append($"{loc.source} -> {loc.destination} (ZIP={backup.TaskDetails.ZipAlgorithm != null}){Util.Newline}");
             }
             logger.Log(builder.ToString(),LogType.DEBUG);
         }
