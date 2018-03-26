@@ -1,0 +1,29 @@
+﻿@model global::Server.Models.Admin.GroupPermissionsModel
+
+@{
+	ViewBag.Title = "Group Permissions";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("GroupPermissions", "AdminGroups", FormMethod.Post))
+{
+	@Html.HiddenFor(model => model.IdGroup)
+
+	<table style="width:100%">
+		<tr>
+			<th>Permission name</th>
+			<th>Belongs to permission?</th>
+		</tr>
+		@for (var i = 0; i < Model.Permissions.Count; i++)
+		{
+			@Html.HiddenFor(x => x.Permissions[i].IdPermission)
+			<tr>
+				<td>@Model.Permissions[i].Name</td>
+				<td>@Html.CheckBoxFor(x => x.Permissions[i].GroupHasIt)</td>
+			</tr>
+		}
+	</table>
+
+	<input type="submit" value="Confirm" />
+}
+

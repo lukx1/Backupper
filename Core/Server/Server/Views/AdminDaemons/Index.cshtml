@@ -1,4 +1,4 @@
-﻿@model IEnumerable<global::Server.Models.Admin.DaemonInfoModel>
+﻿@model IEnumerable<global::Server.Models.Daemon>
 
 @{
 	ViewBag.Title = "Daemons";
@@ -10,20 +10,21 @@
 <table style="width:100%">
 	<tr>
 		<th>ID</th>
+		<th>User name</th>
 		<th>OS</th>
 		<th>Mac</th>
 		<th>Date Added</th>
-		<th>User name</th>
 	</tr>
 	@foreach (var item in Model)
 	{
 	<tr>
 		<td>@item.Id</td>
+		<td>@item.User.Nickname</td>
 		<td>@item.DaemonInfo.Os</td>
 		<td>@item.DaemonInfo.Mac</td>
 		<td>@item.DaemonInfo.DateAdded</td>
-		<td>@item.Nickname</td>
-		<td><a href="/AdminDaemons/DaemonInfo?id=@(item.Id)">Show Tasks</a></td>
+		<td><a href="/AdminTasks/Tasks?id=@(item.Id)">Show Tasks</a></td>
+		<td><a href="/AdminDaemons/DaemonGroups?id=@(item.Id)">Groups</a></td>
 	</tr>
 	}
 </table>

@@ -8,9 +8,9 @@ namespace Server.Controllers
 {
     public class AdminErrorController : Controller
     {
-        public string Index()
+        public ActionResult Index()
         {
-            return "Database has been slain.";
+            return View();
         }
     }
 }

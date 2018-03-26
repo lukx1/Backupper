@@ -1,0 +1,33 @@
+﻿@model global::Server.Models.User
+
+@{
+	ViewBag.Title = "Delete User";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<table>
+	<tr>
+		<td>
+			@Html.LabelFor(m => m.Nickname)
+		</td>
+		<td>
+			@Html.DisplayFor(m => m.Nickname)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			@Html.LabelFor(m => m.FullName)
+		</td>
+		<td>
+			@Html.DisplayFor(m => m.FullName)
+		</td>
+	</tr>
+</table>
+
+@using (Html.BeginForm("DeleteUser", "AdminUsers", FormMethod.Post))
+{
+	@Html.HiddenFor(m => m.Id)
+	
+	<button class="btn" type="submit">Confirm</button>
+	<a class="btn" href="/AdminUsers">Cancel</a>
+}

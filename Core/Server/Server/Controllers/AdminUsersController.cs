@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Shared;
 
 namespace Server.Controllers
 {
@@ -12,89 +15,208 @@ namespace Server.Controllers
         {
             try
             {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
                 using (var db = new Models.MySQLContext())
                     return View(db.Users.ToList());
             }
             catch (Exception e)
             {
                 //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
                 return RedirectToAction("Index", "AdminError");
             }
         }
 
-        public ActionResult UserGroups()
+        [HttpGet]
+        public ActionResult UserGroups(int id)
         {
             try
             {
-                using (var db = new Models.MySQLContext())
-                    return View(db.UserGroups.ToList());
+                var model = new Models.Admin.UserGroupsModel(id);
+                model.Load();
+                return View(model);
             }
             catch (Exception e)
             {
                 //TODO: LOG
+                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = e.Message;
                 return RedirectToAction("Index", "AdminError");
             }
         }
 
-        public ActionResult Logs()
+        [HttpPost]
+        public ActionResult UserGroups(Models.Admin.UserGroupsModel model)
         {
             try
             {
-                using (var db = new Models.MySQLContext())
-                    return View(db.UserLogs.ToList());
+                model.Save();
+                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Group edition was successfull";
+                return RedirectToAction("Index", "AdminUsers");
             }
             catch (Exception e)
             {
                 //TODO: LOG
+                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = e.Message;
                 return RedirectToAction("Index", "AdminError");
             }
         }
 
-        public ActionResult LogedInUsers()
+        [HttpGet]
+        public ActionResult NewUser()
         {
             try
             {
-                using (var db = new Models.MySQLContext())
-                    return View(db.LogedInUsers.ToList());
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
             }
             catch (Exception e)
             {
                 //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+
+            return View(new Models.User());
+        }
+
+        [HttpPost]
+        public ActionResult NewUser(Models.User user)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
+                using (var db = new Models.MySQLContext())
+                {
+                    user.Password = PasswordFactory.HashPasswordPbkdf2(user.Password);
+
+                    db.Users.Add(user);
+                    db.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+
+            TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "New user was successfully created";
+            return RedirectToAction("Index", "AdminUsers");
+        }
+
+        [HttpGet]
+        public ActionResult EditUser(int id)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
+                using (var db = new Models.MySQLContext())
+                {
+                    var user = db.Users.FirstOrDefault(x => x.Id == id);
+                    if (user == null)
+                    {
+                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "User does not exists";
+                        return RedirectToAction("Index", "AdminUsers");
+                    }
+                    return View(user);
+                }
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
                 return RedirectToAction("Index", "AdminError");
             }
         }
 
-		[HttpGet]
-		public ActionResult Delete(int id)
-		{
-			try
-			{
-				using (var db = new Models.MySQLContext())
-					return View(db.Users.Where(x => x.Id == id).FirstOrDefault());
-			}
-			catch (Exception e)
-			{
-				//TODO: LOG
-				return RedirectToAction("Index", "AdminError");
-			}
-		}
+        [HttpPost]
+        public ActionResult EditUser(Models.User user)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
 
-		[HttpPost]
-		public ActionResult Delete(Models.User model)
-		{
-			try
-			{
-				using (var db = new Models.MySQLContext())
-				{
-					TempData["customMessage"] = "User deleted is OK";
-					return RedirectToAction("Index", "AdminUsers");
-				}
-			}
-			catch (Exception e)
-			{
-				//TODO: LOG
-				return RedirectToAction("Index", "AdminError");
-			}
-		}
-	}
+                using (var db = new Models.MySQLContext())
+                {
+                    db.Users.AddOrUpdate(user);
+                    db.SaveChanges();
+                }
+
+                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "User was successfully updated";
+                return RedirectToAction("Index", "AdminUsers");
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult DeleteUser(int id)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
+                using (var db = new Models.MySQLContext())
+                {
+                    var dbUser = db.Users.FirstOrDefault(x => x.Id == id);
+                    if (dbUser == null)
+                    {
+                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "User does not exists";
+                        return RedirectToAction("Index", "AdminUsers");
+                    }
+                    return View(dbUser);
+                }
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult DeleteUser(Models.User user)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
+                using (var db = new Models.MySQLContext())
+                {
+                    var dbUser = db.Users.FirstOrDefault(x => x.Id == user.Id);
+                    if (dbUser == null)
+                    {
+                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "User does not exists";
+                        return RedirectToAction("Index", "AdminUsers");
+                    }
+
+                    db.Users.Remove(dbUser);
+                    db.SaveChanges();
+
+                    TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "User was successfully deleted";
+                    return RedirectToAction("Index", "AdminUsers");
+                }
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+        }
+    }
 }

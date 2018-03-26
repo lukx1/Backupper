@@ -13,9 +13,9 @@ namespace Server.Controllers
     {
         public ActionResult Index()
         {
-            if(Util.IsUserAlreadyLoggedIn(Session))
-                return View();
-            return RedirectToAction("Login", "AdminLogin", null);
+            if(!Util.IsUserAlreadyLoggedIn(Session))
+                return RedirectToAction("Login", "AdminLogin", null);
+            return View();
         }
     }
 }
