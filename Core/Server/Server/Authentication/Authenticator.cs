@@ -154,26 +154,20 @@ namespace Server.Authentication
                  permissions.Add((Permission)perm);
              }
              return permissions;*/
-            PList permissions = new PList();
-            var daemon = mysql.Daemons.Where(r => r.Uuid == daemonUuid).FirstOrDefault();
-            if (daemon == null)
-                throw new ArgumentNullException("daemon");
-            var daemonGroups = mysql.DaemonGroups.Where(r => r.IdDaemon == daemon.Id);
-            foreach (var dGroups in daemonGroups)
+            PList permissionsList = new PList();
+            var permissions = from daemons in mysql.Daemons
+                              join daemonGroups in mysql.DaemonGroups on daemons.Id equals daemonGroups.IdDaemon
+                              join groups in mysql.Groups on daemonGroups.IdGroup equals groups.Id
+                              join groupPermissions in mysql.GroupPermissions on groups.Id equals groupPermissions.IdGroup
+                              where daemons.Uuid == daemonUuid
+                              select new { groupPermissions.IdPermission };
+            foreach (var permission in permissions)
             {
-                var groups = mysql.Groups.Where(r => r.Id == dGroups.IdGroup && r.ForDaemons == true);
-                foreach (var group in groups)
-                {
-                    var groupPermissions = mysql.GroupPermissions.Where(r => r.IdGroup == dGroups.Id);
-                    foreach (var groupPermission in groupPermissions)
-                    {
-                        if(!permissions.Contains((Permission)groupPermission.IdPermission))
-                            permissions.Add((Permission)groupPermission.IdPermission);
-                    }
-                }
-
+                permissionsList.Add((Permission)permission.IdPermission);
+                if ((Permission)permission.IdPermission == Permission.SKIP)
+                    break;
             }
-            return permissions;
+            return permissionsList;
         }
 
         /// <summary>
@@ -184,7 +178,15 @@ namespace Server.Authentication
         /// <returns></returns>
         public bool IsDaemonAllowed(Guid daemonUuid, Server.Authentication.Permission permission)
         {
-            var daemon = mysql.Daemons.Where(r => r.Uuid == daemonUuid).FirstOrDefault();
+
+            var permissions = from daemons in mysql.Daemons
+                      join daemonGroups in mysql.DaemonGroups on daemons.Id equals daemonGroups.IdDaemon
+                      join groups in mysql.Groups on daemonGroups.IdGroup equals groups.Id
+                      join groupPermissions in mysql.GroupPermissions on groups.Id equals groupPermissions.IdGroup
+                      where daemons.Uuid == daemonUuid && (groupPermissions.IdPermission == (int)permission || groupPermissions.IdPermission == (int)Permission.SKIP)
+                      select new { groupPermissions.IdPermission };
+            return permissions.Count() > 0;
+            /*var daemon = mysql.Daemons.Where(r => r.Uuid == daemonUuid).FirstOrDefault();
             if (daemon == null)
                 throw new NullReferenceException("Nelze najít daemona s daným uuid");
             var daemonGroups = mysql.DaemonGroups.Where(r => r.IdDaemon == daemon.Id);
@@ -204,7 +206,7 @@ namespace Server.Authentication
                 }
                 
             }
-            return false;
+            return false;*/
         }
 
         /// <summary>

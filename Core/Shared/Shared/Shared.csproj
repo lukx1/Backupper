@@ -52,14 +52,11 @@
     <Compile Include="Crc32.cs" />
     <Compile Include="DeserializeOnly.cs" />
     <Compile Include="ILog.cs" />
-    <Compile Include="ILogHeader.cs" />
     <Compile Include="INetException.cs" />
     <Compile Include="IniReader.cs" />
-    <Compile Include="ISpecificLog.cs" />
-    <Compile Include="JsonableLog.cs" />
+    <Compile Include="JsonableUniversalLog.cs" />
     <Compile Include="LogContentType.cs" />
     <Compile Include="LogObjects\DebugLog.cs" />
-    <Compile Include="LogObjects\SimpleHeader.cs" />
     <Compile Include="LogTable.cs" />
     <Compile Include="LogType.cs" />
     <Compile Include="Messenger.cs" />

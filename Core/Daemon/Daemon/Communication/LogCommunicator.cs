@@ -19,7 +19,7 @@ namespace Daemon.Communication
             this.messenger = messenger;
         }
 
-        public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> SendLog<T>(params ILog<T>[] logs)
+        public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> SendLog<T>(params ILog<T>[] logs) where T : class
         {
             List<JsonableUniversalLog> jsonLogs = new List<JsonableUniversalLog>();
             foreach (var log in logs)

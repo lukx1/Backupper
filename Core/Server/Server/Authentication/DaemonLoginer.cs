@@ -41,14 +41,16 @@ namespace Server.Authentication
         /// <returns>Uuid</returns>
         public LoginResponse LoginAndGetSessionUuid(Guid uuid, string password)
         {
-            Daemon d = mysql.Daemons.FirstOrDefault();
             Daemon daemon = mysql.Daemons.Where(r => r.Uuid == uuid).FirstOrDefault();
 
             if (daemon == null)
                 return LoginErrMaker(HttpStatusCode.NotFound, "Daemon s daným uuid nebyl nalezen", uuid.ToString());
             if (!IsPasswordValid(password, daemon))
                 return LoginErrMaker(HttpStatusCode.Forbidden, "Login je neplatný");
-            if(!new Authenticator(mysql).IsDaemonAllowed(daemon.Uuid,Permission.LOGIN))
+
+            Authenticator authenticator = new Authenticator();
+
+            if (!authenticator.IsDaemonAllowed(daemon.Uuid,Permission.LOGIN))
                 return LoginErrMaker(HttpStatusCode.Forbidden, "Daemon nemá pravomoce se přihlásit");
 
             LogedInDaemon logedInDaemon = GetLogedInDaemonWithUuid(uuid);

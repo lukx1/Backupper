@@ -9,12 +9,6 @@ namespace Server.Models
     [Table("3b1_joskalukas_db1.TaskLocations")]
     public partial class TaskLocation
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public TaskLocation()
-        {
-            TaskLocationLogs = new HashSet<TaskLocationLog>();
-        }
-
         public int Id { get; set; }
 
         public int IdTask { get; set; }
@@ -26,9 +20,6 @@ namespace Server.Models
         public virtual Location Location { get; set; }
 
         public virtual Location Location1 { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TaskLocationLog> TaskLocationLogs { get; set; }
 
         public virtual Task Task { get; set; }
     }

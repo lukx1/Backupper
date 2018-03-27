@@ -43,12 +43,13 @@ namespace Server.Objects
                 {
                     PutLog(log);
                 }
-                SaveAsync().Wait();
+                sql.SaveChanges();
             }
             catch (Exception e)
-            {//TODO: Log
-                return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.InternalServerError, new SpecificLogResponse() { });
+            {//TODO: 
                 Console.WriteLine(e.StackTrace);
+                return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.InternalServerError, new UniversalLogResponse() { });
+                
             }
             return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.Created, new UniversalLogResponse() { });
 
@@ -64,10 +65,6 @@ namespace Server.Objects
                 IdLogType = (int)log.LogType
             };
             sql.UniversalLogs.Add(slog);
-        }
-        public async Task<int> SaveAsync()
-        {
-            return await sql.SaveChangesAsync();
         }
 
         public void PutLog(JsonableUniversalLog log)
