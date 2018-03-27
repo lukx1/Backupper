@@ -140,7 +140,7 @@ namespace Server.Models
 
             modelBuilder.Entity<LocationCredential>()
                 .HasMany(e => e.Locations)
-                .WithRequired(e => e.LocationCredential)
+                .WithOptional(e => e.LocationCredential)
                 .HasForeignKey(e => e.IdLocationCredentails);
 
             modelBuilder.Entity<Location>()

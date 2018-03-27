@@ -24,7 +24,7 @@ namespace Server.Models
 
         public int IdProtocol { get; set; }
 
-        public int IdLocationCredentails { get; set; }
+        public int? IdLocationCredentails { get; set; }
 
         public virtual LocationCredential LocationCredential { get; set; }
 
