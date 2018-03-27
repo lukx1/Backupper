@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared.NetMessages.LogMessages
 {
-    public class UniversalLogResponse : INetError
+    public class UniversalLogResponse : INetMessage,INetError
     {
         public IEnumerable<UniversalLogMessage> Logs { get; set; }
         public List<ErrorMessage> ErrorMessages { get; set; }

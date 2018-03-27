@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Shared;
+using Shared.LogObjects;
 using Shared.NetMessages;
 using System;
 using System.Collections.Generic;
@@ -120,8 +121,13 @@ namespace Dev
             //var taskMessage = new TaskMessage() { sessionUuid = login.sessionUuid };
             //messenger.Send(taskMessage, "task", HttpMethod.Post);
             //var res = messenger.ReadMessage<TaskResponse>();
-            Console.WriteLine();
-            Console.ReadLine();
+
+            DebugLog debugLog = new DebugLog();
+            JsonableUniversalLog debugUni = JsonableUniversalLog.CreateFrom(debugLog);
+            DebugLog copy = new DebugLog();
+            copy.Load(debugUni);
+            //Console.WriteLine();
+            //Console.ReadLine();
         }
 
         /*static void Main(string[] args)

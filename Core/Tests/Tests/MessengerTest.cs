@@ -18,7 +18,7 @@ namespace Tests
     [TestClass]
     public class MessengerTest
     {
-        [TestCategory("HTTPSend")]
+        /*[TestCategory("HTTPSend")]
         [TestMethod]
         public void Send()
         {

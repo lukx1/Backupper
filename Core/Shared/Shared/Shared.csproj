@@ -57,7 +57,6 @@
     <Compile Include="IniReader.cs" />
     <Compile Include="ISpecificLog.cs" />
     <Compile Include="JsonableLog.cs" />
-    <Compile Include="JsonableSpecificLog.cs" />
     <Compile Include="LogContentType.cs" />
     <Compile Include="LogObjects\DebugLog.cs" />
     <Compile Include="LogObjects\SimpleHeader.cs" />
@@ -65,8 +64,6 @@
     <Compile Include="LogType.cs" />
     <Compile Include="Messenger.cs" />
     <Compile Include="NetMessages\INetError.cs" />
-    <Compile Include="NetMessages\LogMessages\SpecificLogMessage.cs" />
-    <Compile Include="NetMessages\LogMessages\SpecificLogResponse.cs" />
     <Compile Include="NetMessages\LogMessages\UniversalLogMessage.cs" />
     <Compile Include="NetMessages\LogMessages\UniversalLogResponse.cs" />
     <Compile Include="NetMessages\TaskMessages\DbTaskDetails.cs" />
