@@ -49,7 +49,7 @@ namespace Server.Controllers
             if (!authenticator.IsSessionValid(taskMessage.sessionUuid,taskMessage.IsDaemon))
                 return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.Unauthorized, new TaskResponse() { ErrorMessages = new List<ErrorMessage>() { new ErrorMessage() { id = 5, message = "Sezení není platné" } } });
 
-            if(!authenticator.GetPermissionsDaemon(taskMessage.sessionUuid).Contains(Permission.DAEMONFETCHTASKS))
+            if(!authenticator.GetPermissionsDaemon(authenticator.GetDaemonFromUuid(taskMessage.sessionUuid).Uuid).Contains(Permission.DAEMONFETCHTASKS))
                 return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.Forbidden, new TaskResponse() { ErrorMessages = new List<ErrorMessage>() { new ErrorMessage() { id = 6, message = "Daemon nemá pravomoce požádat o své tasky" } } });
 
 

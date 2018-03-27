@@ -186,9 +186,11 @@ namespace Server.Objects
                 details = new DbTaskDetails()
                 {
                     Id = task.TaskDetail.Id,
-                    CompressionLevel =task.TaskDetail.CompressionLevel,
+                    CompressionLevel = task.TaskDetail.CompressionLevel,
                     ZipAlgorithm = task.TaskDetail.ZipAlgorithm
                 },
+                times = new List<DbTime>(),
+                taskLocations = new List<DbTaskLocation>(),
                 description = task.Description,
                 id = task.Id, uuidDaemon = task.Daemon.Uuid,
                 lastChanged = task.LastChanged,
@@ -210,7 +212,7 @@ namespace Server.Objects
 
             List<Shared.NetMessages.TaskMessages.DbTaskLocation> taskLocations = new List<Shared.NetMessages.TaskMessages.DbTaskLocation>();
             dbTask.taskLocations = taskLocations;
-            foreach (var taskLocation in mysql.TaskLocations.Where(r => r.IdTask == task.Id))
+            foreach (var taskLocation in task.TaskLocations)
             {
 
                 Shared.NetMessages.TaskMessages.DbTaskLocation dbTaskLocation = new Shared.NetMessages.TaskMessages.DbTaskLocation();

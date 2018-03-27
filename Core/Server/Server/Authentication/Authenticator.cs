@@ -1,4 +1,5 @@
 ﻿using Server.Models;
+using Server.Objects;
 using Shared;
 using Shared.NetMessages;
 using System;
@@ -139,7 +140,7 @@ namespace Server.Authentication
             return new UuidPass() { name = dbDaemon.Uuid.ToString(), pass = unhashedPass };
         }
 
-        public IEnumerable<Permission> GetPermissionsDaemon(Guid daemonUuid)
+        public IList<Permission> GetPermissionsDaemon(Guid daemonUuid)
         {
             /* var perms = from groupPermissions in mysql.GroupPermissions
                          join ppermissions in mysql.Permissions on groupPermissions.IdPermission equals ppermissions.Id
@@ -153,20 +154,21 @@ namespace Server.Authentication
                  permissions.Add((Permission)perm);
              }
              return permissions;*/
-            List<Permission> permissions = new List<Permission>();
+            PList permissions = new PList();
             var daemon = mysql.Daemons.Where(r => r.Uuid == daemonUuid).FirstOrDefault();
             if (daemon == null)
                 throw new ArgumentNullException("daemon");
             var daemonGroups = mysql.DaemonGroups.Where(r => r.IdDaemon == daemon.Id);
             foreach (var dGroups in daemonGroups)
             {
-                var groups = mysql.Groups.Where(r => r.Id == dGroups.IdGroup);
+                var groups = mysql.Groups.Where(r => r.Id == dGroups.IdGroup && r.ForDaemons == true);
                 foreach (var group in groups)
                 {
                     var groupPermissions = mysql.GroupPermissions.Where(r => r.IdGroup == dGroups.Id);
                     foreach (var groupPermission in groupPermissions)
                     {
-                        permissions.Add((Permission)groupPermission.IdPermission);
+                        if(!permissions.Contains((Permission)groupPermission.IdPermission))
+                            permissions.Add((Permission)groupPermission.IdPermission);
                     }
                 }
 
@@ -177,15 +179,14 @@ namespace Server.Authentication
         /// <summary>
         /// Zjistí jestli daemon s daným uuid může udělat danou věc
         /// </summary>
-        /// <param name="uuid"></param>
+        /// <param name="daemonUuid">Daemonovo uuid</param>
         /// <param name="permission"></param>
         /// <returns></returns>
-        public bool IsDaemonAllowed(Guid uuid, Server.Authentication.Permission permission)
+        public bool IsDaemonAllowed(Guid daemonUuid, Server.Authentication.Permission permission)
         {
-            
-            var daemon = mysql.Daemons.Where(r => r.Uuid == uuid).FirstOrDefault();
+            var daemon = mysql.Daemons.Where(r => r.Uuid == daemonUuid).FirstOrDefault();
             if (daemon == null)
-                return false;
+                throw new NullReferenceException("Nelze najít daemona s daným uuid");
             var daemonGroups = mysql.DaemonGroups.Where(r => r.IdDaemon == daemon.Id);
             foreach (var dGroups in daemonGroups)
             {

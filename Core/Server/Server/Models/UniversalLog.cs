@@ -9,7 +9,6 @@ namespace Server.Models
     [Table("3b1_joskalukas_db1.UniversalLogs")]
     public partial class UniversalLog
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         public int IdLogType { get; set; }

@@ -93,6 +93,7 @@ namespace Daemon.Communication
                 var guid = await authenticator.AttemptLogin();
                 if(guid != Guid.Empty)
                 {
+                    logger.Log("Daemon přihlášen, obdržený session:" + guid,LogType.DEBUG);
                     settings.SessionUuid = guid;
                     settings.Save();
                     break;
@@ -116,8 +117,10 @@ namespace Daemon.Communication
             Thread.CurrentThread.Name = "TaskTicker";
             while (true)
             {
-                await LoadTasks();
-                logger.Log("Tasky načteny", LogType.INFORMATION);
+                logger.Log("Načítání tasků", LogType.DEBUG);
+                sessionRefresher.ExternalyRefreshed();
+                if(await LoadTasks())
+                    logger.Log("Tasky načteny", LogType.INFORMATION);
                 Thread.Sleep(settings.TaskRefreshPeriodMs);
             }
         }

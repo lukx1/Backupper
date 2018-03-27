@@ -244,10 +244,12 @@
     <Compile Include="Models\TaskTime.cs" />
     <Compile Include="Models\Time.cs" />
     <Compile Include="Models\UniversalLog.cs" />
+    <Compile Include="Models\UpTime.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserGroup.cs" />
     <Compile Include="Models\UserLog.cs" />
     <Compile Include="Objects\LogHandler.cs" />
+    <Compile Include="Objects\PList.cs" />
     <Compile Include="Objects\TaskHandler.cs" />
     <Compile Include="Objects\UserHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

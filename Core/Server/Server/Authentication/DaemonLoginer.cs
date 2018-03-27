@@ -31,6 +31,8 @@ namespace Server.Authentication
             return response;
         }
 
+
+
         /// <summary>
         /// Prihlasi daemona, hazi ArgumentException nebo ArgumentNullexception pokud nastane chyba
         /// </summary>

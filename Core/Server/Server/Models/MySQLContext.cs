@@ -35,6 +35,7 @@ namespace Server.Models
         public virtual DbSet<TaskTime> TaskTimes { get; set; }
         public virtual DbSet<Time> Times { get; set; }
         public virtual DbSet<UniversalLog> UniversalLogs { get; set; }
+        public virtual DbSet<UpTime> UpTimes { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<UserLog> UserLogs { get; set; }
         public virtual DbSet<User> Users { get; set; }

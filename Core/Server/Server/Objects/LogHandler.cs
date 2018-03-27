@@ -47,6 +47,7 @@ namespace Server.Objects
             }
             catch (Exception e)
             {//TODO: Log
+                return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.InternalServerError, new SpecificLogResponse() { });
                 Console.WriteLine(e.StackTrace);
             }
             return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.Created, new SpecificLogResponse() { });

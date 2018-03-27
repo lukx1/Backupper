@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 24, 2018 at 01:37 PM
+-- Generation Time: Mar 26, 2018 at 03:38 PM
 -- Server version: 5.5.55-0+deb7u1
 -- PHP Version: 5.4.45-0+deb7u8
 
@@ -51,7 +51,18 @@ CREATE TABLE IF NOT EXISTS `DaemonGroups` (
 `Id` int(11) NOT NULL,
   `IdDaemon` int(11) NOT NULL,
   `IdGroup` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `DaemonGroups`
+--
+
+INSERT INTO `DaemonGroups` (`Id`, `IdDaemon`, `IdGroup`) VALUES
+(1, 1, 2),
+(2, 2, 2),
+(3, 3, 2),
+(4, 4, 2),
+(5, 5, 2);
 
 -- --------------------------------------------------------
 
@@ -165,7 +176,7 @@ CREATE TABLE IF NOT EXISTS `GroupPermissions` (
 `Id` int(11) NOT NULL,
   `IdGroup` int(11) NOT NULL,
   `IdPermission` int(11) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `GroupPermissions`
@@ -173,7 +184,9 @@ CREATE TABLE IF NOT EXISTS `GroupPermissions` (
 
 INSERT INTO `GroupPermissions` (`Id`, `IdGroup`, `IdPermission`) VALUES
 (1, 1, 1),
-(2, 2, 2);
+(2, 2, 2),
+(3, 2, 10),
+(4, 3, 2);
 
 -- --------------------------------------------------------
 
@@ -186,7 +199,7 @@ CREATE TABLE IF NOT EXISTS `Groups` (
   `Name` varchar(64) NOT NULL,
   `Description` varchar(256) NOT NULL,
   `ForDaemons` tinyint(1) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `Groups`
@@ -196,7 +209,8 @@ INSERT INTO `Groups` (`Id`, `Name`, `Description`, `ForDaemons`) VALUES
 (-999, 'Server', 'Server', 0),
 (-1, 'DebugGroup', 'For debugging', 0),
 (1, 'Admins', 'Admins', 0),
-(2, 'Daemons', 'For every daemon', 1);
+(2, 'Daemons', 'For every daemon', 1),
+(3, 'Users', 'Pro každého uživatele', 0);
 
 -- --------------------------------------------------------
 
@@ -263,7 +277,7 @@ CREATE TABLE IF NOT EXISTS `LogedInDaemons` (
 --
 
 INSERT INTO `LogedInDaemons` (`IdDaemon`, `Expires`, `SessionUuid`) VALUES
-(1, '2018-03-21 21:31:50', '538108e1-422a-4347-a1fd-9d40dd0ebf53');
+(1, '2018-03-25 23:25:54', '7a10307b-1d83-482c-8d95-593da8da50a7');
 
 -- --------------------------------------------------------
 
@@ -282,7 +296,7 @@ CREATE TABLE IF NOT EXISTS `LogedInUsers` (
 --
 
 INSERT INTO `LogedInUsers` (`IdUser`, `Expires`, `SessionUuid`) VALUES
-(-999, '2018-03-21 19:54:28', 'f3ea414b-6c90-4f41-9247-0b587921f739'),
+(-999, '2018-03-25 16:18:04', '9d5feacb-bd6c-4166-b813-1dddb1f8d7d2'),
 (1, '2018-03-21 12:29:21', 'a8f4eb21-ad66-46ed-954f-f9c5d0c6ef93');
 
 -- --------------------------------------------------------
@@ -351,7 +365,7 @@ CREATE TABLE IF NOT EXISTS `Permissions` (
 `Id` int(11) NOT NULL,
   `Name` varchar(32) NOT NULL,
   `Description` varchar(256) DEFAULT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `Permissions`
@@ -366,7 +380,8 @@ INSERT INTO `Permissions` (`Id`, `Name`, `Description`) VALUES
 (6, 'ManageSelfDaemons', 'Dovoluje daemonovi spravovat sám sebe'),
 (7, 'ManageOtherDaemons', 'Dovoluje  daemonovi spravovat ostatní daemony'),
 (8, 'ManagePermission', 'Přidělování a odebírání práv skupinám'),
-(9, 'ManageGroups', 'Vytváření skupin a přidávání do nich uživatelů a daemonů');
+(9, 'ManageGroups', 'Vytváření skupin a přidávání do nich uživatelů a daemonů'),
+(10, 'DaemonFetchTasks', 'Dovoluje daemonovi požádat o svoje tasky');
 
 -- --------------------------------------------------------
 
@@ -393,20 +408,20 @@ INSERT INTO `Protocols` (`Id`, `ShortName`, `LongName`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `TaskLocationDetails`
+-- Table structure for table `TaskDetails`
 --
 
-CREATE TABLE IF NOT EXISTS `TaskLocationDetails` (
+CREATE TABLE IF NOT EXISTS `TaskDetails` (
 `Id` int(11) NOT NULL,
   `ZipAlgorithm` varchar(32) DEFAULT NULL,
   `CompressionLevel` int(11) DEFAULT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
 --
--- Dumping data for table `TaskLocationDetails`
+-- Dumping data for table `TaskDetails`
 --
 
-INSERT INTO `TaskLocationDetails` (`Id`, `ZipAlgorithm`, `CompressionLevel`) VALUES
+INSERT INTO `TaskDetails` (`Id`, `ZipAlgorithm`, `CompressionLevel`) VALUES
 (1, NULL, NULL),
 (2, NULL, NULL);
 
@@ -436,17 +451,15 @@ CREATE TABLE IF NOT EXISTS `TaskLocations` (
 `Id` int(11) NOT NULL,
   `IdTask` int(11) NOT NULL,
   `IdSource` int(11) NOT NULL,
-  `IdDestination` int(11) NOT NULL,
-  `IdBackupTypes` int(11) NOT NULL,
-  `IdTaskLocationDetails` int(11) NOT NULL
+  `IdDestination` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `TaskLocations`
 --
 
-INSERT INTO `TaskLocations` (`Id`, `IdTask`, `IdSource`, `IdDestination`, `IdBackupTypes`, `IdTaskLocationDetails`) VALUES
-(1, 1, 1, 2, 1, 1);
+INSERT INTO `TaskLocations` (`Id`, `IdTask`, `IdSource`, `IdDestination`) VALUES
+(1, 1, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -459,18 +472,31 @@ CREATE TABLE IF NOT EXISTS `Tasks` (
   `IdDaemon` int(11) NOT NULL,
   `Name` varchar(40) NOT NULL,
   `Description` varchar(200) DEFAULT NULL,
-  `LastChanged` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Při jakékoliv změně',
-  `Time` int(11) NOT NULL
+  `IdTaskDetails` int(11) NOT NULL,
+  `IdBackupTypes` int(11) NOT NULL,
+  `LastChanged` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Při jakékoliv změně'
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `Tasks`
 --
 
-INSERT INTO `Tasks` (`Id`, `IdDaemon`, `Name`, `Description`, `LastChanged`, `Time`) VALUES
-(1, 1, 'DebugTask', 'For debugging', '2018-03-04 23:00:00', 1),
-(13, 1, 'wafwaf', 'wafafwaf', '2018-03-04 23:00:00', 1),
-(14, 1, 'awfwaf', NULL, '2018-03-11 23:00:00', 1);
+INSERT INTO `Tasks` (`Id`, `IdDaemon`, `Name`, `Description`, `IdTaskDetails`, `IdBackupTypes`, `LastChanged`) VALUES
+(1, 1, 'DebugTask', 'For debugging', 1, 1, '2018-03-04 23:00:00'),
+(13, 1, 'wafwaf', 'wafafwaf', 1, 1, '2018-03-04 23:00:00'),
+(14, 1, 'awfwaf', NULL, 1, 1, '2018-03-11 23:00:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `TaskTimes`
+--
+
+CREATE TABLE IF NOT EXISTS `TaskTimes` (
+`Id` int(11) NOT NULL,
+  `IdTask` int(11) NOT NULL,
+  `IdTime` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -512,6 +538,13 @@ CREATE TABLE IF NOT EXISTS `UniversalLogs` (
   `Content` varchar(512) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `UniversalLogs`
+--
+
+INSERT INTO `UniversalLogs` (`Id`, `IdLogType`, `Code`, `DateCreated`, `Header`, `Content`) VALUES
+(0, 8, -1, '2018-03-25 22:26:19', '{"Binder":null,"Page":1,"Pages":1}', '{}');
+
 -- --------------------------------------------------------
 
 --
@@ -522,7 +555,18 @@ CREATE TABLE IF NOT EXISTS `UserGroups` (
 `Id` int(11) NOT NULL,
   `IdUser` int(11) NOT NULL,
   `IdGroup` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `UserGroups`
+--
+
+INSERT INTO `UserGroups` (`Id`, `IdUser`, `IdGroup`) VALUES
+(1, -1, 3),
+(2, -999, 3),
+(3, 1, 3),
+(4, 2, 3),
+(5, 3, 3);
 
 -- --------------------------------------------------------
 
@@ -683,9 +727,9 @@ ALTER TABLE `Protocols`
  ADD PRIMARY KEY (`Id`), ADD UNIQUE KEY `ShortName` (`ShortName`);
 
 --
--- Indexes for table `TaskLocationDetails`
+-- Indexes for table `TaskDetails`
 --
-ALTER TABLE `TaskLocationDetails`
+ALTER TABLE `TaskDetails`
  ADD PRIMARY KEY (`Id`);
 
 --
@@ -698,13 +742,19 @@ ALTER TABLE `TaskLocationLogs`
 -- Indexes for table `TaskLocations`
 --
 ALTER TABLE `TaskLocations`
- ADD PRIMARY KEY (`Id`), ADD KEY `IX_IdTask` (`IdTask`), ADD KEY `IX_IdSource` (`IdSource`), ADD KEY `IX_IdDestination` (`IdDestination`), ADD KEY `IX_IdBackupTypes` (`IdBackupTypes`), ADD KEY `IdTaskLocationDetails` (`IdTaskLocationDetails`);
+ ADD PRIMARY KEY (`Id`), ADD KEY `IX_IdTask` (`IdTask`), ADD KEY `IX_IdSource` (`IdSource`), ADD KEY `IX_IdDestination` (`IdDestination`);
 
 --
 -- Indexes for table `Tasks`
 --
 ALTER TABLE `Tasks`
- ADD PRIMARY KEY (`Id`), ADD KEY `IX_IdDaemon` (`IdDaemon`), ADD KEY `Time` (`Time`);
+ ADD PRIMARY KEY (`Id`), ADD KEY `IX_IdDaemon` (`IdDaemon`), ADD KEY `IdTaskDetails` (`IdTaskDetails`,`IdBackupTypes`), ADD KEY `IdTaskDetails_2` (`IdTaskDetails`), ADD KEY `IdBackupTypes` (`IdBackupTypes`);
+
+--
+-- Indexes for table `TaskTimes`
+--
+ALTER TABLE `TaskTimes`
+ ADD PRIMARY KEY (`Id`), ADD KEY `IdTask` (`IdTask`,`IdTime`), ADD KEY `IdTime` (`IdTime`);
 
 --
 -- Indexes for table `Times`
@@ -749,7 +799,7 @@ MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 -- AUTO_INCREMENT for table `DaemonGroups`
 --
 ALTER TABLE `DaemonGroups`
-MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `DaemonInfos`
 --
@@ -774,12 +824,12 @@ MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 -- AUTO_INCREMENT for table `GroupPermissions`
 --
 ALTER TABLE `GroupPermissions`
-MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `Groups`
 --
 ALTER TABLE `Groups`
-MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `LocationCredentials`
 --
@@ -804,16 +854,16 @@ MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=9;
 -- AUTO_INCREMENT for table `Permissions`
 --
 ALTER TABLE `Permissions`
-MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
+MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `Protocols`
 --
 ALTER TABLE `Protocols`
 MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 --
--- AUTO_INCREMENT for table `TaskLocationDetails`
+-- AUTO_INCREMENT for table `TaskDetails`
 --
-ALTER TABLE `TaskLocationDetails`
+ALTER TABLE `TaskDetails`
 MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `TaskLocationLogs`
@@ -831,6 +881,11 @@ MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
 ALTER TABLE `Tasks`
 MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=15;
 --
+-- AUTO_INCREMENT for table `TaskTimes`
+--
+ALTER TABLE `TaskTimes`
+MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `Times`
 --
 ALTER TABLE `Times`
@@ -839,7 +894,7 @@ MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
 -- AUTO_INCREMENT for table `UserGroups`
 --
 ALTER TABLE `UserGroups`
-MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `UserLogs`
 --
@@ -923,8 +978,6 @@ ADD CONSTRAINT `TaskLocationLogs_FK_IdTaskLocation_TaskLocations$Id` FOREIGN KEY
 -- Constraints for table `TaskLocations`
 --
 ALTER TABLE `TaskLocations`
-ADD CONSTRAINT `TaskLocations_ibfk_1` FOREIGN KEY (`IdTaskLocationDetails`) REFERENCES `TaskLocationDetails` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `TaskLocations_FK_IdBackupType_BackupType$Id` FOREIGN KEY (`IdBackupTypes`) REFERENCES `BackupTypes` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
 ADD CONSTRAINT `TaskLocations_FK_IdDestination_Locations$Id` FOREIGN KEY (`IdDestination`) REFERENCES `Locations` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
 ADD CONSTRAINT `TaskLocations_FK_IdSource_Locations$Id` FOREIGN KEY (`IdSource`) REFERENCES `Locations` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
 ADD CONSTRAINT `TaskLocations_FK_IdTask_Tasks$Id` FOREIGN KEY (`IdTask`) REFERENCES `Tasks` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -933,8 +986,16 @@ ADD CONSTRAINT `TaskLocations_FK_IdTask_Tasks$Id` FOREIGN KEY (`IdTask`) REFEREN
 -- Constraints for table `Tasks`
 --
 ALTER TABLE `Tasks`
-ADD CONSTRAINT `Tasks_ibfk_1` FOREIGN KEY (`Time`) REFERENCES `Times` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `Tasks_FK_IdDaemon_Daemons$Id` FOREIGN KEY (`IdDaemon`) REFERENCES `Daemons` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `Tasks_ibfk_2` FOREIGN KEY (`IdBackupTypes`) REFERENCES `BackupTypes` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `Tasks_FK_IdDaemon_Daemons$Id` FOREIGN KEY (`IdDaemon`) REFERENCES `Daemons` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `Tasks_ibfk_1` FOREIGN KEY (`IdTaskDetails`) REFERENCES `TaskDetails` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `TaskTimes`
+--
+ALTER TABLE `TaskTimes`
+ADD CONSTRAINT `TaskTimes_ibfk_2` FOREIGN KEY (`IdTime`) REFERENCES `Times` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE,
+ADD CONSTRAINT `TaskTimes_ibfk_1` FOREIGN KEY (`IdTask`) REFERENCES `Tasks` (`Id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `UserGroups`

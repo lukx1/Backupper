@@ -53,7 +53,7 @@ namespace Daemon
         {
             if (period == null || period <= 0)
                 return TimeSpan.FromMilliseconds(0);
-            int res = (int)period - ((int)(DateTime.Now - startTime).TotalMilliseconds%(int)period);
+            int res = (int)period - ((((int)(DateTime.Now - startTime).TotalMilliseconds)%(int)period));
             return TimeSpan.FromMilliseconds(res);
         }
 
