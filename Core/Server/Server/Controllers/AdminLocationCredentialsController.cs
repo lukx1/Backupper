@@ -21,7 +21,7 @@ namespace Server.Controllers
                     return RedirectToAction("Login", "AdminLogin");
 
                 using (var db = new Models.MySQLContext())
-                    return View(db.LocationCredentials.ToList());
+                    return View(db.LocationCredentials.AsQueryable().Include(x => x.LogonType).ToList());
             }
             catch (Exception e)
             {
@@ -38,6 +38,17 @@ namespace Server.Controllers
             {
                 if (!Util.IsUserAlreadyLoggedIn(Session))
                     return RedirectToAction("Login", "AdminLogin");
+
+                using (var db = new MySQLContext())
+                {
+                    ViewBag.LogonTypes =
+                        db.LogonTypes.Select(x => new SelectListItem()
+                            {
+                                Value = x.Id.ToString(),
+                                Text = x.Name
+                            }
+                        ).ToArray();
+                }
             }
             catch (Exception e)
             {
@@ -46,11 +57,11 @@ namespace Server.Controllers
                 return RedirectToAction("Index", "AdminError");
             }
 
-            return View(new Models.Time());
+            return View(new Models.LocationCredential());
         }
 
         [HttpPost]
-        public ActionResult NewLocationCredential(Models.Time time)
+        public ActionResult NewLocationCredential(Models.LocationCredential cred)
         {
             try
             {
@@ -59,7 +70,7 @@ namespace Server.Controllers
 
                 using (var db = new Models.MySQLContext())
                 {
-                    db.Times.Add(time);
+                    db.LocationCredentials.Add(cred);
                     db.SaveChanges();
                 }
             }
@@ -70,8 +81,8 @@ namespace Server.Controllers
                 return RedirectToAction("Index", "AdminError");
             }
 
-            TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "New time was successfully created";
-            return RedirectToAction("Index", "AdminTimes");
+            TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "New credential was successfully created";
+            return RedirectToAction("Index", "AdminLocationCredentials");
         }
 
         [HttpGet]
@@ -82,15 +93,35 @@ namespace Server.Controllers
                 if (!Util.IsUserAlreadyLoggedIn(Session))
                     return RedirectToAction("Login", "AdminLogin");
 
+                using (var db = new MySQLContext())
+                {
+                    ViewBag.LogonTypes =
+                        db.LogonTypes.Select(x => new SelectListItem()
+                            {
+                                Value = x.Id.ToString(),
+                                Text = x.Name
+                            }
+                        ).ToArray();
+                }
+
                 using (var db = new Models.MySQLContext())
                 {
-                    var time = db.Times.FirstOrDefault(x => x.Id == id);
-                    if (time == null)
+                    var cred = db.LocationCredentials.Where(x => x.Id == id).Include(x => x.LogonType).FirstOrDefault();
+                    if (cred == null)
                     {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Time does not exists";
-                        return RedirectToAction("Index", "AdminTimes");
+                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential does not exists";
+                        return RedirectToAction("Index", "AdminLocationCredentials");
                     }
-                    return View(time);
+
+                    ViewBag.LogonTypes =
+                        db.LogonTypes.Select(x => new SelectListItem()
+                            {
+                                Value = x.Id.ToString(),
+                                Text = x.Name
+                            }
+                        ).ToArray();
+
+                    return View(cred);
                 }
             }
             catch (Exception e)
@@ -102,7 +133,7 @@ namespace Server.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditLocationCredential(Models.Time time)
+        public ActionResult EditLocationCredential(Models.LocationCredential cred)
         {
             try
             {
@@ -111,12 +142,12 @@ namespace Server.Controllers
 
                 using (var db = new Models.MySQLContext())
                 {
-                    db.Times.AddOrUpdate(time);
+                    db.LocationCredentials.AddOrUpdate(cred);
                     db.SaveChanges();
                 }
 
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Time was successfully updated";
-                return RedirectToAction("Index", "AdminTimes");
+                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential was successfully updated";
+                return RedirectToAction("Index", "AdminLocationCredentials");
             }
             catch (Exception e)
             {
@@ -166,14 +197,14 @@ namespace Server.Controllers
                     var dbLocCred = db.LocationCredentials.FirstOrDefault(x => x.Id == cred.Id);
                     if (dbLocCred == null)
                     {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credentials does not exists";
+                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential does not exists";
                         return RedirectToAction("Index", "AdminLocationCredentials");
                     }
 
                     db.LocationCredentials.Remove(dbLocCred);
                     db.SaveChanges();
 
-                    TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credentials was successfully deleted";
+                    TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential was successfully deleted";
                     return RedirectToAction("Index", "AdminLocationCredentials");
                 }
             }
