@@ -14,7 +14,7 @@ namespace Server.Controllers
         public ActionResult Login()
         {
             if (Util.IsUserAlreadyLoggedIn(Session))
-                return RedirectToAction("Index", "Admin", null);
+                return RedirectToAction("Index", "Admin");
             return View(new Models.Admin.LoginModel());
         }
 
@@ -31,15 +31,14 @@ namespace Server.Controllers
                     guid = auth.LoginUser(loginModel.Nickname, loginModel.Password);
                 }
 
-                Session["sessionUuid"] = guid;
-                return RedirectToAction("Index", "Admin", null);
+                Session[Objects.MagicStrings.SESSION_UUID] = guid;
+                return RedirectToAction("Index", "Admin");
             }
             catch (Exception e)
             {
-                if (e is NullReferenceException || e is ArgumentException)
-                    return View(new Models.Admin.LoginModel());
-                else
-                    return RedirectToAction("Index", "AdminError");
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
             }
         }
 

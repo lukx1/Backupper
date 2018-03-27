@@ -1,7 +1,7 @@
-﻿@model global::Server.Models.Admin.DaemonInfoModel
+﻿@model global::Server.Models.Daemon
 
 @{
-    ViewBag.Title = "Daemon Info";
+    ViewBag.Title = "Tasks";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -15,7 +15,7 @@
 		<tr>
 			<td>@i.Id</td>
 			<td>@i.Name</td>
-			<td><a href="/AdminTasks/TaskInfo?id=@(i.Id)">Show Task Locations</a></td>
+			<td><a href="/AdminTasks/TaskLocations?id=@(i.Id)">Show Task Locations</a></td>
 			<td><a href="/AdminTasks/EditTask?id=@(i.Id)">Edit</a></td>
 			<td><a href="/AdminTasks/DeleteTask?id=@(i.Id)">Delete</a></td>
 		</tr>

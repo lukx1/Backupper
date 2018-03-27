@@ -1,5 +1,6 @@
 ﻿@{
 	ViewBag.Title = "Admin Panel";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <h2>Admin panel</h2>
@@ -8,9 +9,7 @@
 User management
 <ul class="list-unstyled">
 	<li>@Html.ActionLink("User List", "Index", "AdminUsers")</li>
-	<li>@Html.ActionLink("User Groups List (support table)", "UserGroups", "AdminUsers")</li>
 	<li>@Html.ActionLink("Preshared Key List", "Index", "AdminPresharedKeys")</li>
-
 </ul>
 
 <br />
@@ -20,23 +19,7 @@ Daemon management
 </ul>
 
 <br />
-Tasks management
-<ul class="list-unstyled">
-	<li>@Html.ActionLink("Tasks", "Index", "AdminTasks")</li>
-</ul>
-
-<br />
 Groups management
 <ul class="list-unstyled">
 	<li>@Html.ActionLink("Group List", "Index", "AdminGroups")</li>
-</ul>
-
-<br />
-Statistics & Info
-<ul class="list-unstyled">
-	<li>@Html.ActionLink("User Logs", "Logs", "AdminUsers")</li>
-	<li>@Html.ActionLink("Daemon Logs", "Logs", "AdminDaemons")</li>
-	<li>@Html.ActionLink("Task Location Logs", "Logs", "AdminTasks")</li>
-	<li>@Html.ActionLink("Loged In Daemons", "LogedInDaemons", "AdminDaemons")</li>
-	<li>@Html.ActionLink("Loged In Users", "LogedInUsers", "AdminUsers")</li>
 </ul>

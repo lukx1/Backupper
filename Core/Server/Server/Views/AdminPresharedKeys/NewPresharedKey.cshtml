@@ -1,0 +1,26 @@
+﻿@model global::Server.Models.DaemonPreSharedKey
+
+@{
+	ViewBag.Title = "New Preshared Key";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Preshared Keys</h2>
+
+@using (Html.BeginForm("NewPresharedKey", "AdminPresharedKeys", FormMethod.Post))
+{
+	<table style="width:100%">
+		<tr>
+			<th>Expires</th>
+		</tr>
+		<tr>
+			<td>@Html.EditorFor(model => model.Expires)</td>
+			<td>@Html.CheckBoxFor(model => model.Used)</td>
+		</tr>
+	</table>
+
+	<input type="submit" value="Confirm" />
+	<input type="reset" value="Clear" />
+}
+
+

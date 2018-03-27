@@ -19,32 +19,14 @@ namespace Daemon.Communication
             this.messenger = messenger;
         }
 
-        public async Task<Shared.Messenger.ServerMessage<SpecificLogResponse>> SendLog<T>(params ISpecificLog<T>[] logs)
+        public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> SendLog<T>(params ILog<T>[] logs)
         {
-            List<JsonableSpecificLog> jsonLogs = new List<JsonableSpecificLog>();
-            foreach (var log in logs)
-            {
-                jsonLogs.Add(JsonableSpecificLog.CreateFrom(log));
-            }
-            return await messenger.SendAsync<SpecificLogResponse>(
-                new SpecificLogMessage() { sessionUuid = new LoginSettings().SessionUuid, Logs = jsonLogs },
-                "SpecificLog",
-                System.Net.Http.HttpMethod.Put
-            );
-        }
-
-        public async Task<Shared.Messenger.ServerMessage<SpecificLogResponse>> SendLog<T>(params ILog<T>[] logs)
-        {
-            if(logs is ISpecificLog<T>[])
-            {
-                return await SendLog((ISpecificLog<T>[])logs);
-            }
             List<JsonableUniversalLog> jsonLogs = new List<JsonableUniversalLog>();
             foreach (var log in logs)
             {
                 jsonLogs.Add(JsonableUniversalLog.CreateFrom(log));
             }
-            return await messenger.SendAsync<SpecificLogResponse>(
+            return await messenger.SendAsync<UniversalLogResponse>(
                 new UniversalLogMessage() { sessionUuid = new LoginSettings().SessionUuid, Logs = jsonLogs },
                 "UniversalLog",
                 System.Net.Http.HttpMethod.Put

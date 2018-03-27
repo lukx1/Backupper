@@ -9,7 +9,7 @@ namespace Tests
     [TestClass]
     public class TaskTest
     {
-        [TestMethod]
+       /* [TestMethod]
         public void TaskCreate()
         {
             DbTask task = new DbTask()
@@ -48,6 +48,6 @@ namespace Tests
                 }
             };
             Console.WriteLine(JsonConvert.SerializeObject(task));
-        }
+        }*/
     }
 }

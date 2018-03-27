@@ -30,9 +30,9 @@ namespace Server
 
         public static bool IsUserAlreadyLoggedIn(HttpSessionStateBase session, bool refresh = true)
         {
-            var result = false;
+            bool result;
 
-            Guid? uuid = (Guid?)session["sessionUuid"];
+            Guid? uuid = (Guid?)session[Objects.MagicStrings.SESSION_UUID];
             if (!uuid.HasValue)
                 return false;
 

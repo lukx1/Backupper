@@ -10,9 +10,9 @@
 <body>
 	<nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
 		<div class="navbar-nav">
-			@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link nav-item" })
-			@Html.ActionLink("API", "Index", "Help", new { area = "" }, new { @class = "nav-link nav-item" })
-			@Html.ActionLink("Admin", "Index", "Admin", new { area = "" }, new { @class = "nav-link nav-item" })
+			@Html.ActionLink("Home", "Index", "Home", null, new { @class = "nav-link nav-item" })
+			@Html.ActionLink("API", "Index", "Help", null, new { @class = "nav-link nav-item" })
+			@Html.ActionLink("Admin", "Index", "Admin", null, new { @class = "nav-link nav-item" })
 		</div>
 	</nav>
 
@@ -27,7 +27,6 @@
 	</div>
 
 	@Scripts.Render("~/bundles/jquery")
-	@Scripts.Render("~/bundles/jquery_validate")
 	@Scripts.Render("~/bundles/bootstrap")
 	@RenderSection("scripts", required: false)
 </body>

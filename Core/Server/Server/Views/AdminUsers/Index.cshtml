@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<global::Server.Models.User>
 
 @{
-	ViewBag.Title = "Users - List Page";
+	ViewBag.Title = "Users";
 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 <table style="width:100%">
@@ -11,13 +11,15 @@
 	</tr>
 	@foreach (var item in Model)
 	{
-		<tr>
-			<td>@item.Nickname</td>
-			<td>@item.FullName</td>
-			<td>
-				<button class="btn" formdata="get" type="submit"  formaction="/AdminUsers/AddEdit?id=@item.Id">Edit</button>
-				<button class="btn" formdata="get" type="submit" href="/AdminUsers/Delete?id=@item.Id">Delete</button>
-			</td>
-		</tr>
+	<tr>
+		<td>@item.Nickname</td>
+		<td>@item.FullName</td>
+		<td><a href="/AdminDaemons/DaemonsByUser?id=@(item.Id)">Show Daemons</a></td>
+		<td><a href="/AdminUsers/UserGroups?id=@(item.Id)">Groups</a></td>
+		<td><a href="/AdminUsers/EditUser?id=@(item.Id)">Edit</a></td>
+		<td><a href="/AdminUsers/DeleteUser?id=@(item.Id)">Delete</a></td>
+	</tr>
 	}
 </table>
+
+<a href="/AdminUsers/NewUser">New User</a>

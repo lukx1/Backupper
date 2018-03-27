@@ -12,7 +12,8 @@ namespace Shared
         LogType LogType { get;  }
         LogContentType Code { get;  }
         DateTime DateCreated { get;  }
-        ILogHeader Header { get;  }
         T Content { get; }
+        void Load(JsonableUniversalLog universalLog);
+
     }
 }

@@ -1,0 +1,10 @@
+﻿
+@{
+    ViewBag.Title = "Error";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@if (TempData[global::Server.Objects.MagicStrings.ERROR_MESSAGE] != null)
+{
+	@TempData[global::Server.Objects.MagicStrings.ERROR_MESSAGE].ToString()
+}

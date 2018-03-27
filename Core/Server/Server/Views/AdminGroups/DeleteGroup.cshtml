@@ -1,0 +1,41 @@
+﻿@model global::Server.Models.Group
+
+@{
+	ViewBag.Title = "Delete Group";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<table>
+	<tr>
+		<td>
+			@Html.LabelFor(m => m.Name)
+		</td>
+		<td>
+			@Html.DisplayFor(m => m.Name)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			@Html.LabelFor(m => m.Description)
+		</td>
+		<td>
+			@Html.DisplayFor(m => m.Description)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			@Html.LabelFor(model => model.ForDaemons)
+		</td>
+		<td>
+			@Html.DisplayFor(model => model.ForDaemons)
+		</td>
+	</tr>
+</table>
+
+@using (Html.BeginForm("DeleteGroup", "AdminGroups", FormMethod.Post))
+{
+	@Html.HiddenFor(m => m.Id)
+
+	<button class="btn" type="submit">Confirm</button>
+	<a class="btn" href="/AdminGroups">Cancel</a>
+}

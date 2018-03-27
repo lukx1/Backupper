@@ -2,6 +2,7 @@
 
 @{
 	ViewBag.Title = "Groups";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <h2>Groups</h2>
@@ -11,7 +12,7 @@
 		<th>ID</th>
 		<th>Name</th>
 		<th>Description</th>
-		<th>Is meants for daemons</th>
+		<th>Is for daemons</th>
 	</tr>
 	@foreach (var item in Model)
 	{
@@ -20,6 +21,10 @@
 		<td>@item.Name</td>
 		<td>@item.Description</td>
 		<td>@item.ForDaemons</td>
+		<td><a href="/AdminGroups/GroupPermissions?id=@(item.Id)">Permissions</a></td>
+		<td><a href="/AdminGroups/EditGroup?id=@(item.Id)">Edit</a></td>
+		<td><a href="/AdminGroups/DeleteGroup?id=@(item.Id)">Delete</a></td>
 	</tr>
 	}
 </table>
+<a href="/AdminGroups/NewGroup">New Group</a>

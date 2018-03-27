@@ -1,13 +1,13 @@
-﻿@model global::Server.Models.Admin.UserGroupsModel
+﻿@model global::Server.Models.Admin.DaemonGroupsModel
 
 @{
-	ViewBag.Title = "User Groups";
+	ViewBag.Title = "Daemon Groups";
 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-@using (Html.BeginForm("UserGroups", "AdminUsers", FormMethod.Post))
+@using (Html.BeginForm("DaemonGroups", "AdminDaemons", FormMethod.Post))
 {
-	@Html.HiddenFor(model => model.IdUser)
+	@Html.HiddenFor(model => model.IdDaemon)
 
 	<table style="width:100%">
 		<tr>
