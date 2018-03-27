@@ -10,7 +10,7 @@ namespace Tests
     /// <summary>
     /// Summary description for ProjectIniTest
     /// </summary>
-    [TestClass]
+    /*[TestClass]
     public class ProjectIniTest
     {
 
@@ -42,5 +42,5 @@ namespace Tests
             Assert.IsTrue(ProjectIni.Data["sqlname"] == name);
         }
 
-    }
+    }*/
 }

@@ -11,24 +11,20 @@ namespace Shared
     {
         public int Id { get; set; }
         public LogType LogType { get; set; }
-        public int Code { get; set; }
+        public Guid Code { get; set; }
         public DateTime DateCreated { get; set; }
-        public string Header { get; set; }
         public string Content { get; set; }
 
         private JsonableUniversalLog() { }
 
-        public static JsonableUniversalLog CreateFrom<T>(ILog<T> log)
+        public static JsonableUniversalLog CreateFrom<T>(ILog<T> log) where T:class
         {
-            if (log is ISpecificLog<T>)
-                throw new NotSupportedException("Pro zpracování ISpecificLogu použijte JsonableSpecificLog");
             return new JsonableUniversalLog()
             {
                 Id = log.Id,
-                Code = (int)log.Code,
+                Code = log.Code.Uuid,
                 Content = JsonConvert.SerializeObject(log.Content),
-                DateCreated = log.DateCreated,
-                Header = JsonConvert.SerializeObject(log.Header),
+                DateCreated = log.DateCreated == DateTime.MinValue ? DateTime.Now : log.DateCreated,
                 LogType = log.LogType
             };
         }

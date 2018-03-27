@@ -111,15 +111,6 @@ namespace Server.Objects
             };
         }
 
-        private Models.TaskLocationsTime CreateTaskLocationsTimeFromTaskLocationsTime(Models.TaskLocation taskLocation, Models.Time time)
-        {
-            return new Models.TaskLocationsTime()
-            {
-                TaskLocation = taskLocation,
-                Time = time
-            };
-        }
-
         private void CreateTask(DbTask task, Daemon daemon)
         {
             Models.Task rTask = CreateTaskFromTask(task, daemon);
@@ -186,9 +177,11 @@ namespace Server.Objects
                 details = new DbTaskDetails()
                 {
                     Id = task.TaskDetail.Id,
-                    CompressionLevel =task.TaskDetail.CompressionLevel,
+                    CompressionLevel = task.TaskDetail.CompressionLevel,
                     ZipAlgorithm = task.TaskDetail.ZipAlgorithm
                 },
+                times = new List<DbTime>(),
+                taskLocations = new List<DbTaskLocation>(),
                 description = task.Description,
                 id = task.Id, uuidDaemon = task.Daemon.Uuid,
                 lastChanged = task.LastChanged,
@@ -210,7 +203,7 @@ namespace Server.Objects
 
             List<Shared.NetMessages.TaskMessages.DbTaskLocation> taskLocations = new List<Shared.NetMessages.TaskMessages.DbTaskLocation>();
             dbTask.taskLocations = taskLocations;
-            foreach (var taskLocation in mysql.TaskLocations.Where(r => r.IdTask == task.Id))
+            foreach (var taskLocation in task.TaskLocations)
             {
 
                 Shared.NetMessages.TaskMessages.DbTaskLocation dbTaskLocation = new Shared.NetMessages.TaskMessages.DbTaskLocation();
@@ -231,7 +224,7 @@ namespace Server.Objects
         private List<DbTask> FetchAll(TaskMessage message)
         {
             int idDaemon = authenticator.GetDaemonFromUuid(message.sessionUuid).Id;
-            var tasks = mysql.Tasks.Where(r => r.IdDaemon == idDaemon);
+            var tasks = mysql.Tasks.Where(r => r.IdDaemon == idDaemon).ToList();
             List<DbTask> dbTasks = new List<DbTask>();
             int i = 0;
             foreach (var task in tasks)

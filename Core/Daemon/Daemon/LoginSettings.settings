@@ -15,7 +15,7 @@
       <Value Profile="(Default)">50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e</Value>
     </Setting>
     <Setting Name="Server" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://localhost:57597</Value>
+      <Value Profile="(Default)">http://localhost:3393</Value>
     </Setting>
     <Setting Name="SessionLengthMinutes" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">15</Value>

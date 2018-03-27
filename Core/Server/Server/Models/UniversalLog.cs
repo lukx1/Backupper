@@ -9,22 +9,18 @@ namespace Server.Models
     [Table("3b1_joskalukas_db1.UniversalLogs")]
     public partial class UniversalLog
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         public int IdLogType { get; set; }
 
-        public int Code { get; set; }
+        public Guid? Code { get; set; }
 
         [Column(TypeName = "timestamp")]
         public DateTime DateCreated { get; set; }
 
+        [Column(TypeName = "text")]
         [Required]
-        [StringLength(64)]
-        public string Header { get; set; }
-
-        [Required]
-        [StringLength(512)]
+        [StringLength(65535)]
         public string Content { get; set; }
     }
 }

@@ -11,8 +11,16 @@ namespace Server
 {
     public class WebApiApplication : System.Web.HttpApplication
     {
+
+        protected void Application_End(object sender, EventArgs e)
+        {
+            ApplicationShutdownReason shutdownReason = System.Web.Hosting.HostingEnvironment.ShutdownReason;
+            Console.WriteLine();
+        }
+
         protected void Application_Start()
         {
+
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

@@ -15,7 +15,6 @@ namespace Server.Models
         public virtual DbSet<BackupType> BackupTypes { get; set; }
         public virtual DbSet<DaemonGroup> DaemonGroups { get; set; }
         public virtual DbSet<DaemonInfo> DaemonInfos { get; set; }
-        public virtual DbSet<DaemonLog> DaemonLogs { get; set; }
         public virtual DbSet<DaemonPreSharedKey> DaemonPreSharedKeys { get; set; }
         public virtual DbSet<Daemon> Daemons { get; set; }
         public virtual DbSet<GroupPermission> GroupPermissions { get; set; }
@@ -29,14 +28,13 @@ namespace Server.Models
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Protocol> Protocols { get; set; }
         public virtual DbSet<TaskDetail> TaskDetails { get; set; }
-        public virtual DbSet<TaskLocationLog> TaskLocationLogs { get; set; }
         public virtual DbSet<TaskLocation> TaskLocations { get; set; }
         public virtual DbSet<Task> Tasks { get; set; }
         public virtual DbSet<TaskTime> TaskTimes { get; set; }
         public virtual DbSet<Time> Times { get; set; }
         public virtual DbSet<UniversalLog> UniversalLogs { get; set; }
+        public virtual DbSet<UpTime> UpTimes { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
-        public virtual DbSet<UserLog> UserLogs { get; set; }
         public virtual DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
@@ -67,14 +65,6 @@ namespace Server.Models
                 .WithRequired(e => e.DaemonInfo)
                 .HasForeignKey(e => e.IdDaemonInfo);
 
-            modelBuilder.Entity<DaemonLog>()
-                .Property(e => e.Header)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<DaemonLog>()
-                .Property(e => e.Content)
-                .IsUnicode(false);
-
             modelBuilder.Entity<DaemonPreSharedKey>()
                 .Property(e => e.PreSharedKey)
                 .IsUnicode(false);
@@ -85,11 +75,6 @@ namespace Server.Models
 
             modelBuilder.Entity<Daemon>()
                 .HasMany(e => e.DaemonGroups)
-                .WithRequired(e => e.Daemon)
-                .HasForeignKey(e => e.IdDaemon);
-
-            modelBuilder.Entity<Daemon>()
-                .HasMany(e => e.DaemonLogs)
                 .WithRequired(e => e.Daemon)
                 .HasForeignKey(e => e.IdDaemon);
 
@@ -175,16 +160,6 @@ namespace Server.Models
                 .Property(e => e.Description)
                 .IsUnicode(false);
 
-            modelBuilder.Entity<LogType>()
-                .HasMany(e => e.TaskLocationLogs)
-                .WithRequired(e => e.LogType)
-                .HasForeignKey(e => e.IdLogType);
-
-            modelBuilder.Entity<LogType>()
-                .HasMany(e => e.UserLogs)
-                .WithRequired(e => e.LogType)
-                .HasForeignKey(e => e.IdLogType);
-
             modelBuilder.Entity<Permission>()
                 .Property(e => e.Name)
                 .IsUnicode(false);
@@ -220,19 +195,6 @@ namespace Server.Models
                 .WithRequired(e => e.TaskDetail)
                 .HasForeignKey(e => e.IdTaskDetails);
 
-            modelBuilder.Entity<TaskLocationLog>()
-                .Property(e => e.Header)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<TaskLocationLog>()
-                .Property(e => e.Content)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<TaskLocation>()
-                .HasMany(e => e.TaskLocationLogs)
-                .WithRequired(e => e.TaskLocation)
-                .HasForeignKey(e => e.IdTaskLocation);
-
             modelBuilder.Entity<Task>()
                 .Property(e => e.Name)
                 .IsUnicode(false);
@@ -261,18 +223,6 @@ namespace Server.Models
                 .HasForeignKey(e => e.IdTime);
 
             modelBuilder.Entity<UniversalLog>()
-                .Property(e => e.Header)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<UniversalLog>()
-                .Property(e => e.Content)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<UserLog>()
-                .Property(e => e.Header)
-                .IsUnicode(false);
-
-            modelBuilder.Entity<UserLog>()
                 .Property(e => e.Content)
                 .IsUnicode(false);
 
@@ -305,11 +255,6 @@ namespace Server.Models
 
             modelBuilder.Entity<User>()
                 .HasMany(e => e.UserGroups)
-                .WithRequired(e => e.User)
-                .HasForeignKey(e => e.IdUser);
-
-            modelBuilder.Entity<User>()
-                .HasMany(e => e.UserLogs)
                 .WithRequired(e => e.User)
                 .HasForeignKey(e => e.IdUser);
         }

@@ -13,7 +13,6 @@ namespace Server.Models
         public Daemon()
         {
             DaemonGroups = new HashSet<DaemonGroup>();
-            DaemonLogs = new HashSet<DaemonLog>();
             Tasks = new HashSet<Task>();
         }
 
@@ -34,9 +33,6 @@ namespace Server.Models
         public virtual ICollection<DaemonGroup> DaemonGroups { get; set; }
 
         public virtual DaemonInfo DaemonInfo { get; set; }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<DaemonLog> DaemonLogs { get; set; }
 
         public virtual User User { get; set; }
 

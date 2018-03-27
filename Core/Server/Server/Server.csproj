@@ -204,7 +204,6 @@
     <Compile Include="Controllers\AdminUsersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IntroductionController.cs" />
-    <Compile Include="Controllers\SpecificLogController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\UniversalLogController.cs" />
@@ -225,7 +224,6 @@
     <Compile Include="Models\Daemon.cs" />
     <Compile Include="Models\DaemonGroup.cs" />
     <Compile Include="Models\DaemonInfo.cs" />
-    <Compile Include="Models\DaemonLog.cs" />
     <Compile Include="Models\DaemonPreSharedKey.cs" />
     <Compile Include="Models\Group.cs" />
     <Compile Include="Models\GroupPermission.cs" />
@@ -242,17 +240,15 @@
     <Compile Include="Models\Task.cs" />
     <Compile Include="Models\TaskDetail.cs" />
     <Compile Include="Models\TaskLocation.cs" />
-    <Compile Include="Models\TaskLocationDetail.cs" />
-    <Compile Include="Models\TaskLocationLog.cs" />
-    <Compile Include="Models\TaskLocationsTime.cs" />
     <Compile Include="Models\TaskTime.cs" />
     <Compile Include="Models\Time.cs" />
     <Compile Include="Models\UniversalLog.cs" />
+    <Compile Include="Models\UpTime.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserGroup.cs" />
-    <Compile Include="Models\UserLog.cs" />
     <Compile Include="Objects\MagicStrings.cs" />
     <Compile Include="Objects\LogHandler.cs" />
+    <Compile Include="Objects\PList.cs" />
     <Compile Include="Objects\TaskHandler.cs" />
     <Compile Include="Objects\UserHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

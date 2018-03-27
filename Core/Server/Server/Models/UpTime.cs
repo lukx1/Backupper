@@ -6,17 +6,17 @@ namespace Server.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    [Table("3b1_joskalukas_db1.LogType")]
-    public partial class LogType
+    [Table("3b1_joskalukas_db1.UpTimes")]
+    public partial class UpTime
     {
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(16)]
-        public string Name { get; set; }
+        public int IdSource { get; set; }
 
-        [Required]
-        [StringLength(32)]
-        public string Description { get; set; }
+        public bool IsDaemon { get; set; }
+
+        public DateTime DateStart { get; set; }
+
+        public DateTime? DateEnd { get; set; }
     }
 }

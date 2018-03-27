@@ -1,4 +1,5 @@
 ﻿using Server.Models;
+using Server.Objects;
 using Shared;
 using Shared.NetMessages;
 using System;
@@ -45,7 +46,7 @@ namespace Server.Authentication
         /// <returns></returns>
         public Guid LoginUser(string nickname, string password)
         {
-            User user = mysql.Users.FirstOrDefault(r => r.Nickname == nickname);
+            User user = mysql.Users.Where(r => r.Nickname == nickname).FirstOrDefault();
             if (user == null)
                 throw new NullReferenceException("Uživatel s daným jménem nebyl nalezen");
             if (!PasswordFactory.ComparePasswordsPbkdf2(password, user.Password))
@@ -61,7 +62,7 @@ namespace Server.Authentication
         private Guid GetValidUuid(User user)
         {
             Guid guid = Guid.NewGuid();
-            LogedInUser logedInUser = mysql.LogedInUsers.FirstOrDefault(r => r.IdUser == user.Id);
+            LogedInUser logedInUser = mysql.LogedInUsers.Where(r => r.IdUser == user.Id).FirstOrDefault();
             if (logedInUser == null) //First login
             {
                 logedInUser = new LogedInUser() { IdUser = user.Id, SessionUuid = guid, Expires = DateTime.Now.AddMinutes(15) };
@@ -69,7 +70,7 @@ namespace Server.Authentication
             }
             else
             {
-                logedInUser.SessionUuid = guid;
+				logedInUser.SessionUuid = guid;
                 logedInUser.Expires = DateTime.Now.AddMinutes(15);
             }
             mysql.SaveChanges(); //DONT CHANGE TO ASYNC
@@ -83,8 +84,8 @@ namespace Server.Authentication
         /// <returns></returns>
         public User GetUserFromUuid(Guid uuid)
         {
-            LogedInUser logedInUsers = mysql.LogedInUsers.FirstOrDefault(r => r.SessionUuid == uuid);
-            return mysql.Users.FirstOrDefault(r => r.Id == logedInUsers.IdUser);
+            LogedInUser logedInUsers = mysql.LogedInUsers.Where(r => r.SessionUuid == uuid).FirstOrDefault();
+            return mysql.Users.Where(r => r.Id == logedInUsers.IdUser).FirstOrDefault();
         }
 
         /// <summary>
@@ -94,8 +95,8 @@ namespace Server.Authentication
         /// <returns></returns>
         public Daemon GetDaemonFromUuid(Guid uuid)
         {
-            LogedInDaemon logedInDaemon = mysql.LogedInDaemons.FirstOrDefault(r => r.SessionUuid == uuid);
-            return mysql.Daemons.FirstOrDefault(r => r.Id == logedInDaemon.IdDaemon);
+            LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == uuid).FirstOrDefault();
+            return mysql.Daemons.Where(r => r.Id == logedInDaemon.IdDaemon).FirstOrDefault();
         }
 
         public struct UuidPass
@@ -139,7 +140,7 @@ namespace Server.Authentication
             return new UuidPass() { name = dbDaemon.Uuid.ToString(), pass = unhashedPass };
         }
 
-        public IEnumerable<Permission> GetPermissionsDaemon(Guid daemonUuid)
+        public IList<Permission> GetPermissionsDaemon(Guid daemonUuid)
         {
             /* var perms = from groupPermissions in mysql.GroupPermissions
                          join ppermissions in mysql.Permissions on groupPermissions.IdPermission equals ppermissions.Id
@@ -153,38 +154,41 @@ namespace Server.Authentication
                  permissions.Add((Permission)perm);
              }
              return permissions;*/
-            List<Permission> permissions = new List<Permission>();
-            var daemon = mysql.Daemons.Where(r => r.Uuid == daemonUuid).FirstOrDefault();
-            if (daemon == null)
-                throw new ArgumentNullException("daemon");
-            var daemonGroups = mysql.DaemonGroups.Where(r => r.IdDaemon == daemon.Id);
-            foreach (var dGroups in daemonGroups)
+            PList permissionsList = new PList();
+            var permissions = from daemons in mysql.Daemons
+                              join daemonGroups in mysql.DaemonGroups on daemons.Id equals daemonGroups.IdDaemon
+                              join groups in mysql.Groups on daemonGroups.IdGroup equals groups.Id
+                              join groupPermissions in mysql.GroupPermissions on groups.Id equals groupPermissions.IdGroup
+                              where daemons.Uuid == daemonUuid
+                              select new { groupPermissions.IdPermission };
+            foreach (var permission in permissions)
             {
-                var groups = mysql.Groups.Where(r => r.Id == dGroups.IdGroup);
-                foreach (var group in groups)
-                {
-                    var groupPermissions = mysql.GroupPermissions.Where(r => r.IdGroup == dGroups.Id);
-                    foreach (var groupPermission in groupPermissions)
-                    {
-                        permissions.Add((Permission)groupPermission.IdPermission);
-                    }
-                }
-
+                permissionsList.Add((Permission)permission.IdPermission);
+                if ((Permission)permission.IdPermission == Permission.SKIP)
+                    break;
             }
-            return permissions;
+            return permissionsList;
         }
 
         /// <summary>
         /// Zjistí jestli daemon s daným uuid může udělat danou věc
         /// </summary>
-        /// <param name="uuid"></param>
+        /// <param name="daemonUuid">Daemonovo uuid</param>
         /// <param name="permission"></param>
         /// <returns></returns>
-        public bool IsDaemonAllowed(Guid uuid, Server.Authentication.Permission permission)
+        public bool IsDaemonAllowed(Guid daemonUuid, Server.Authentication.Permission permission)
         {
-            var daemon = mysql.Daemons.FirstOrDefault(r => r.Uuid == uuid);
+
+            var permissions = from daemons in mysql.Daemons
+                      join daemonGroups in mysql.DaemonGroups on daemons.Id equals daemonGroups.IdDaemon
+                      join groups in mysql.Groups on daemonGroups.IdGroup equals groups.Id
+                      join groupPermissions in mysql.GroupPermissions on groups.Id equals groupPermissions.IdGroup
+                      where daemons.Uuid == daemonUuid && (groupPermissions.IdPermission == (int)permission || groupPermissions.IdPermission == (int)Permission.SKIP)
+                      select new { groupPermissions.IdPermission };
+            return permissions.Count() > 0;
+            /*var daemon = mysql.Daemons.Where(r => r.Uuid == daemonUuid).FirstOrDefault();
             if (daemon == null)
-                return false;
+                throw new NullReferenceException("Nelze najít daemona s daným uuid");
             var daemonGroups = mysql.DaemonGroups.Where(r => r.IdDaemon == daemon.Id);
             foreach (var dGroups in daemonGroups)
             {
@@ -202,21 +206,21 @@ namespace Server.Authentication
                 }
                 
             }
-            return false;
+            return false;*/
         }
 
         /// <summary>
-        /// Zjistí jestli user s daným nicknamem může udělat danou věc
+        /// Zjistí jestli daemon s daným uuid může udělat danou věc
         /// </summary>
         /// <param name="nickname"></param>
         /// <param name="permission"></param>
         /// <returns></returns>
         public bool IsUserAllowed(string nickname, Server.Authentication.Permission permission)
         {
-            var user = mysql.Users.FirstOrDefault(r => r.Nickname == nickname);
+            var user = mysql.Users.Where(r => r.Nickname == nickname).FirstOrDefault();
             if (user == null)
                 return false;
-            var groups = mysql.UserGroups.Where(r => r.IdUser == user.Id);
+            var groups = mysql.DaemonGroups.Where(r => r.IdDaemon == user.Id);
             foreach (var group in groups)
             {
                 var groupPermissions = mysql.GroupPermissions.Where(r => r.IdGroup == group.Id);
@@ -232,73 +236,13 @@ namespace Server.Authentication
         }
 
         /// <summary>
-        /// Zjistí jestli user s daným session uuid může udělat danou věc
-        /// </summary>
-        /// <param name="uuid"></param>
-        /// <param name="permission"></param>
-        /// <returns></returns>
-        public bool IsUserAllowed(Guid uuid, Server.Authentication.Permission permission)
-        {
-            var user = mysql.LogedInUsers.FirstOrDefault(r => r.SessionUuid == uuid)?.User;
-            if (user == null)
-                return false;
-            var groups = mysql.UserGroups.Where(r => r.IdUser == user.Id);
-            foreach (var group in groups)
-            {
-                var groupPermissions = mysql.GroupPermissions.Where(r => r.IdGroup == group.Id);
-                foreach (var groupPermission in groupPermissions)
-                {
-                    if (groupPermission.IdPermission == (int)permission)
-                        return true;
-                    else if (groupPermission.IdPermission == (int)Permission.SKIP)
-                        return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Vrátí všechny permise, které uživatel má, pokud má uživatel permissy SKIP tak kolekce bude obsahovat pouze SKIP
-        /// </summary>
-        /// <param name="nickname"></param>
-        /// <returns></returns>
-        public IEnumerable<Permission> WhatIsUserAllowedToDo(string nickname)
-        {
-            var result = new List<Permission>();
-
-            var user = mysql.Users.FirstOrDefault(r => r.Nickname == nickname);
-            if (user == null)
-                return result;
-            var groups = mysql.UserGroups.Where(r => r.IdUser == user.Id);
-            foreach (var group in groups)
-            {
-                var groupPermissions = mysql.GroupPermissions.Where(r => r.IdGroup == group.Id);
-                foreach (var groupPermission in groupPermissions)
-                {
-                    if (groupPermission.IdPermission == (int)Permission.SKIP)
-                    {
-                        result.Clear();
-                        result.Add(Permission.SKIP);
-                        goto foundSkip;
-                    }
-                    if (!result.Contains((Permission)groupPermission.IdPermission))
-                    {
-                        result.Add((Permission)groupPermission.IdPermission);
-                    }
-                }
-            }
-            foundSkip:
-            return result;
-        }
-
-        /// <summary>
-        /// Zjístí předzdílený klíč s daným ID, toto ID není ID uživatele
+        /// Zjístí předzdílen=y klíč s daným ID, toto ID není ID uživatele
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
         public DaemonPreSharedKey GetPresharedFromId(int id)
         {
-            return mysql.DaemonPreSharedKeys.FirstOrDefault(r => r.Id == id);
+            return mysql.DaemonPreSharedKeys.Where(r => r.Id == id).FirstOrDefault();
         }
 
         /// <summary>
@@ -309,7 +253,7 @@ namespace Server.Authentication
         /// <returns></returns>
         public bool IsPresharedValid(int id, string key)
         {
-            var preshared = mysql.DaemonPreSharedKeys.FirstOrDefault(r => r.Id == id);
+            var preshared = mysql.DaemonPreSharedKeys.Where(r => r.Id == id).FirstOrDefault();
             if (preshared == null)
                 return false;
             if (preshared.Used || DateTime.Compare(preshared.Expires, DateTime.Now) < 0 /*Expired*/)
@@ -340,7 +284,7 @@ namespace Server.Authentication
         /// <returns></returns>
         public bool IsUserSessionValid(Guid uuid, bool refreshTime = true)
         {
-            LogedInUser logedInUser = mysql.LogedInUsers.FirstOrDefault(r => r.SessionUuid == uuid);
+            LogedInUser logedInUser = mysql.LogedInUsers.Where(r => r.SessionUuid == uuid).FirstOrDefault();
             if (logedInUser == null)
                 return false;
             if (Util.IsExpired(logedInUser.Expires))
@@ -358,7 +302,7 @@ namespace Server.Authentication
         /// <returns></returns>
         public bool IsDaemonSessionValid(Guid uuid, bool refreshTime = true)
         {
-            LogedInDaemon logedInDaemon = mysql.LogedInDaemons.FirstOrDefault(r => r.SessionUuid == uuid);
+            LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == uuid).FirstOrDefault();
             if (logedInDaemon == null)
                 return false;
             if (Util.IsExpired(logedInDaemon.Expires))
