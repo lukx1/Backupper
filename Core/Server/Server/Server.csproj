@@ -195,9 +195,12 @@
     <Compile Include="Controllers\AdminDaemonsController.cs" />
     <Compile Include="Controllers\AdminErrorController.cs" />
     <Compile Include="Controllers\AdminGroupsController.cs" />
+    <Compile Include="Controllers\AdminLocationCredentialsController.cs" />
+    <Compile Include="Controllers\AdminLocationsController.cs" />
     <Compile Include="Controllers\AdminLoginController.cs" />
     <Compile Include="Controllers\AdminPresharedKeysController.cs" />
     <Compile Include="Controllers\AdminTasksController.cs" />
+    <Compile Include="Controllers\AdminTimesController.cs" />
     <Compile Include="Controllers\AdminUsersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IntroductionController.cs" />
@@ -217,6 +220,7 @@
     <Compile Include="Models\Admin\EntityGroupsModels.cs" />
     <Compile Include="Models\Admin\GroupPermissionsModel.cs" />
     <Compile Include="Models\Admin\LoginModel.cs" />
+    <Compile Include="Models\Admin\TaskTimesModel.cs" />
     <Compile Include="Models\BackupType.cs" />
     <Compile Include="Models\Daemon.cs" />
     <Compile Include="Models\DaemonGroup.cs" />
@@ -338,6 +342,20 @@
     <Content Include="Views\AdminGroups\DeleteGroup.cshtml" />
     <Content Include="Views\AdminGroups\GroupPermissions.cshtml" />
     <Content Include="Views\AdminPresharedKeys\NewPresharedKey.cshtml" />
+    <Content Include="Views\AdminPresharedKeys\DeletePresharedKey.cshtml" />
+    <Content Include="Views\AdminTimes\Index.cshtml" />
+    <Content Include="Views\AdminTimes\NewTime.cshtml" />
+    <Content Include="Views\AdminTimes\EditTime.cshtml" />
+    <Content Include="Views\AdminTimes\DeleteTime.cshtml" />
+    <Content Include="Views\AdminLocations\Index.cshtml" />
+    <Content Include="Views\AdminLocations\NewLocation.cshtml" />
+    <Content Include="Views\AdminLocations\DeleteLocation.cshtml" />
+    <Content Include="Views\AdminLocations\EditLocation.cshtml" />
+    <Content Include="Views\AdminLocationCredentials\Index.cshtml" />
+    <Content Include="Views\AdminLocationCredentials\NewLocationCredential.cshtml" />
+    <Content Include="Views\AdminLocationCredentials\DeleteLocationCredential.cshtml" />
+    <Content Include="Views\AdminLocationCredentials\EditLocationCredential.cshtml" />
+    <Content Include="Views\AdminTasks\TaskTimes.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

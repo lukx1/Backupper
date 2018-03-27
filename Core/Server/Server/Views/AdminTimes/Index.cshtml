@@ -1,0 +1,30 @@
+﻿@model IEnumerable<global::Server.Models.Time>
+
+@{
+	ViewBag.Title = "Times";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<table style="width:100%">
+	<tr>
+		<th>Name</th>
+		<th>Interval</th>
+		<th>Repeat</th>
+		<th>Start Time</th>
+		<th>End Time</th>
+	</tr>
+	@foreach (var item in Model)
+	{
+	<tr>
+		<td>@item.Name</td>
+		<td>@item.Interval</td>
+		<td>@item.Repeat</td>
+		<td>@item.StartTime</td>
+		<td>@item.EndTime</td>
+		<td><a href="/AdminTimes/EditTime?id=@(item.Id)">Edit</a></td>
+		<td><a href="/AdminTimes/DeleteTime?id=@(item.Id)">Delete</a></td>
+	</tr>
+	}
+</table>
+
+<a href="/AdminTimes/NewTime">New Time</a>

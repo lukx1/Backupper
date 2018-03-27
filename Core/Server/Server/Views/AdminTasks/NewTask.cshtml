@@ -9,6 +9,7 @@
 {
 	<table>
 		@Html.HiddenFor(x => x.IdDaemon)
+
 		<tr>
 			<td>
 				@Html.LabelFor(x => x.Name)
@@ -23,6 +24,30 @@
 			</td>
 			<td>
 				@Html.TextAreaFor(x => x.Description)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				@Html.LabelFor(x => x.TaskDetail.ZipAlgorithm)
+			</td>
+			<td>
+				@Html.TextBoxFor(x => x.TaskDetail.ZipAlgorithm)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				@Html.LabelFor(x => x.TaskDetail.CompressionLevel)
+			</td>
+			<td>
+				@Html.TextBoxFor(x => x.TaskDetail.CompressionLevel)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Backup Type
+			</td>
+			<td>
+				@Html.DropDownListFor(x => x.IdBackupTypes, (IEnumerable<SelectListItem>)ViewBag.BackupTypes)
 			</td>
 		</tr>
 	</table>

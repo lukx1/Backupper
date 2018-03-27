@@ -1,0 +1,30 @@
+﻿@model IEnumerable<global::Server.Models.LocationCredential>
+
+@{
+	ViewBag.Title = "Location credentials";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<table style="width:100%">
+	<tr>
+		<th>Host</th>
+		<th>Port</th>
+		<th>Logon Type</th>
+		<th>Username</th>
+		<th>Password</th>
+	</tr>
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>@(item.Host ?? "NO HOST")</td>
+			<td>@(item.Port?.ToString() ?? "NO PORT")</td>
+			<td>@(item.LogonType?.Name ?? "NO LOGON TYPE")</td>
+			<td>@(item.Username ?? "NO USERNAME")</td>
+			<td>@(item.Password ?? "NO PASSWORD")</td>
+			<td><a href="/AdminLocationCredentials/EditLocationCredential?id=@(item.Id)">Edit</a></td>
+			<td><a href="/AdminLocationCredentials/DeleteLocationCredential?id=@(item.Id)">Delete</a></td>
+		</tr>
+	}
+</table>
+
+<a href="/AdminLocationCredentials/NewLocationCredential">New Time</a>

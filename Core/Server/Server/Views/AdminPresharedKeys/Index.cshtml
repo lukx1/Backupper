@@ -5,10 +5,9 @@
 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>Preshared Keys</h2>
-
 <table style="width:100%">
 	<tr>
+		<th>Key</th>
 		<th>User</th>
 		<th>Expires</th>
 		<th>Used</th>
@@ -16,9 +15,11 @@
 	@foreach (var item in Model)
 	{
 		<tr>
+			<td>@item.PreSharedKey</td>
 			<td>@item.User.Nickname</td>
 			<td>@item.Expires</td>
 			<td>@item.Used</td>
+			<td><a href="/AdminPresharedKeys/DeletePresharedKey?id=@(item.Id)">Delete</a></td>
 		</tr>
 	}
 </table>

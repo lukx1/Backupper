@@ -1,0 +1,56 @@
+﻿@model global::Server.Models.Time
+
+@{
+	ViewBag.Title = "Delete Time";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<table>
+	<tr>
+		<td>
+			@Html.LabelFor(m => m.Name)
+		</td>
+		<td>
+			@Html.DisplayFor(m => m.Name)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			@Html.LabelFor(m => m.Interval)
+		</td>
+		<td>
+			@Html.DisplayFor(m => m.Interval)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			@Html.LabelFor(m => m.StartTime)
+		</td>
+		<td>
+			@Html.DisplayFor(m => m.StartTime)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			@Html.LabelFor(m => m.EndTime)
+		</td>
+		<td>
+			@Html.DisplayFor(m => m.EndTime)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			@Html.LabelFor(m => m.Repeat)
+		</td>
+		<td>
+			@Html.DisplayFor(m => m.Repeat)
+		</td>
+	</tr>
+</table>
+
+@using (Html.BeginForm("DeleteTime", "AdminTimes", FormMethod.Post))
+{
+	@Html.HiddenFor(m => m.Id)
+
+	<input type="submit" value="Confirm" />
+}
