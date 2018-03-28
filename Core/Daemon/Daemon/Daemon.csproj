@@ -50,14 +50,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Backups\Backup.cs" />
     <Compile Include="Backups\BackupFactory.cs" />
-    <Compile Include="Backups\BackupInfo.cs" />
-    <Compile Include="Backups\BackupLog.cs" />
-    <Compile Include="Backups\BackupType.cs" />
-    <Compile Include="Backups\FileBackupedInfo.cs" />
-    <Compile Include="Backups\FullBackup.cs" />
     <Compile Include="Backups\IBackup.cs" />
+    <Compile Include="Backups\SmartBackup.cs" />
+    <Compile Include="Backups\SmartBackupInfo.cs" />
+    <Compile Include="Backups\SmartFileInfo.cs" />
     <Compile Include="Communication\DaemonClient.cs" />
     <Compile Include="Communication\Authenticator.cs" />
     <Compile Include="Communication\LogCommunicator.cs" />
