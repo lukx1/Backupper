@@ -1,0 +1,19 @@
+﻿@{
+    ViewBag.Title = "Uptime";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Uptime</h2>
+
+@{
+    Server.Objects.UptimeCalculator calc = new Server.Objects.UptimeCalculator();
+    var uptime = calc.Calculate();
+    uptime.UptimePercent = Math.Ceiling(uptime.UptimePercent * 10000) / 100;
+}
+
+<ul>
+    <li>Total uptime        : @uptime.TimeOnline</li>
+    <li>Total downtime      : @uptime.TimeOffline</li>
+    <li>Measurement start   : @uptime.MeasurementStart</li>
+    <li>Uptime percent      : @uptime.UptimePercent%</li>
+</ul>

@@ -196,8 +196,10 @@
     <Compile Include="Controllers\AdminErrorController.cs" />
     <Compile Include="Controllers\AdminGroupsController.cs" />
     <Compile Include="Controllers\AdminLoginController.cs" />
+    <Compile Include="Controllers\AdminPowerController.cs" />
     <Compile Include="Controllers\AdminPresharedKeysController.cs" />
     <Compile Include="Controllers\AdminTasksController.cs" />
+    <Compile Include="Controllers\AdminUptimeController.cs" />
     <Compile Include="Controllers\AdminUsersController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IntroductionController.cs" />
@@ -213,6 +215,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="HostringEnvironmentRegisteredShutdownObject.cs" />
     <Compile Include="Models\Admin\EntityGroupsModels.cs" />
     <Compile Include="Models\Admin\GroupPermissionsModel.cs" />
     <Compile Include="Models\Admin\LoginModel.cs" />
@@ -245,9 +248,17 @@
     <Compile Include="Objects\MagicStrings.cs" />
     <Compile Include="Objects\LogHandler.cs" />
     <Compile Include="Objects\PList.cs" />
+    <Compile Include="Objects\SqlLogger.cs" />
     <Compile Include="Objects\TaskHandler.cs" />
+    <Compile Include="Objects\UptimeCalculator.cs" />
     <Compile Include="Objects\UserHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="RegisteredServerStatusTicker.cs" />
     <Compile Include="SQLConnectionIni.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
@@ -281,10 +292,15 @@
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
     <Content Include="Content\bootstrap.css.map" />
     <None Include="packages.config" />
+    <Content Include="Images\oldManUnderConstruction.gif" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.js.map" />
     <Content Include="Scripts\bootstrap.bundle.js.map" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -334,6 +350,7 @@
     <Content Include="Views\AdminGroups\DeleteGroup.cshtml" />
     <Content Include="Views\AdminGroups\GroupPermissions.cshtml" />
     <Content Include="Views\AdminPresharedKeys\NewPresharedKey.cshtml" />
+    <Content Include="Views\AdminUptime\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -366,8 +383,16 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <SaveServerSettingsInUserFile>True</SaveServerSettingsInUserFile>
-          <servers defaultServer="">
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>57597</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:3393/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>http://192.168.1.50:57597/</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+          <servers defaultServer="SelfHostServer">
             <server name="SelfHostServer" exePath="" cmdArgs="" url="http://localhost:57597/" workingDir="" />
           </servers>
         </WebProjectProperties>

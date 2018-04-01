@@ -13,7 +13,7 @@ namespace Server.Models
 
         public int IdLogType { get; set; }
 
-        public Guid? Code { get; set; }
+        public Guid Code { get; set; }
 
         [Column(TypeName = "timestamp")]
         public DateTime DateCreated { get; set; }
