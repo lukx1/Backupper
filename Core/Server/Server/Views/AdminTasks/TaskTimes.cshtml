@@ -1,0 +1,30 @@
+﻿@model global::Server.Models.Admin.TaskTimesModel
+
+@{
+	ViewBag.Title = "Task Times";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>TaskTimes</h2>
+
+@using (Html.BeginForm("TaskTimes", "AdminTasks", FormMethod.Post))
+{
+	@Html.HiddenFor(model => model.IdTask)
+
+	<table style="width:100%">
+		<tr>
+			<th>Time name</th>
+			<th>Is time used ?</th>
+		</tr>
+		@for (var i = 0; i < Model.TaskTimes.Count; i++)
+		{
+			@Html.HiddenFor(x => x.TaskTimes[i].IdTime)
+			<tr>
+				<td>@Model.TaskTimes[i].Name</td>
+				<td>@Html.CheckBoxFor(x => x.TaskTimes[i].IsUsed)</td>
+			</tr>
+		}
+	</table>
+
+	<input type="submit" value="Confirm" />
+}

@@ -1,0 +1,57 @@
+﻿@model global::Server.Models.Time
+
+@{
+	ViewBag.Title = "Edit Time";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("EditTime", "AdminTimes", FormMethod.Post))
+{
+	@Html.HiddenFor(m => m.Id)
+
+	<table>
+		<tr>
+			<td>
+				@Html.LabelFor(m => m.Name)
+			</td>
+			<td>
+				@Html.TextBoxFor(m => m.Name)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				@Html.LabelFor(m => m.Interval)
+			</td>
+			<td>
+				@Html.TextBoxFor(m => m.Interval)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				@Html.LabelFor(m => m.StartTime)
+			</td>
+			<td>
+				@Html.EditorFor(m => m.StartTime)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				@Html.LabelFor(m => m.EndTime)
+			</td>
+			<td>
+				@Html.EditorFor(m => m.EndTime)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				@Html.LabelFor(m => m.Repeat)
+			</td>
+			<td>
+				@Html.CheckBoxFor(m => m.Repeat)
+			</td>
+		</tr>
+	</table>
+
+	<input type="submit" value="Confirm" />
+	<input type="reset" value="Cancel" />
+}

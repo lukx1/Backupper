@@ -5,28 +5,36 @@
 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<table>
+	<tr>
+		<td>
+			@Html.LabelFor(x => x.Name)
+		</td>
+		<td>
+			@Html.DisplayTextFor(x => x.Name)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			@Html.LabelFor(x => x.Description)
+		</td>
+		<td>
+			@Html.DisplayTextFor(x => x.Description)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Backup Type
+		</td>
+		<td>
+			@Html.DisplayTextFor(x => x.BackupType.ShortName)
+		</td>
+	</tr>
+</table>
+
 @using (Html.BeginForm("DeleteTask", "AdminTasks", FormMethod.Post))
 {
-	<table>
-		@Html.HiddenFor(x => x.Id)
-		<tr>
-			<td>
-				@Html.LabelFor(x => x.Name)
-			</td>
-			<td>
-				@Html.DisplayTextFor(x => x.Name)
-			</td>
-		</tr>
-		<tr>
-			<td>
-				@Html.LabelFor(x => x.Description)
-			</td>
-			<td>
-				@Html.DisplayTextFor(x => x.Description)
-			</td>
-		</tr>
-	</table>
-
+	@Html.HiddenFor(x => x.Id)
 	<input type="submit" value="Confirm" />
 	<input type="reset" value="Clear" />
 }
