@@ -46,6 +46,35 @@ namespace Daemon.Communication
             e.ErrorMessages.ForEach(r => logger.Log(r.id + ":" + r.message + "->" + r.value, logType));
         }
 
+        private async Task<bool> AttemptLogin(Authenticator authenticator, int tryCount)
+        {
+            try
+            {
+                var guid = await authenticator.AttemptLogin();
+                if (guid != Guid.Empty)
+                {
+                    logger.Log("Daemon přihlášen, obdržený session:" + guid, LogType.DEBUG);
+                    settings.SessionUuid = guid;
+                    settings.Save();
+                    return true;
+                }
+                else//TODO: tohle
+                    return false;
+            }
+            catch (HttpRequestException e)
+            {
+                logger.Log(
+                    $"Server není dostupný{Util.Newline}" +
+                    $"Pokus číslo {tryCount + 1}/{settings.LoginMaxRetryCount}{Util.Newline}" +
+                    $"Error : {e.Message}{Util.Newline}" +
+                    $"Příčina : server není zapnutý nebo odmítá připojení", LogType.WARNING
+                    );
+                return false;
+                
+            }
+            
+        }
+
         /// <summary>
         /// Pokud je nutno tak se introducne a načte existující tasky
         /// </summary>
@@ -79,6 +108,17 @@ namespace Daemon.Communication
                     return false;
                 }
             }
+            int tryCount = 0;
+            while (!await AttemptLogin(authenticator,tryCount)) // Pokouší se příhlásit dokut se to nepovede
+            {
+                if (++tryCount > settings.LoginMaxRetryCount - 1)
+                {
+                    logger.Log($"Byl dosažen maximální počet pokusů o připojení ({settings.LoginMaxRetryCount}){Util.Newline}Nelze pokračovat...", LogType.CRITICAL);
+                    return false;
+                }
+                logger.Log("Přihlášení se nepovedlo, bude se opakovat za " + TimeSpan.FromMilliseconds(settings.LoginFailureWaitPeriodMs), LogType.WARNING);
+                Thread.Sleep(settings.LoginFailureWaitPeriodMs);
+            }
             return true;
         }
 
@@ -88,19 +128,7 @@ namespace Daemon.Communication
             bool canStart = await Startup();
             if (!canStart)
                 return;// Nešlo zapnout aplikace a nelze pokračovat
-            while (true) // Pokouší se příhlásit dokut se to nepovede
-            {
-                var guid = await authenticator.AttemptLogin();
-                if(guid != Guid.Empty)
-                {
-                    logger.Log("Daemon přihlášen, obdržený session:" + guid,LogType.DEBUG);
-                    settings.SessionUuid = guid;
-                    settings.Save();
-                    break;
-                }
-                logger.Log("Přihlášení se nepovedlo, bude se opakovat za " + settings.LoginFailureWaitPeriodMs, LogType.ERROR);
-                Thread.Sleep(settings.LoginFailureWaitPeriodMs);
-            }
+            
 
             logger.Log("Test odesílání logů...", LogType.DEBUG);
             LogCommunicator logCommunicator = new LogCommunicator(messenger);

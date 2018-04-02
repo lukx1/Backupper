@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Daemon.Logging
 {
+    
     public interface ILogger
     {
         void Log(string message, Shared.LogType logType);

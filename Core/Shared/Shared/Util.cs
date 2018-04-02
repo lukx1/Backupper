@@ -18,5 +18,11 @@ namespace Shared
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Backupper\\"+fileName);
         }
+        public static Exception GetBottomException(Exception e)
+        {
+            if (e.InnerException == null)
+                return e;
+            return GetBottomException(e);
+        }
     }
 }

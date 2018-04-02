@@ -33,7 +33,7 @@
       <Value Profile="(Default)">0.1.0</Value>
     </Setting>
     <Setting Name="LoginFailureWaitPeriodMs" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">300000</Value>
+      <Value Profile="(Default)">5000</Value>
     </Setting>
     <Setting Name="TaskRefreshPeriodMs" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">900000</Value>
@@ -43,6 +43,9 @@
     </Setting>
     <Setting Name="SessionUuid" Type="System.Guid" Scope="User">
       <Value Profile="(Default)">00000000-0000-0000-0000-000000000000</Value>
+    </Setting>
+    <Setting Name="LoginMaxRetryCount" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
     </Setting>
   </Settings>
 </SettingsFile>

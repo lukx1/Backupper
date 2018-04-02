@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Daemon.Logging
 {
+    [Obsolete("Všechny logy musí být odeslány serveru")]
     public class ConsoleLogger : ILogger
     {
         private LoginSettings settings = new LoginSettings();
@@ -24,7 +25,7 @@ namespace Daemon.Logging
                     Console.BackgroundColor = ConsoleColor.Red;
                     break;
                 case LogType.CRITICAL:
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.ForegroundColor = ConsoleColor.White;
                     Console.BackgroundColor = ConsoleColor.Red;
                     break;
                 case LogType.ERROR:
@@ -39,7 +40,7 @@ namespace Daemon.Logging
                 case LogType.INFORMATION:
                     break;
                 case LogType.DEBUG:
-                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
                     break;
             }
         }
