@@ -1,29 +1,25 @@
-﻿@*
-	@model Server.Models.Admin.TaskLocationsModel
+﻿@model global::Server.Models.Task
 
+@{
+	ViewBag.Title = "Task Locations";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
 
-	@{
-		ViewBag.Title = "New Time";
-		Layout = "~/Views/Shared/_AdminLayout.cshtml";
+<table style="width:100%">
+	<tr>
+		<th>Source</th>
+		<th>Destination</th>
+	</tr>
+
+	@foreach (var i in Model.TaskLocations)
+	{
+	<tr>
+		<td>@i.Location.Uri</td>
+		<td>@i.Location1.Uri</td>
+		<td><a href="/AdminTasks/EditTaskLocation?id=@(i.Id)">Edit</a></td>
+		<td><a href="/AdminTasks/DeleteTaskLocation?id=@(i.Id)">Delete</a></td>
+	</tr>
 	}
-
-	<table style="width:100%">
-		<tr>
-			<th>ID</th>
-			<th>Name</th>
-		</tr>
-		@foreach (var i in Model.TaskLocations)
-		{
-			<tr>
-				<td>@i.</td>
-				<td>@i.Name</td>
-				<td><a href="/AdminTasks/TaskInfo?id=@(i.Id)">Show Task Locations</a></td>
-				<td><a href="/AdminTasks/EditTask?id=@(i.Id)">Edit</a></td>
-				<td><a href="/AdminTasks/DeleteTask?id=@(i.Id)">Delete</a></td>
-			</tr>
-		}
-
 </table>
 
-<a href="/AdminTasks/NewTask?id=@(Model.Id)">New Task</a>
-*@
+<a href="/AdminTasks/NewTaskLocation?id=@(Model.Id)">New Task</a>

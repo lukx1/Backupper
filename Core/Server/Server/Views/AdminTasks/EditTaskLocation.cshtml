@@ -1,0 +1,58 @@
+﻿@model global::Server.Models.Task
+
+@{
+	ViewBag.Title = "Edit Task";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("EditTask", "AdminTasks", FormMethod.Post))
+{
+	<table>
+		@Html.HiddenFor(x => x.Id)
+		@Html.HiddenFor(x => x.IdDaemon)
+		@Html.HiddenFor(x => x.TaskDetail.Id)
+		<tr>
+			<td>
+				@Html.LabelFor(x => x.Name)
+			</td>
+			<td>
+				@Html.TextBoxFor(x => x.Name)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				@Html.LabelFor(x => x.Description)
+			</td>
+			<td>
+				@Html.TextAreaFor(x => x.Description)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				@Html.LabelFor(x => x.TaskDetail.ZipAlgorithm)
+			</td>
+			<td>
+				@Html.TextBoxFor(x => x.TaskDetail.ZipAlgorithm)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				@Html.LabelFor(x => x.TaskDetail.CompressionLevel)
+			</td>
+			<td>
+				@Html.TextBoxFor(x => x.TaskDetail.CompressionLevel)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Backup Type
+			</td>
+			<td>
+				@Html.DropDownListFor(x => x.IdBackupTypes, (IEnumerable<SelectListItem>)ViewBag.BackupTypes)
+			</td>
+		</tr>
+	</table>
+
+	<input type="submit" value="Confirm" />
+	<input type="reset" value="Clear" />
+}

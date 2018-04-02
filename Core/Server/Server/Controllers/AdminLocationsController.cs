@@ -21,7 +21,7 @@ namespace Server.Controllers
                     return RedirectToAction("Login", "AdminLogin");
 
                 using (var db = new Models.MySQLContext())
-                    return View(db.Times.ToList());
+                    return View(db.Locations.AsQueryable().Include(x => x.Protocol).ToList());
             }
             catch (Exception e)
             {
@@ -32,12 +32,23 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        public ActionResult NewTime()
+        public ActionResult NewLocation()
         {
             try
             {
                 if (!Util.IsUserAlreadyLoggedIn(Session))
                     return RedirectToAction("Login", "AdminLogin");
+
+                using (var db = new MySQLContext())
+                {
+                    ViewBag.LogonTypes =
+                        db.LogonTypes.Select(x => new SelectListItem()
+                        {
+                            Value = x.Id.ToString(),
+                            Text = x.Name
+                        }
+                        ).ToArray();
+                }
             }
             catch (Exception e)
             {
@@ -46,11 +57,11 @@ namespace Server.Controllers
                 return RedirectToAction("Index", "AdminError");
             }
 
-            return View(new Models.Time());
+            return View(new Models.LocationCredential());
         }
 
         [HttpPost]
-        public ActionResult NewTime(Models.Time time)
+        public ActionResult NewLocation(Models.LocationCredential cred)
         {
             try
             {
@@ -59,7 +70,7 @@ namespace Server.Controllers
 
                 using (var db = new Models.MySQLContext())
                 {
-                    db.Times.Add(time);
+                    db.LocationCredentials.Add(cred);
                     db.SaveChanges();
                 }
             }
@@ -70,79 +81,47 @@ namespace Server.Controllers
                 return RedirectToAction("Index", "AdminError");
             }
 
-            TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "New time was successfully created";
-            return RedirectToAction("Index", "AdminTimes");
+            TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "New credential was successfully created";
+            return RedirectToAction("Index", "AdminLocationCredentials");
         }
 
         [HttpGet]
-        public ActionResult EditTime(int id)
+        public ActionResult EditLocation(int id)
         {
             try
             {
                 if (!Util.IsUserAlreadyLoggedIn(Session))
                     return RedirectToAction("Login", "AdminLogin");
 
-                using (var db = new Models.MySQLContext())
+                using (var db = new MySQLContext())
                 {
-                    var time = db.Times.FirstOrDefault(x => x.Id == id);
-                    if (time == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Time does not exists";
-                        return RedirectToAction("Index", "AdminTimes");
-                    }
-                    return View(time);
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
-
-        [HttpPost]
-        public ActionResult EditTime(Models.Time time)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new Models.MySQLContext())
-                {
-                    db.Times.AddOrUpdate(time);
-                    db.SaveChanges();
+                    ViewBag.LogonTypes =
+                        db.LogonTypes.Select(x => new SelectListItem()
+                        {
+                            Value = x.Id.ToString(),
+                            Text = x.Name
+                        }
+                        ).ToArray();
                 }
 
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Time was successfully updated";
-                return RedirectToAction("Index", "AdminTimes");
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
-
-        [HttpGet]
-        public ActionResult DeleteTime(int id)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
                 using (var db = new Models.MySQLContext())
                 {
-                    var time = db.Times.FirstOrDefault(x => x.Id == id);
-                    if (time == null)
+                    var cred = db.LocationCredentials.Where(x => x.Id == id).Include(x => x.LogonType).FirstOrDefault();
+                    if (cred == null)
                     {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Time does not exists";
-                        return RedirectToAction("Index", "AdminTimes");
+                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential does not exists";
+                        return RedirectToAction("Index", "AdminLocationCredentials");
                     }
-                    return View(time);
+
+                    ViewBag.LogonTypes =
+                        db.LogonTypes.Select(x => new SelectListItem()
+                        {
+                            Value = x.Id.ToString(),
+                            Text = x.Name
+                        }
+                        ).ToArray();
+
+                    return View(cred);
                 }
             }
             catch (Exception e)
@@ -154,7 +133,7 @@ namespace Server.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeleteTime(Models.Time time)
+        public ActionResult EditLocation(Models.LocationCredential cred)
         {
             try
             {
@@ -163,18 +142,70 @@ namespace Server.Controllers
 
                 using (var db = new Models.MySQLContext())
                 {
-                    var dbTime = db.Times.FirstOrDefault(x => x.Id == time.Id);
-                    if (dbTime == null)
+                    db.LocationCredentials.AddOrUpdate(cred);
+                    db.SaveChanges();
+                }
+
+                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential was successfully updated";
+                return RedirectToAction("Index", "AdminLocationCredentials");
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult DeleteLocation(int id)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
+                using (var db = new Models.MySQLContext())
+                {
+                    var cred = db.LocationCredentials.Where(x => x.Id == id).Include(x => x.LogonType).FirstOrDefault();
+                    if (cred == null)
                     {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Time does not exists";
-                        return RedirectToAction("Index", "AdminTimes");
+                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credentials does not exists";
+                        return RedirectToAction("Index", "AdminLocationCredentials");
+                    }
+                    return View(cred);
+                }
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult DeleteLocation(Models.LocationCredential cred)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
+                using (var db = new Models.MySQLContext())
+                {
+                    var dbLocCred = db.LocationCredentials.FirstOrDefault(x => x.Id == cred.Id);
+                    if (dbLocCred == null)
+                    {
+                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential does not exists";
+                        return RedirectToAction("Index", "AdminLocationCredentials");
                     }
 
-                    db.Times.Remove(dbTime);
+                    db.LocationCredentials.Remove(dbLocCred);
                     db.SaveChanges();
 
-                    TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Time was successfully deleted";
-                    return RedirectToAction("Index", "AdminUsers");
+                    TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential was successfully deleted";
+                    return RedirectToAction("Index", "AdminLocationCredentials");
                 }
             }
             catch (Exception e)

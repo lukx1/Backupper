@@ -1,0 +1,32 @@
+﻿@model global::Server.Models.TaskLocation
+
+@{
+	ViewBag.Title = "Delete Task";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<table>
+	<tr>
+		<td>
+			Source
+		</td>
+		<td>
+			@Html.DisplayTextFor(x => x.Location.Uri)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Destination
+		</td>
+		<td>
+			@Html.DisplayTextFor(x => x.Location1.Uri)
+		</td>
+	</tr>
+</table>
+
+@using (Html.BeginForm("DeleteTaskLocation", "AdminTasks", FormMethod.Post))
+{
+	@Html.HiddenFor(x => x.Id)
+	<input type="submit" value="Confirm" />
+	<input type="reset" value="Clear" />
+}

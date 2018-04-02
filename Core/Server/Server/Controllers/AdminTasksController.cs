@@ -269,25 +269,184 @@ namespace Server.Controllers
             }
         }
 
-        //[HttpGet]
-        //public ActionResult TaskLocations(int id)
-        //{
-        //    try
-        //    {
-        //        if (!Util.IsUserAlreadyLoggedIn(Session))
-        //            return RedirectToAction("Login", "AdminLogin");
+        [HttpGet]
+        public ActionResult TaskLocations(int id)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
 
-        //        //var model = new Models.Admin.TaskLocationsModel(id);
-        //        //model.Populate();
+                using (var db = new MySQLContext())
+                {
+                    var model = db.Tasks
+                        .Where(x => x.Id == id)
+                        .Include(x => x.TaskLocations.Select(z => z.Location))
+                        .Include(x => x.TaskLocations.Select(z => z.Location1))
+                        .FirstOrDefault();
 
-        //        return View(model);
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        //TODO: LOG
-        //        TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-        //        return RedirectToAction("Index", "AdminError");
-        //    }
-        //}
+                    if (model == null)
+                    {
+                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task does not exists";
+                        return RedirectToAction("Index", "AdminDaemons");
+                    }
+
+                    return View(model);
+                }
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult NewTaskLocation(int id)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
+                var model = new Models.Admin.NewEditTaskLocationsModel();
+                model.IdTask = id;
+
+                model.Load();
+
+                return View(model);
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult NewTaskLocation(Models.Admin.NewEditTaskLocationsModel model)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
+                model.Save();
+
+                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "New task was successfully added";
+                return RedirectToAction("TaskLocations", "AdminTasks", new { id = model.IdTask });
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult EditTaskLocation(int id)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
+                var model = new Models.Admin.NewEditTaskLocationsModel();
+                model.Id = id;
+
+                model.Load();
+
+                return View(model);
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EditTaskLocation(Models.Admin.NewEditTaskLocationsModel model)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
+                model.Save();
+
+                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task location was successfully updated";
+                return RedirectToAction("TaskLocations", "AdminTasks", new {id = model.IdTask});
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+        }
+
+        [HttpGet]
+        public ActionResult DeleteTaskLocation(int id)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
+                using (var db = new Models.MySQLContext())
+                {
+                    var loc = db.TaskLocations.Where(x => x.Id == id).Include(x => x.Location).Include(x => x.Location1).FirstOrDefault();
+                    if (loc == null)
+                    {
+                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task location does not exists";
+                        return RedirectToAction("Index", "AdminDaemons");
+                    }
+                    return View(loc);
+                }
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult DeleteTaskLocation(Models.TaskLocation loc)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
+                using (var db = new Models.MySQLContext())
+                {
+                    var dbTask = db.TaskLocations.FirstOrDefault(x => x.Id == loc.Id);
+                    if (dbTask == null)
+                    {
+                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task location does not exists";
+                        return RedirectToAction("Index", "AdminDaemons");
+                    }
+
+                    db.TaskLocations.Remove(dbTask);
+                    db.SaveChanges();
+
+                    TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task location was successfully deleted";
+                    return RedirectToAction("Index", "AdminDaemons");
+                }
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+        }
     }
 }

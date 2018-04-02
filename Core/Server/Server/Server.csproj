@@ -219,6 +219,7 @@
     <Compile Include="Models\Admin\EntityGroupsModels.cs" />
     <Compile Include="Models\Admin\GroupPermissionsModel.cs" />
     <Compile Include="Models\Admin\LoginModel.cs" />
+    <Compile Include="Models\Admin\NewEditTaskLocationsModel.cs" />
     <Compile Include="Models\Admin\TaskTimesModel.cs" />
     <Compile Include="Models\BackupType.cs" />
     <Compile Include="Models\Daemon.cs" />
@@ -352,6 +353,9 @@
     <Content Include="Views\AdminLocationCredentials\DeleteLocationCredential.cshtml" />
     <Content Include="Views\AdminLocationCredentials\EditLocationCredential.cshtml" />
     <Content Include="Views\AdminTasks\TaskTimes.cshtml" />
+    <Content Include="Views\AdminTasks\NewTaskLocation.cshtml" />
+    <Content Include="Views\AdminTasks\DeleteTaskLocation.cshtml" />
+    <Content Include="Views\AdminTasks\EditTaskLocation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
