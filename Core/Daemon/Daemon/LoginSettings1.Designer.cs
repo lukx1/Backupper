@@ -201,5 +201,41 @@ namespace Daemon {
                 this["LoginMaxRetryCount"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://localhost:44318")]
+        public string SSLServer {
+            get {
+                return ((string)(this["SSLServer"]));
+            }
+            set {
+                this["SSLServer"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SSLUse {
+            get {
+                return ((bool)(this["SSLUse"]));
+            }
+            set {
+                this["SSLUse"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool SSLAllowSelfSigned {
+            get {
+                return ((bool)(this["SSLAllowSelfSigned"]));
+            }
+            set {
+                this["SSLAllowSelfSigned"] = value;
+            }
+        }
     }
 }

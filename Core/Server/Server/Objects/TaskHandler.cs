@@ -127,39 +127,38 @@ namespace Server.Objects
         private DbLocation CreateLocation(TaskLocation taskLocation, bool source)
         {
             var location = source ? taskLocation.Location : taskLocation.Location1;
-
+            var dbLoc = new Shared.NetMessages.TaskMessages.DbLocation()
+            {
+                id = location.Id,
+                uri = location.Uri,
+            };
             var protocol = new Shared.NetMessages.TaskMessages.DbProtocol()
             {
                 Id = location.Protocol.Id,
                 LongName = location.Protocol.LongName,
                 ShortName = location.Protocol.ShortName
             };
-            var locCred = new Shared.NetMessages.TaskMessages.DbLocationCredential()
-            {
-                Id = location.LocationCredential.Id,
-                host = location.LocationCredential.Host,
-                password = location.LocationCredential.Password,
-                port = location.LocationCredential.Port == null ? 0 : (int)location.LocationCredential.Port,
-                username = location.LocationCredential.Username,
-
-            };
             if (location.LocationCredential != null)
             {
-                locCred.LogonType =
-             new Shared.NetMessages.TaskMessages.DbLogonType()
-             {
-                 Id = location.LocationCredential.LogonType.Id,
-                 Name = location.LocationCredential.LogonType.Name
-             };
+                var locCred = new Shared.NetMessages.TaskMessages.DbLocationCredential()
+                {
+                    Id = location.LocationCredential.Id,
+                    host = location.LocationCredential.Host,
+                    password = location.LocationCredential.Password,
+                    port = location.LocationCredential.Port == null ? 0 : (int)location.LocationCredential.Port,
+                    username = location.LocationCredential.Username,
+                    LogonType = new DbLogonType()
+                    {
+                        Id = location.LocationCredential.LogonType.Id,
+                        Name = location.LocationCredential.LogonType.Name
+                    }
+                };
+                dbLoc.LocationCredential = locCred;
             }
 
-            var dbLoc = new Shared.NetMessages.TaskMessages.DbLocation()
-            {
-                id = location.Id,
-                uri = location.Uri,
-            };
+            
             dbLoc.protocol = protocol;
-            dbLoc.LocationCredential = locCred;
+            
             return dbLoc;
         }
 

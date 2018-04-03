@@ -47,5 +47,14 @@
     <Setting Name="LoginMaxRetryCount" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">3</Value>
     </Setting>
+    <Setting Name="SSLServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://localhost:44318</Value>
+    </Setting>
+    <Setting Name="SSLUse" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="SSLAllowSelfSigned" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

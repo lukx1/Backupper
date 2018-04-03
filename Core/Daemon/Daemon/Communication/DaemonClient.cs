@@ -33,7 +33,10 @@ namespace Daemon.Communication
         /// </summary>
         public DaemonClient()
         {
-            messenger = new Messenger(settings.Server);
+            if (settings.SSLUse)
+                messenger = new Messenger(settings.SSLServer, settings.SSLAllowSelfSigned);
+            else
+                messenger = new Messenger(settings.Server);
         }
 
         /// <summary>

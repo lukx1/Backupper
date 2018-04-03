@@ -4,9 +4,12 @@ namespace Server.Models
     using System.Data.Entity;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
-
+    using MySql.Data.Entity;
+    //[DbConfigurationType(typeof(MySqlEFConfiguration))]
     public partial class MySQLContext : DbContext
     {
+
+        
         public MySQLContext()
             : base(MySQLConnectionStringMaker.GetConnectionString())
         {
