@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
 using Shared.NetMessages.TaskMessages;
 using System.IO;
 
@@ -65,6 +66,15 @@ namespace Daemon.Backups
             }
 
             backupInfo.WriteToFile(SmartBackupInfo.StorePath + $"{taskLocation.id}_{DateTime.Now.ToFileTimeUtc()}.bki");
+        }
+
+        private void BackupFTP(SmartBackupInfo backupInfo, DbTaskLocation taskLocation)
+        {
+            string host = taskLocation.destination.LocationCredential.host;
+            string user = taskLocation.destination.LocationCredential.username;
+            string pass = taskLocation.destination.LocationCredential.password;
+
+
         }
 
     }
