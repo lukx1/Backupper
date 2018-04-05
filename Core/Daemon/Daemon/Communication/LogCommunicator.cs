@@ -18,6 +18,21 @@ namespace Daemon.Communication
         {
             this.messenger = messenger;
         }
+        
+
+        public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> SendLog(IEnumerable<JsonableUniversalLog> logs)
+        {
+            return await SendLog(logs.ToArray());
+        }
+
+        public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> SendLog(params JsonableUniversalLog[] logs)
+        {
+            return await messenger.SendAsync<UniversalLogResponse>(
+                new UniversalLogMessage() { sessionUuid = new LoginSettings().SessionUuid, Logs = logs },
+                "UniversalLog",
+                System.Net.Http.HttpMethod.Put
+            );
+        }
 
         public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> SendLog<T>(params ILog<T>[] logs) where T : class
         {
@@ -26,11 +41,7 @@ namespace Daemon.Communication
             {
                 jsonLogs.Add(JsonableUniversalLog.CreateFrom(log));
             }
-            return await messenger.SendAsync<UniversalLogResponse>(
-                new UniversalLogMessage() { sessionUuid = new LoginSettings().SessionUuid, Logs = jsonLogs },
-                "UniversalLog",
-                System.Net.Http.HttpMethod.Put
-            );
+            return await SendLog(jsonLogs);
         }
 
     }

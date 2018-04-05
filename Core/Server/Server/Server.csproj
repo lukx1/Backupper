@@ -262,7 +262,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="RegisteredServerStatusTicker.cs" />
     <Compile Include="SQLConnectionIni.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>

@@ -14,15 +14,23 @@ namespace Shared
     {
         public const bool IsDebug = false;
         public const string Newline = "\r\n"; //TODO dodelat
+
+        public static string GetAppdataFolder()
+        {
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Backupper");
+        }
+
         public static string GetFileInAppData(string fileName)
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Backupper\\"+fileName);
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Backupper",fileName);
         }
+
         public static Exception GetBottomException(Exception e)
         {
             if (e.InnerException == null)
                 return e;
             return GetBottomException(e);
         }
+
     }
 }

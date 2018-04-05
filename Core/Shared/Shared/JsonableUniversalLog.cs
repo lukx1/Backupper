@@ -9,11 +9,11 @@ namespace Shared
 {
     public sealed class JsonableUniversalLog
     {
-        public int Id { get; private set; }
-        public LogType LogType { get; private set; }
-        public Guid Code { get; private set; }
-        public DateTime DateCreated { get; private set; }
-        public string Content { get; private set; }
+        public int Id { get; set; }
+        public LogType LogType { get; set; }
+        public Guid Code { get; set; }
+        public DateTime DateCreated { get; set; }
+        public string Content { get; set; }
 
         private JsonableUniversalLog() { }
 
@@ -33,6 +33,27 @@ namespace Shared
         public static TContent ParseContent<TContent>(string Content)
         {
             return JsonConvert.DeserializeObject<TContent>(Content);
+        }
+
+        public string ToJson()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
+
+        [Serializable]
+        private class CarryJUL
+        {
+            public int Id { get; set; }
+            public LogType LogType { get; set; }
+            public Guid Code { get; set; }
+            public DateTime DateCreated { get; set; }
+            public string Content { get; set; }
+        }
+
+        public static JsonableUniversalLog FromJson(string json)
+        {
+            var obj = JsonConvert.DeserializeObject<CarryJUL>(json);
+            return new JsonableUniversalLog(){Id = obj.Id,Code = obj.Code,Content = obj.Content,DateCreated = obj.DateCreated,LogType = obj.LogType };
         }
 
         public static JsonableUniversalLog CreateFrom<T>(ILog<T> log) where T:class

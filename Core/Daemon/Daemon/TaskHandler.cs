@@ -155,7 +155,7 @@ namespace Daemon
             {
                 foreach (var time in task.times)
                 {
-                    logger.Log($"Vytvořen timer pro task #{task.id},time #{time.id}{Util.Newline}Čas start:{time.startTime}, interval:{time.interval}s,opakovat:{time.repeat}, konec:{time.endTime}", LogType.DEBUG);
+                    logger.Log($"Vytvořen timer pro task #{task.id},time #{time.id}{Util.Newline}Čas start:{time.startTime}, interval:{time.interval}s,opakovat:{time.repeat}, konec:{(time.endTime == null ? "Nikdy":time.endTime.ToString())}", LogType.DEBUG);
                     tBackups.Add(CreateTimedBackup(task.taskLocations, time,task.backupType,task.details, task.id));
                 }
             }

@@ -58,10 +58,10 @@
     <Compile Include="Communication\DaemonClient.cs" />
     <Compile Include="Communication\Authenticator.cs" />
     <Compile Include="Communication\LogCommunicator.cs" />
+    <Compile Include="DoNotStoreThisException.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\ILogger.cs" />
-    <Compile Include="Logging\IntroductionLog.cs" />
     <Compile Include="Logging\LoggerFactory.cs" />
     <Compile Include="LoginSettings1.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -80,6 +80,7 @@
     <Compile Include="TaskHandler.cs" />
     <Compile Include="TimedBackup.cs" />
     <Compile Include="Logging\FileLogger.cs" />
+    <Compile Include="Utility\LocalLogManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -94,8 +95,6 @@
       <Name>Shared</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Utility\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Threading;
 using Daemon.Logging;
 using Shared.LogObjects;
+using Shared.NetMessages.LogMessages;
 
 namespace Daemon.Communication
 {
@@ -28,15 +29,38 @@ namespace Daemon.Communication
         private ILogger logger = LoggerFactory.CreateAppropriate();
         private Task TaskTickerTask;
 
-        /// <summary>
-        /// Připojí se a začne provádět tasky
-        /// </summary>
         public DaemonClient()
         {
             if (settings.SSLUse)
                 messenger = new Messenger(settings.SSLServer, settings.SSLAllowSelfSigned);
             else
                 messenger = new Messenger(settings.Server);
+        }
+
+        public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> CheckForLocalLogsAndSend()
+        {
+            try
+            {
+                LogCommunicator logCommunicator = new LogCommunicator(messenger);
+                List<JsonableUniversalLog> juls = new List<JsonableUniversalLog>();
+                foreach (var jul in new LocalLogManipulator().ReadAllLogs())
+                {
+                    juls.Add(jul);
+                }
+                if (juls.Count > 0)
+                {
+                    logger.Log("Lokální logy nalezeny", LogType.DEBUG);
+                    return await logCommunicator.SendLog(juls);
+                }
+                else
+                    logger.Log("Nebyli nalezeny žádné lokální logy", LogType.DEBUG);
+            }
+            catch(Exception e)
+            {
+                logger.Log("Chyba při odesílání lokálních logů", LogType.ERROR);
+                throw new DoNotStoreThisExceptionException(e.Message, e);
+            }
+            return null;
         }
 
         /// <summary>
@@ -128,19 +152,18 @@ namespace Daemon.Communication
         public async Task Run()
         {
             logger.Log("Daemon byl spuštěn", LogType.DEBUG);
-            bool canStart = await Startup();
+            bool canStart = await Startup(); // Pokouší se o introduction/login
             if (!canStart)
                 return;// Nešlo zapnout aplikace a nelze pokračovat
-            
 
-            logger.Log("Test odesílání logů...", LogType.DEBUG);
-            LogCommunicator logCommunicator = new LogCommunicator(messenger);
-            var resp = logCommunicator.SendLog(new DebugLog());
-            logger.Log("Log odeslán bez chyby", LogType.DEBUG);
+            /**Už musí být přihlášen**/
+
+            Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> logCheckTask = CheckForLocalLogsAndSend();//FaF
 
             sessionRefresher = new SessionRefresher(authenticator);// Opakuje login aby session nevyprsel
             sessionRefresher.Run();
             TaskTickerTask = Task.Run(() => TaskTicker());//Refreshuje tasky aby byli aktualni se serverem
+            await logCheckTask;
         }
 
         private async Task TaskTicker()
