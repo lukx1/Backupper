@@ -13,12 +13,12 @@ namespace Daemon.Backups
     {
         public DbBackupType BackupType { get; set; }
         public DbTaskDetails TaskDetails { get; set; }
-        public List<DbTaskLocation> TaskLocations { get; set; }
+        public IEnumerable<DbTaskLocation> TaskLocations { get; set; }
         public int ID { get; set; }
 
         public SmartBackup()
         {
-            TaskLocations = new List<DbTaskLocation>();
+            
         }
 
         public void StartBackup()

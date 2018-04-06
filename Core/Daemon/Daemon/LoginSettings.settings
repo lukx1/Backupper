@@ -51,7 +51,7 @@
       <Value Profile="(Default)">https://localhost:44318</Value>
     </Setting>
     <Setting Name="SSLUse" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="SSLAllowSelfSigned" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
