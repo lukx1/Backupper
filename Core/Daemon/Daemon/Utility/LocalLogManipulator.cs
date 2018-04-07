@@ -20,7 +20,7 @@ namespace Daemon.Utility
             return path;
         }
 
-        public void Store<T>(ILog<T> log) where T: class
+        public void Store<T>(SLog<T> log) where T: class
         {
             var json = JsonableUniversalLog.CreateFrom(log);
             var destFolder = Path.Combine(StoreFolder,log.Code.Uuid.ToString());

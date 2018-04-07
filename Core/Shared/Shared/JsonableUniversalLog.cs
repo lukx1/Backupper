@@ -56,7 +56,7 @@ namespace Shared
             return new JsonableUniversalLog(){Id = obj.Id,Code = obj.Code,Content = obj.Content,DateCreated = obj.DateCreated,LogType = obj.LogType };
         }
 
-        public static JsonableUniversalLog CreateFrom<T>(ILog<T> log) where T:class
+        public static JsonableUniversalLog CreateFrom<T>(SLog<T> log) where T:class
         {
             return new JsonableUniversalLog()
             {

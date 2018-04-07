@@ -13,6 +13,7 @@ using System.Threading;
 using Daemon.Logging;
 using Shared.LogObjects;
 using Shared.NetMessages.LogMessages;
+using DaemonShared;
 
 namespace Daemon.Communication
 {
@@ -26,11 +27,19 @@ namespace Daemon.Communication
         private TaskHandler taskHandler = new TaskHandler();
         private Authenticator authenticator;
         private SessionRefresher sessionRefresher;
-        private ILogger logger = LoggerFactory.CreateAppropriate();
+        private ILogger logger;
         private Task TaskTickerTask;
+
+        public void Kill()
+        {
+            taskHandler.Dispose();
+            sessionRefresher.Dispose();
+            TaskTickerTask.Dispose();
+        }
 
         public DaemonClient()
         {
+            logger = ConsoleLogger.CreateSourceInstance(messenger);
             if (settings.SSLUse)
                 messenger = new Messenger(settings.SSLServer, settings.SSLAllowSelfSigned);
             else
@@ -147,6 +156,11 @@ namespace Daemon.Communication
                 Thread.Sleep(settings.LoginFailureWaitPeriodMs);
             }
             return true;
+        }
+
+        public void TryCreateNotifyIcon()
+        {
+
         }
 
         public async Task Run()

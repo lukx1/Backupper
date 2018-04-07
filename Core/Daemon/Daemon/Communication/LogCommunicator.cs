@@ -1,4 +1,5 @@
-﻿using Shared;
+﻿using DaemonShared;
+using Shared;
 using Shared.NetMessages.LogMessages;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace Daemon.Communication
             );
         }
 
-        public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> SendLog<T>(params ILog<T>[] logs) where T : class
+        public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> SendLog<T>(params SLog<T>[] logs) where T : class
         {
             List<JsonableUniversalLog> jsonLogs = new List<JsonableUniversalLog>();
             foreach (var log in logs)

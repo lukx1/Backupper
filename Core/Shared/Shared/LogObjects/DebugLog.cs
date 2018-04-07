@@ -8,18 +8,13 @@ using System.Threading.Tasks;
 namespace Shared.LogObjects
 {
     /// <summary>
-    /// Vzorová třída pro využití ILog a SpecificLog
+    /// Vzorová třída pro využití SLog a SpecificLog
     /// </summary>
-    public class DebugLog : ILog<DebugLog.DebugLogContents>
+    public class DebugLog : SLog<DebugLog.DebugLogContents>
     {
+        public override LogContentType Code => LogContentType.DEBUG;
 
-        public int Id { get; private set; } = -1;
-        public LogType LogType { get => LogType.DEBUG; }
-        public LogContentType Code { get => LogContentType.DEBUG; }
-        public DateTime DateCreated { get; private set; }
-        public DebugLogContents Content { get => _Content; private set => _Content = value; }
-
-        private DebugLogContents _Content=  new DebugLogContents();
+        public override DebugLogContents Content { get; protected set; } = new DebugLogContents();
 
         public class DebugLogContents
         {
@@ -29,11 +24,5 @@ namespace Shared.LogObjects
             public bool Debugging { get; set; } = true;
         }
 
-        public void Load(JsonableUniversalLog universalLog)
-        {
-            this.Id = universalLog.Id;
-            this.DateCreated = universalLog.DateCreated;
-            this.Content = JsonConvert.DeserializeObject<DebugLogContents>(universalLog.Content);
-        }
     }
 }

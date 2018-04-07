@@ -21,7 +21,6 @@ namespace Shared
     public class Messenger
     {
         private HttpClient client;
-        private string jsonResponse;
         /// <summary>
         /// Nepoužívat pokud klient je používán asynchroně
         /// </summary>

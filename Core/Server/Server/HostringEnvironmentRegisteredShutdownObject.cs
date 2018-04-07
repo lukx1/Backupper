@@ -36,7 +36,7 @@ namespace Server
                 if(updateLog == null)
                 {
                     SqlLogger logger = new SqlLogger();
-                    var uni = logger.CreateUniversalFromILog(new ServerStatusLog(ServerStatusLog.ServerStatusInfo.Status.NO_CHANGE));
+                    var uni = logger.CreateUniversalFromSLog(new ServerStatusLog(ServerStatusLog.ServerStatusInfo.Status.NO_CHANGE));
                     sql.UniversalLogs.Add(uni);
                 }
                 else
@@ -70,12 +70,12 @@ namespace Server
                     }
                     else if(content.State == ServerStatusLog.ServerStatusInfo.Status.STARTING)
                     {
-                        sql.UniversalLogs.Add(logger.CreateUniversalFromILog(new ServerStatusLog(ServerStatusLog.ServerStatusInfo.Status.SHUTTING_DOWN) { DateCreated = lastLog.DateCreated.AddSeconds(1)}));
+                        sql.UniversalLogs.Add(logger.CreateUniversalFromSLog(new ServerStatusLog(ServerStatusLog.ServerStatusInfo.Status.SHUTTING_DOWN) { DateCreated = lastLog.DateCreated.AddSeconds(1)}));
                         sql.SaveChanges();
                     }
                 }
                 
-                var uni = logger.CreateUniversalFromILog(new ServerStatusLog(ServerStatusLog.ServerStatusInfo.Status.STARTING));
+                var uni = logger.CreateUniversalFromSLog(new ServerStatusLog(ServerStatusLog.ServerStatusInfo.Status.STARTING));
                 sql.UniversalLogs.Add(uni);
                 await sql.SaveChangesAsync();
 

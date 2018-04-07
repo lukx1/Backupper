@@ -10,11 +10,17 @@ using System.Threading.Tasks;
 using Daemon.Backups;
 using Daemon.Utility;
 using Shared.LogObjects;
+using DaemonShared;
+using DaemonShared.Pipes;
+
 namespace Daemon
 {
     static class Program
     {
-        private static ILogger logger = LoggerFactory.CreateAppropriate();
+        private static ILogger logger = ConsoleLogger.CreateSourceInstance(null);
+        private static Service service;
+        private static DaemonClient DaemonClient;
+        private static PipeComs pipes;
 
         private static void DumpErr(Exception e)
         {
@@ -41,6 +47,39 @@ namespace Daemon
             logManipulator.Store(crashLog);
         }
 
+
+
+        private async static void NewThreadDS()
+        {
+            pipes.MessageReceived += Pipes_MessageReceived;
+            //var faf = Task.Run(async () => await pipes.StartListeningAsync());
+            
+            logger.Log("NamedPipe - Začíná pokus o připojení", LogType.DEBUG);
+            try
+            {
+                await pipes.SendMessageAsync(new PipeMessage() { Code = PipeCode.NOTIFY_WAITER });
+                logger.Log("NamedPipe - Úspěšně připojeno", LogType.DEBUG);
+            }
+            catch (System.TimeoutException)
+            {
+                logger.Log("NamedPipe - Vypršel čas na připojení", LogType.WARNING);
+                return;
+            }
+            logger.Log("NamedPipe - Čtení připraveno", LogType.DEBUG);
+
+        }
+
+        private static void Pipes_MessageReceived(PipeMessage msg)
+        {
+            logger.Log($"NamedPipe - Přijata zpráva {msg.Code}-{msg.Payload}", LogType.DEBUG);
+        }
+
+        private static void StartDS()
+        {
+            pipes = new PipeComs();
+            NewThreadDS();
+        }
+
         private static void Start()
         {
             try
@@ -55,16 +94,19 @@ namespace Daemon
             }
         }
 
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         static void Main()
         {
-            var service = new Service();
+            service = new Service();
+            service.ServiceName = "Backupper";
             if (Environment.UserInteractive)
             {
                 service.OnPubStart();
                 Console.WriteLine("Press any key to stop");
+                StartDS();
                 Start();
                 Console.Read();
                 service.OnPubStop();

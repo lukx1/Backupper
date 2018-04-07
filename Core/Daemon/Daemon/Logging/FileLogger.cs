@@ -2,6 +2,9 @@ using Daemon.Logging;
 using Shared;
 using System;
 using System.IO;
+using Shared.NetMessages.LogMessages;
+using System.Threading.Tasks;
+using DaemonShared;
 
 namespace Daemon.Utility
 {
@@ -62,6 +65,11 @@ namespace Daemon.Utility
             if ((int)logType > settings.LoggingLevel)
                 return;
             log($"{DateTime.Now}-{logType.ToString()}-{message}");
+        }
+
+        public Task<Messenger.ServerMessage<UniversalLogResponse>> ServerLogAsync<T>(params SLog<T>[] logs) where T : class
+        {
+            throw new NotImplementedException();
         }
     }
  }           

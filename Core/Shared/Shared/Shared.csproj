@@ -52,12 +52,15 @@
   <ItemGroup>
     <Compile Include="Crc32.cs" />
     <Compile Include="DeserializeOnly.cs" />
-    <Compile Include="ILog.cs" />
+    <Compile Include="LogObjects\DaemonFailedIntroductionLog.cs" />
+    <Compile Include="LogObjects\GeneralTaskFailedLog.cs" />
+    <Compile Include="SLog.cs" />
     <Compile Include="INetException.cs" />
     <Compile Include="IniReader.cs" />
     <Compile Include="JsonableUniversalLog.cs" />
     <Compile Include="LogContentType.cs" />
     <Compile Include="LogObjects\DaemonCrashLog.cs" />
+    <Compile Include="LogObjects\DaemonFailedLoginLog.cs" />
     <Compile Include="LogObjects\DebugLog.cs" />
     <Compile Include="LogObjects\ServerStatusLog.cs" />
     <Compile Include="LogTable.cs" />

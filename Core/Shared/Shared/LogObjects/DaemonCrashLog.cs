@@ -7,31 +7,11 @@ using System.Threading.Tasks;
 
 namespace Shared.LogObjects
 {
-    public class DaemonCrashLog : ILog<DaemonCrashLog.DaemonCrashInfo>
+    public class DaemonCrashLog : SLog<DaemonCrashLog.DaemonCrashInfo>
     {
+        public override LogContentType Code => LogContentType.DAEMON_CRASH;
 
-        public DaemonCrashLog()
-        {
-            DateCreated = DateTime.Now;
-        }
-
-        public int Id { get; set; } = -1;
-
-        public LogType LogType { get; set; } = LogType.ALERT;
-
-        public LogContentType Code => LogContentType.DAEMON_CRASH;
-
-        public DateTime DateCreated { get; set; }
-
-        public DaemonCrashInfo Content { get; private set; } = new DaemonCrashInfo();
-
-        public void Load(JsonableUniversalLog universalLog)
-        {
-            Id = universalLog.Id;
-            LogType = universalLog.LogType;
-            DateCreated = universalLog.DateCreated;
-            Content = JsonConvert.DeserializeObject<DaemonCrashInfo>(universalLog.Content);
-        }
+        public override DaemonCrashInfo Content { get; protected set; } = new DaemonCrashInfo();
 
         [Serializable]
         public class DaemonCrashInfo

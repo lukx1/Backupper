@@ -1,4 +1,7 @@
-﻿using Shared;
+﻿using Daemon.Communication;
+using DaemonShared;
+using Shared;
+using Shared.NetMessages.LogMessages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,10 +10,19 @@ using System.Threading.Tasks;
 
 namespace Daemon.Logging
 {
-    [Obsolete("Všechny logy musí být odeslány serveru")]
+
     public class ConsoleLogger : ILogger
     {
         private LoginSettings settings = new LoginSettings();
+        private LogCommunicator logCommunicator;
+
+        private static ConsoleLogger logger;
+
+
+        private ConsoleLogger(Messenger messenger)
+        {
+            logCommunicator = new LogCommunicator(messenger);
+        }
 
         private void SetColor(LogType logType)
         {
@@ -52,6 +64,29 @@ namespace Daemon.Logging
             SetColor(logType);
             Console.WriteLine($"{DateTime.Now} - {logType.ToString()} - {message}");
             Console.ResetColor();
-        } 
+        }
+
+        public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> ServerLogAsync<T>(params SLog<T>[] logs) where T : class
+        {
+            foreach (var log in logs)
+            {
+                Log($"{log.Code.GetType().Name} Server Log", log.LogType);
+            }
+            return await logCommunicator.SendLog(logs);
+        }
+
+        public static ILogger CreateSourceInstance(Messenger messenger)
+        {
+                return (logger = new ConsoleLogger(messenger));
+        }
+
+        public static ILogger CreateInstance()
+        {
+            if(logger == null)
+            {
+                throw new InvalidOperationException("Nejdřív musí být zavoláno CreateSourceInstance");
+            }
+            return logger;
+        }
     }
 }

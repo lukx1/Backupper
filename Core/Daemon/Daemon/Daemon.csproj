@@ -57,16 +57,23 @@
     <Compile Include="Backups\SmartFileInfo.cs" />
     <Compile Include="Communication\DaemonClient.cs" />
     <Compile Include="Communication\Authenticator.cs" />
+    <Compile Include="Communication\FtpClient.cs" />
     <Compile Include="Communication\LogCommunicator.cs" />
     <Compile Include="DoNotStoreThisException.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\LoggerFactory.cs" />
-    <Compile Include="LoginSettings1.Designer.cs">
+    <Compile Include="Communication\PipeComs.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>LoginSettings.settings</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Resources2.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources2.resx</DependentUpon>
     </Compile>
     <Compile Include="Service.cs">
       <SubType>Component</SubType>
@@ -84,17 +91,29 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="LoginSettings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>LoginSettings1.Designer.cs</LastGenOutput>
-    </None>
+    <None Include="ds.zip" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Shared\Shared.csproj">
       <Project>{f627124e-e950-4a06-ba35-bade392c1074}</Project>
       <Name>Shared</Name>
     </ProjectReference>
+    <ProjectReference Include="..\DaemonShared\DaemonShared.csproj">
+      <Project>{a7395351-38c7-44ab-86ef-0ee95d319cfc}</Project>
+      <Name>DaemonShared</Name>
+    </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Properties\Resources">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources2.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources2.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

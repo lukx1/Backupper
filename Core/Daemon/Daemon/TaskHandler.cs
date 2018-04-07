@@ -9,13 +9,15 @@ using Daemon.Backups;
 using System.Configuration;
 using Daemon.Logging;
 using Shared;
+using Shared.LogObjects;
+using DaemonShared;
 
 namespace Daemon
 {
     /// <summary>
     /// Stará se o průběh tasků
     /// </summary>
-    public class TaskHandler
+    public class TaskHandler : IDisposable
     {
         /// <summary>
         /// List tasků které se právě provádějí
@@ -57,6 +59,62 @@ namespace Daemon
         }
 
         /// <summary>
+        /// Metoda kterou timer volá
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="time"></param>
+        /// <param name="timedBackup"></param>
+        private void TimerMethod(DbTask task, DbTime time, TimedBackup timedBackup)
+        {
+            if (!timedBackup.ShouldRun.Value) // Kontroluje jestli by měl běžet
+            {
+                timedBackup.Dispose(); // Zničí timer
+                return;
+            }
+            if (time.startTime < DateTime.Now && !time.repeat)
+            {
+                logger.Log($"{time.id * task.id}:Timer měl proběhnout v minulosti a neměl se opakovat, bude zničen", LogType.DEBUG);
+                timedBackup.ShouldRun.Value = false;
+                timedBackup.Dispose();
+                return;
+            }
+            if (IsBackupBeingDebuged())// Debug řádek
+            {
+                DebugMethod(timedBackup.Backup);
+            }
+            else // Normální
+            {
+                //timedBackup.BackupStarted();
+                timedBackup.IsRunning.Value = true;
+                logger.Log($"Nyní probíhá zálohování {timedBackup.Backup.ID}", LogType.INFORMATION);
+                try
+                {
+                    timedBackup.Backup.StartBackup();
+                }
+                catch (Exception ex)
+                {
+                    logger.Log("Neočekávaná chyba při zálohování", LogType.ERROR);
+                    Exception ex2 = ex;
+                    while(ex2 != null)
+                    {
+                        logger.Log($"Exception {ex2}-{ex2.Message}{Util.Newline}Stack Trace{ex2.StackTrace}",LogType.ERROR);
+                        ex2 = ex2.InnerException;
+                    }
+                    Task.Run(async () => await logger.ServerLogAsync(new GeneralTaskFailedLog(task.id, ex, time)));
+                }
+                timedBackup.IsRunning.Value = false;
+                //timedBackup.BackupEnded();
+                if (!time.repeat)
+                {
+                    logger.Log($"{time.id * task.id}:Timer zálohoval a nemá se opakovat, bude zničen", LogType.DEBUG);
+                    timedBackup.ShouldRun.Value = false;
+                    timedBackup.Dispose();
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
         /// Vytvoří jeden objekt zálohování, na každý čas je vytvořen jeden objekt
         /// </summary>
         /// Vícero TimedBackapů může mít identický taskLocation
@@ -64,53 +122,20 @@ namespace Daemon
         /// <param name="time">Kdy má proběhnout</param>
         /// <param name="idTask">Jakému tasku patří</param>
         /// <returns></returns>
-        private TimedBackup CreateTimedBackup(IEnumerable<DbTaskLocation> taskLocations,DbTime time,DbBackupType dbBackupType,DbTaskDetails details, int idTask) //TODO: Reformatovat
+        private TimedBackup CreateTimedBackup(DbTask task,DbTime time) //TODO: Reformatovat
         {
             TimedBackup timedBackup = new TimedBackup // Nastaví zálkatdní hodnoty
             {
-                IdTask = idTask,
+                IdTask = task.id,
             };
             
-            timedBackup.Backup = CreateBackupInstance(taskLocations,dbBackupType,details,idTask*time.id);
+            timedBackup.Backup = CreateBackupInstance(task.taskLocations,task.backupType,task.details,task.id*time.id);
             var dueTime = CalculateDueTime(time.startTime, time.interval);
             if (dueTime.Milliseconds != 0)
                 logger.Log($"Záloha proběhne za {dueTime}",LogType.DEBUG);
             timedBackup.Timer = new Timer((e) => // Sestaví timer
             { //Tělo timeru
-
-                if (!timedBackup.ShouldRun.Value) // Kontroluje jestli by měl běžet
-                {
-                    timedBackup.Dispose(); // Zničí timer
-                    return;
-                }
-                if(time.startTime < DateTime.Now && !time.repeat)
-                {
-                    logger.Log($"{time.id * idTask}:Timer měl proběhnout v minulosti a neměl se opakovat, bude zničen", LogType.DEBUG);
-                    timedBackup.ShouldRun.Value = false;
-                    timedBackup.Dispose();
-                    return;
-                }
-                if (IsBackupBeingDebuged())// Debug řádek
-                {
-                    DebugMethod(timedBackup.Backup);
-                }
-                else // Normální
-                {
-                    //timedBackup.BackupStarted();
-                    timedBackup.IsRunning.Value = true; 
-                    logger.Log($"Nyní probíhá zálohování {timedBackup.Backup.ID}", LogType.INFORMATION);
-                    timedBackup.Backup.StartBackup(); 
-                    timedBackup.IsRunning.Value = false;
-                    //timedBackup.BackupEnded();
-                    if (!time.repeat)
-                    {
-                        logger.Log($"{time.id * idTask}:Timer zálohoval a nemá se opakovat, bude zničen", LogType.DEBUG);
-                        timedBackup.ShouldRun.Value = false;
-                        timedBackup.Dispose();
-                        return;
-                    }
-                }
-
+                TimerMethod(task,time,timedBackup);
             }, null, dueTime, TimeSpan.FromSeconds(time.interval));
             return timedBackup;
         }
@@ -145,7 +170,7 @@ namespace Daemon
 
         private DbTime CreateTestingTime()
         {
-            return new DbTime() {endTime = null,id = 999,interval = 30,name = "Test time",repeat = true,startTime = DateTime.Now.AddSeconds(5) };
+            return new DbTime() {endTime = null,id = 999,interval = 5,name = "Test time",repeat = true,startTime = DateTime.Now.AddSeconds(5) };
         }
 
         /// <summary>
@@ -162,7 +187,7 @@ namespace Daemon
                     if (tBackups.Count > 0)
                         return;
                     logger.Log($"Vytvořen timer pro task #{task.id},time #{time.id}{Util.Newline}Čas start:{time.startTime}, interval:{time.interval}s,opakovat:{time.repeat}, konec:{(time.endTime == null ? "Nikdy":time.endTime.ToString())}", LogType.DEBUG);
-                    tBackups.Add(CreateTimedBackup(task.taskLocations, new LoginSettings().TimerDebugOnly ? CreateTestingTime() : time,task.backupType,task.details, task.id));
+                    tBackups.Add(CreateTimedBackup(task, new LoginSettings().TimerDebugOnly ? CreateTestingTime() : time));
                 }
             }
         }
@@ -193,5 +218,10 @@ namespace Daemon
             logger.Log(builder.ToString(),LogType.DEBUG);
         }
 
+        public void Dispose()
+        {
+            tBackups.ForEach(r =>  r.Dispose());
+            notGarbage.ForEach(r => r.Dispose());
+        }
     }
 }
