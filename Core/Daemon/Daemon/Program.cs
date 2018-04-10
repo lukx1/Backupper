@@ -12,6 +12,8 @@ using Daemon.Utility;
 using Shared.LogObjects;
 using DaemonShared;
 using DaemonShared.Pipes;
+using System.Security.Principal;
+using System.IO;
 
 namespace Daemon
 {
@@ -20,7 +22,7 @@ namespace Daemon
         private static ILogger logger = ConsoleLogger.CreateSourceInstance(null);
         private static Service service;
         private static DaemonClient DaemonClient;
-        private static PipeComs pipes;
+        private static Task PipeListener;
 
         private static void DumpErr(Exception e)
         {
@@ -33,9 +35,40 @@ namespace Daemon
                 DumpErr(e.InnerException);
         }
 
+        /// <summary>
+        /// Pokusí se ukázat lokální popup
+        /// </summary>
+        /// <returns>True pokud úspěšno, false jinak</returns>
+        private static bool LocalErrorPopup(LocalException e)
+        {
+            try
+            {
+                var settings = new LoginSettings();
+                if (!settings.PipeOK)
+                    return false;
+                PipeComs pipeComs = new PipeComs();
+
+                var task = pipeComs.SendMessageAsync(new PipeMessage() { Code = PipeCode.POPUP_ERR, SerializePayload = e.Popup });
+                task.Wait();
+            }
+            catch (Exception e2)
+            {
+                if (!(e2 is LocalException))
+                    LogCrash(e2);
+                return false;
+            }
+            return true;
+        }
+
         private static void LogCrash(Exception e)
         {//TODO: popup
             DumpErr(e);
+            if (e is LocalException)
+            {
+                if (LocalErrorPopup((LocalException)e))
+                    return;
+
+            }
             if ((e is DoNotStoreThisExceptionException))
                 return;
             LocalLogManipulator logManipulator = new LocalLogManipulator();
@@ -51,35 +84,60 @@ namespace Daemon
 
         private async static void NewThreadDS()
         {
-            pipes.MessageReceived += Pipes_MessageReceived;
-            //var faf = Task.Run(async () => await pipes.StartListeningAsync());
-            
+            var settings = new LoginSettings();
+            settings.PipeOK = false;
+
+            var pipes = new PipeComs();
+
+
             logger.Log("NamedPipe - Začíná pokus o připojení", LogType.DEBUG);
             try
             {
-                await pipes.SendMessageAsync(new PipeMessage() { Code = PipeCode.NOTIFY_WAITER });
+                await pipes.SendMessageAsync(new PipeMessage() { Code = PipeCode.NOTIFY_WAITER, SerializePayload = new PipeServiceIdentity() { Identity = WindowsIdentity.GetCurrent().Owner.ToString() } });
                 logger.Log("NamedPipe - Úspěšně připojeno", LogType.DEBUG);
+                settings.PipeOK = true;
+            }
+            catch (IOException e)
+            {
+                logger.Log($"NamedPipe - IO chyba\r\n{e.StackTrace}", LogType.WARNING);
+                var log = new GeneralDaemonError() { };
+                log.LogType = LogType.WARNING;
+                log.Content.DaemonUuid = new LoginSettings().Uuid;
+                log.Content.Message = $"NamedPipe - IO chyba\r\n{e.StackTrace}";
+                try
+                {
+                    await logger.ServerLogAsync(log);
+                }
+                catch (Exception ex)
+                {
+                    DumpErr(ex);
+                }
             }
             catch (System.TimeoutException)
             {
                 logger.Log("NamedPipe - Vypršel čas na připojení", LogType.WARNING);
+                settings.PipeOK = false;
                 return;
             }
+            finally
+            {
+                settings.Save();
+            }
 
-            await pipes.SendMessageAsync(new PipeMessage() { Code = PipeCode.POPUP_ERR, Payload =new PipePopup() {B = "Test",  C="Backupper",I = PipePopup.MessageBoxIconsP.Question,T = PipePopup.MessageBoxButtonsP.OK }.ToJsonZip() });
+            if (settings.LoggingLevel >= (int)LogType.DEBUG)
+                PipeComs.MessageReceived += Pipes_MessageReceived;
+            PipeListener = Task.Run(() => pipes.StartListening());
 
             logger.Log("NamedPipe - Čtení připraveno", LogType.DEBUG);
-
         }
 
         private static void Pipes_MessageReceived(PipeMessage msg)
         {
-            logger.Log($"NamedPipe - Přijata zpráva {msg.Code}-{msg.Payload}", LogType.DEBUG);
+            logger.Log($"NamedPipe - Přijata zpráva {msg.Code}{(msg.Payload.Length > 0 ? "-" : "")}{msg.Payload}", LogType.DEBUG);
         }
 
         private static void StartDS()
         {
-            pipes = new PipeComs();
             NewThreadDS();
         }
 
@@ -88,12 +146,12 @@ namespace Daemon
             try
             {
                 //throw new ArgumentException("Test excep",new Exception("Test error please ignore", new Exception("Test inner", new Exception("Test inner 2"))));
-                DaemonClient daemonClient = new DaemonClient();
-                daemonClient.Run().Wait();
+                DaemonClient = new DaemonClient();
+                DaemonClient.Run().Wait();
             }
             catch (Exception e)
             {
-                LogCrash(e);
+                LogCrash(e.InnerException);
             }
         }
 
@@ -103,6 +161,7 @@ namespace Daemon
         /// </summary>
         static void Main()
         {
+            logger.Log("Služba spuštěna", LogType.INFORMATION);
             service = new Service();
             service.ServiceName = "Backupper";
             if (Environment.UserInteractive)

@@ -79,6 +79,7 @@ namespace Daemon.Communication
         private void DumpErrorMsgs<T>(INetException<T> e, LogType logType = LogType.ERROR)
         {
             logger.Log(e.Message, logType);
+            var faf = logger.ServerLogAsync(Dutil.CreateGSRL(LogType.ERROR, e.ErrorMessages));
             e.ErrorMessages.ForEach(r => logger.Log(r.id + ":" + r.message + "->" + r.value, logType));
         }
 
@@ -132,7 +133,7 @@ namespace Daemon.Communication
                         $"Příčina : {e.ErrorMessages[0].message}{Util.Newline}" +
                         $"Nelze pokračovat",LogType.CRITICAL
                         );
-                    return false;
+                    throw new LocalException("Nelze se introducnout", e);
                 }
                 catch (FormatException e)
                 {
@@ -141,7 +142,7 @@ namespace Daemon.Communication
                         $"Příčina : {e.StackTrace}{Util.Newline}" +
                         $"Nelze pokračovat",LogType.CRITICAL
                         );
-                    return false;
+                    throw new LocalException("Nelze se introducnout - špatný formát", e);
                 }
             }
             int tryCount = 0;
@@ -150,7 +151,7 @@ namespace Daemon.Communication
                 if (++tryCount > settings.LoginMaxRetryCount - 1)
                 {
                     logger.Log($"Byl dosažen maximální počet pokusů o připojení ({settings.LoginMaxRetryCount}){Util.Newline}Nelze pokračovat...", LogType.CRITICAL);
-                    return false;
+                    throw new LocalException($"Nelze kontaktovat server {(settings.SSLUse ? settings.SSLServer : settings.Server )}");
                 }
                 logger.Log("Přihlášení se nepovedlo, bude se opakovat za " + TimeSpan.FromMilliseconds(settings.LoginFailureWaitPeriodMs), LogType.WARNING);
                 Thread.Sleep(settings.LoginFailureWaitPeriodMs);
@@ -212,6 +213,7 @@ namespace Daemon.Communication
                         $"Error #2-{e.ErrorMessages[0].id}{Util.Newline}" +
                         $"Příčina : {e.ErrorMessages[0].message}{Util.Newline}",LogType.ERROR
                         );
+                var faf = logger.ServerLogAsync(Dutil.CreateGSRL(LogType.ERROR, e.ErrorMessages));
                 return false;
             }
             
@@ -254,6 +256,7 @@ namespace Daemon.Communication
             }
             catch(INetException<TaskResponse> e)
             {
+                var faf = logger.ServerLogAsync(Dutil.CreateGSRL(LogType.ERROR, e.ErrorMessages));
                 DumpErrorMsgs(e);
             }
         }

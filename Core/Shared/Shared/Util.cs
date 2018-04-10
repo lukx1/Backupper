@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Shared.LogObjects;
+using Shared.NetMessages;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,6 +21,7 @@ namespace Shared
         {
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Backupper");
         }
+
 
         public static string GetFileInAppData(string fileName)
         {

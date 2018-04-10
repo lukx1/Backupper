@@ -14,7 +14,7 @@ namespace Shared
     public abstract class SLog <T> where T : class
     {
         public int Id { get; set; } = -1;
-        public LogType LogType { get; set; }
+        public LogType LogType { get; set; } = LogType.INFORMATION;
         public abstract LogContentType Code { get; }
         public DateTime DateCreated { get; set; } = DateTime.Now;
         public abstract T Content { get; protected set; }

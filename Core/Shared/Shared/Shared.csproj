@@ -52,8 +52,12 @@
   <ItemGroup>
     <Compile Include="Crc32.cs" />
     <Compile Include="DeserializeOnly.cs" />
+    <Compile Include="LoginSettings.cs" />
     <Compile Include="LogObjects\DaemonFailedIntroductionLog.cs" />
+    <Compile Include="LogObjects\GeneralDaemonError.cs" />
+    <Compile Include="LogObjects\GeneralServerResponseLog.cs" />
     <Compile Include="LogObjects\GeneralTaskFailedLog.cs" />
+    <Compile Include="LogObjects\LogedInInfo.cs" />
     <Compile Include="SLog.cs" />
     <Compile Include="INetException.cs" />
     <Compile Include="IniReader.cs" />

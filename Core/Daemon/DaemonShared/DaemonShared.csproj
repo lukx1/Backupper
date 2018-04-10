@@ -50,13 +50,18 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Pipes\Codes.cs" />
+    <Compile Include="Pipes\CompressString.cs" />
+    <Compile Include="Pipes\PipeCompressed.cs" />
+    <Compile Include="Pipes\PipeDialogResult.cs" />
     <Compile Include="Pipes\PipeMessage.cs" />
     <Compile Include="Pipes\PipePopup.cs" />
+    <Compile Include="Pipes\PipeServiceIdentity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="LoginSettings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
+      <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>LoginSettings1.Designer.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />

@@ -28,37 +28,41 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBoxHJmeno = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.textBoxHHeslo = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.textBoxHServer = new System.Windows.Forms.TextBox();
+            this.checkBoxSSL = new System.Windows.Forms.CheckBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPageHlavni = new System.Windows.Forms.TabPage();
-            this.tabPagePokrocile = new System.Windows.Forms.TabPage();
+            this.textBoxHSSLServer = new System.Windows.Forms.TextBox();
+            this.checkBoxBackupSSL = new System.Windows.Forms.CheckBox();
+            this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPageIntroduction = new System.Windows.Forms.TabPage();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox5 = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
+            this.textBoxIServerAdress = new System.Windows.Forms.TextBox();
+            this.buttonIUlozit = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textBoxIIntroductionKod = new System.Windows.Forms.TextBox();
+            this.tabPageHlavni = new System.Windows.Forms.TabPage();
             this.button2 = new System.Windows.Forms.Button();
-            this.tabControl1.SuspendLayout();
-            this.tabPageHlavni.SuspendLayout();
+            this.tabPagePokrocile = new System.Windows.Forms.TabPage();
+            this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.buttonPUlozit = new System.Windows.Forms.Button();
+            this.tabControl.SuspendLayout();
             this.tabPageIntroduction.SuspendLayout();
+            this.tabPageHlavni.SuspendLayout();
+            this.tabPagePokrocile.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             // 
-            // textBox1
+            // textBoxHJmeno
             // 
-            this.textBox1.Location = new System.Drawing.Point(100, 4);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 0;
+            this.textBoxHJmeno.Location = new System.Drawing.Point(100, 4);
+            this.textBoxHJmeno.Name = "textBoxHJmeno";
+            this.textBoxHJmeno.Size = new System.Drawing.Size(280, 20);
+            this.textBoxHJmeno.TabIndex = 0;
             // 
             // label1
             // 
@@ -78,12 +82,12 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "Heslo";
             // 
-            // textBox2
+            // textBoxHHeslo
             // 
-            this.textBox2.Location = new System.Drawing.Point(100, 30);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 2;
+            this.textBoxHHeslo.Location = new System.Drawing.Point(100, 30);
+            this.textBoxHHeslo.Name = "textBoxHHeslo";
+            this.textBoxHHeslo.Size = new System.Drawing.Size(280, 20);
+            this.textBoxHHeslo.TabIndex = 2;
             // 
             // label3
             // 
@@ -94,22 +98,22 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "HTTP Server";
             // 
-            // textBox3
+            // textBoxHServer
             // 
-            this.textBox3.Location = new System.Drawing.Point(100, 56);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(100, 20);
-            this.textBox3.TabIndex = 4;
+            this.textBoxHServer.Location = new System.Drawing.Point(100, 56);
+            this.textBoxHServer.Name = "textBoxHServer";
+            this.textBoxHServer.Size = new System.Drawing.Size(280, 20);
+            this.textBoxHServer.TabIndex = 4;
             // 
-            // checkBox1
+            // checkBoxSSL
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(9, 82);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(80, 17);
-            this.checkBox1.TabIndex = 6;
-            this.checkBox1.Text = "Použít SSL";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBoxSSL.AutoSize = true;
+            this.checkBoxSSL.Location = new System.Drawing.Point(9, 82);
+            this.checkBoxSSL.Name = "checkBoxSSL";
+            this.checkBoxSSL.Size = new System.Drawing.Size(80, 17);
+            this.checkBoxSSL.TabIndex = 6;
+            this.checkBoxSSL.Text = "Použít SSL";
+            this.checkBoxSSL.UseVisualStyleBackColor = true;
             // 
             // label6
             // 
@@ -120,111 +124,48 @@
             this.label6.TabIndex = 8;
             this.label6.Text = "HTTPS Server";
             // 
-            // textBox6
+            // textBoxHSSLServer
             // 
-            this.textBox6.Location = new System.Drawing.Point(100, 101);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(100, 20);
-            this.textBox6.TabIndex = 7;
+            this.textBoxHSSLServer.Location = new System.Drawing.Point(100, 101);
+            this.textBoxHSSLServer.Name = "textBoxHSSLServer";
+            this.textBoxHSSLServer.Size = new System.Drawing.Size(280, 20);
+            this.textBoxHSSLServer.TabIndex = 7;
             // 
-            // checkBox2
+            // checkBoxBackupSSL
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(9, 129);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(94, 17);
-            this.checkBox2.TabIndex = 13;
-            this.checkBox2.Text = "Záložní HTTP";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.checkBoxBackupSSL.AutoSize = true;
+            this.checkBoxBackupSSL.Location = new System.Drawing.Point(9, 129);
+            this.checkBoxBackupSSL.Name = "checkBoxBackupSSL";
+            this.checkBoxBackupSSL.Size = new System.Drawing.Size(94, 17);
+            this.checkBoxBackupSSL.TabIndex = 13;
+            this.checkBoxBackupSSL.Text = "Záložní HTTP";
+            this.checkBoxBackupSSL.UseVisualStyleBackColor = true;
             // 
-            // tabControl1
+            // tabControl
             // 
-            this.tabControl1.Controls.Add(this.tabPageIntroduction);
-            this.tabControl1.Controls.Add(this.tabPageHlavni);
-            this.tabControl1.Controls.Add(this.tabPagePokrocile);
-            this.tabControl1.Location = new System.Drawing.Point(0, 1);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(394, 377);
-            this.tabControl1.TabIndex = 14;
-            // 
-            // tabPageHlavni
-            // 
-            this.tabPageHlavni.Controls.Add(this.button2);
-            this.tabPageHlavni.Controls.Add(this.label1);
-            this.tabPageHlavni.Controls.Add(this.checkBox2);
-            this.tabPageHlavni.Controls.Add(this.textBox1);
-            this.tabPageHlavni.Controls.Add(this.textBox2);
-            this.tabPageHlavni.Controls.Add(this.label2);
-            this.tabPageHlavni.Controls.Add(this.textBox3);
-            this.tabPageHlavni.Controls.Add(this.label3);
-            this.tabPageHlavni.Controls.Add(this.label6);
-            this.tabPageHlavni.Controls.Add(this.checkBox1);
-            this.tabPageHlavni.Controls.Add(this.textBox6);
-            this.tabPageHlavni.Location = new System.Drawing.Point(4, 22);
-            this.tabPageHlavni.Name = "tabPageHlavni";
-            this.tabPageHlavni.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageHlavni.Size = new System.Drawing.Size(386, 351);
-            this.tabPageHlavni.TabIndex = 0;
-            this.tabPageHlavni.Text = "Hlavní nastavení";
-            this.tabPageHlavni.UseVisualStyleBackColor = true;
-            // 
-            // tabPagePokrocile
-            // 
-            this.tabPagePokrocile.Location = new System.Drawing.Point(4, 22);
-            this.tabPagePokrocile.Name = "tabPagePokrocile";
-            this.tabPagePokrocile.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPagePokrocile.Size = new System.Drawing.Size(386, 351);
-            this.tabPagePokrocile.TabIndex = 1;
-            this.tabPagePokrocile.Text = "Pokročilé nastavení";
-            this.tabPagePokrocile.UseVisualStyleBackColor = true;
+            this.tabControl.Controls.Add(this.tabPageIntroduction);
+            this.tabControl.Controls.Add(this.tabPageHlavni);
+            this.tabControl.Controls.Add(this.tabPagePokrocile);
+            this.tabControl.Location = new System.Drawing.Point(0, 1);
+            this.tabControl.Name = "tabControl";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(394, 377);
+            this.tabControl.TabIndex = 14;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
             // tabPageIntroduction
             // 
             this.tabPageIntroduction.Controls.Add(this.label5);
-            this.tabPageIntroduction.Controls.Add(this.textBox5);
-            this.tabPageIntroduction.Controls.Add(this.button1);
+            this.tabPageIntroduction.Controls.Add(this.textBoxIServerAdress);
+            this.tabPageIntroduction.Controls.Add(this.buttonIUlozit);
             this.tabPageIntroduction.Controls.Add(this.label4);
-            this.tabPageIntroduction.Controls.Add(this.textBox4);
+            this.tabPageIntroduction.Controls.Add(this.textBoxIIntroductionKod);
             this.tabPageIntroduction.Location = new System.Drawing.Point(4, 22);
             this.tabPageIntroduction.Name = "tabPageIntroduction";
             this.tabPageIntroduction.Size = new System.Drawing.Size(386, 351);
             this.tabPageIntroduction.TabIndex = 3;
             this.tabPageIntroduction.Text = "Introduction";
             this.tabPageIntroduction.UseVisualStyleBackColor = true;
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(8, 26);
-            this.textBox4.Multiline = true;
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(367, 110);
-            this.textBox4.TabIndex = 0;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(8, 10);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(84, 13);
-            this.label4.TabIndex = 1;
-            this.label4.Text = "Introduction kód";
-            // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(300, 316);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 2;
-            this.button1.Text = "Uložit";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // textBox5
-            // 
-            this.textBox5.Location = new System.Drawing.Point(98, 152);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(277, 20);
-            this.textBox5.TabIndex = 3;
             // 
             // label5
             // 
@@ -235,54 +176,147 @@
             this.label5.TabIndex = 4;
             this.label5.Text = "Adresa serveru";
             // 
+            // textBoxIServerAdress
+            // 
+            this.textBoxIServerAdress.Location = new System.Drawing.Point(98, 152);
+            this.textBoxIServerAdress.Name = "textBoxIServerAdress";
+            this.textBoxIServerAdress.Size = new System.Drawing.Size(277, 20);
+            this.textBoxIServerAdress.TabIndex = 3;
+            // 
+            // buttonIUlozit
+            // 
+            this.buttonIUlozit.Location = new System.Drawing.Point(300, 316);
+            this.buttonIUlozit.Name = "buttonIUlozit";
+            this.buttonIUlozit.Size = new System.Drawing.Size(75, 23);
+            this.buttonIUlozit.TabIndex = 2;
+            this.buttonIUlozit.Text = "Uložit";
+            this.buttonIUlozit.UseVisualStyleBackColor = true;
+            this.buttonIUlozit.Click += new System.EventHandler(this.buttonIUlozit_Click);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(8, 10);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(84, 13);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "Introduction kód";
+            // 
+            // textBoxIIntroductionKod
+            // 
+            this.textBoxIIntroductionKod.Location = new System.Drawing.Point(8, 26);
+            this.textBoxIIntroductionKod.Multiline = true;
+            this.textBoxIIntroductionKod.Name = "textBoxIIntroductionKod";
+            this.textBoxIIntroductionKod.Size = new System.Drawing.Size(367, 110);
+            this.textBoxIIntroductionKod.TabIndex = 0;
+            // 
+            // tabPageHlavni
+            // 
+            this.tabPageHlavni.Controls.Add(this.button2);
+            this.tabPageHlavni.Controls.Add(this.label1);
+            this.tabPageHlavni.Controls.Add(this.checkBoxBackupSSL);
+            this.tabPageHlavni.Controls.Add(this.textBoxHJmeno);
+            this.tabPageHlavni.Controls.Add(this.textBoxHHeslo);
+            this.tabPageHlavni.Controls.Add(this.label2);
+            this.tabPageHlavni.Controls.Add(this.textBoxHServer);
+            this.tabPageHlavni.Controls.Add(this.label3);
+            this.tabPageHlavni.Controls.Add(this.label6);
+            this.tabPageHlavni.Controls.Add(this.checkBoxSSL);
+            this.tabPageHlavni.Controls.Add(this.textBoxHSSLServer);
+            this.tabPageHlavni.Location = new System.Drawing.Point(4, 22);
+            this.tabPageHlavni.Name = "tabPageHlavni";
+            this.tabPageHlavni.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageHlavni.Size = new System.Drawing.Size(386, 351);
+            this.tabPageHlavni.TabIndex = 0;
+            this.tabPageHlavni.Text = "Daemon nastavení";
+            this.tabPageHlavni.UseVisualStyleBackColor = true;
+            // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(301, 316);
+            this.button2.Location = new System.Drawing.Point(300, 316);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 14;
             this.button2.Text = "Uložit";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.buttonHUlozit_Click);
+            // 
+            // tabPagePokrocile
+            // 
+            this.tabPagePokrocile.Controls.Add(this.buttonPUlozit);
+            this.tabPagePokrocile.Controls.Add(this.dataGridView);
+            this.tabPagePokrocile.Location = new System.Drawing.Point(4, 22);
+            this.tabPagePokrocile.Name = "tabPagePokrocile";
+            this.tabPagePokrocile.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPagePokrocile.Size = new System.Drawing.Size(386, 351);
+            this.tabPagePokrocile.TabIndex = 1;
+            this.tabPagePokrocile.Text = "Pokročilé nastavení";
+            this.tabPagePokrocile.UseVisualStyleBackColor = true;
+            // 
+            // dataGridView
+            // 
+            this.dataGridView.AllowUserToAddRows = false;
+            this.dataGridView.AllowUserToDeleteRows = false;
+            this.dataGridView.AllowUserToOrderColumns = true;
+            this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView.Location = new System.Drawing.Point(4, 4);
+            this.dataGridView.Name = "dataGridView";
+            this.dataGridView.Size = new System.Drawing.Size(376, 297);
+            this.dataGridView.TabIndex = 0;
+            // 
+            // buttonPUlozit
+            // 
+            this.buttonPUlozit.Location = new System.Drawing.Point(300, 316);
+            this.buttonPUlozit.Name = "buttonPUlozit";
+            this.buttonPUlozit.Size = new System.Drawing.Size(75, 23);
+            this.buttonPUlozit.TabIndex = 1;
+            this.buttonPUlozit.Text = "Uložit";
+            this.buttonPUlozit.UseVisualStyleBackColor = true;
+            this.buttonPUlozit.Click += new System.EventHandler(this.buttonPUlozit_Click);
             // 
             // Home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(392, 374);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.tabControl);
             this.Name = "Home";
             this.Text = "Backupper";
             this.Load += new System.EventHandler(this.Home_Load);
-            this.tabControl1.ResumeLayout(false);
-            this.tabPageHlavni.ResumeLayout(false);
-            this.tabPageHlavni.PerformLayout();
+            this.tabControl.ResumeLayout(false);
             this.tabPageIntroduction.ResumeLayout(false);
             this.tabPageIntroduction.PerformLayout();
+            this.tabPageHlavni.ResumeLayout(false);
+            this.tabPageHlavni.PerformLayout();
+            this.tabPagePokrocile.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBoxHJmeno;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox textBoxHHeslo;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.TextBox textBoxHServer;
+        private System.Windows.Forms.CheckBox checkBoxSSL;
         private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.TextBox textBox6;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TextBox textBoxHSSLServer;
+        private System.Windows.Forms.CheckBox checkBoxBackupSSL;
+        private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabPageHlavni;
         private System.Windows.Forms.TabPage tabPagePokrocile;
         private System.Windows.Forms.TabPage tabPageIntroduction;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox textBoxIServerAdress;
+        private System.Windows.Forms.Button buttonIUlozit;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox textBoxIIntroductionKod;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button buttonPUlozit;
+        private System.Windows.Forms.DataGridView dataGridView;
     }
 }

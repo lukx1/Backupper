@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,6 +15,21 @@ namespace DaemonSettings
     {
 
         private static Task settingsTask;
+        private static List<NamedPipeServerStream> Readers = new List<NamedPipeServerStream>();
+        private static string ServiceIdentity;
+        private static PipeSecurity pipeSecurity;
+
+        private static void TrySetIdentity(PipeMessage msg)
+        {
+            try
+            {
+                ServiceIdentity = msg.DeserializePayload<PipeServiceIdentity>().Identity;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
 
         private static void HandleMessage(PipeMessage msg)
         {
@@ -24,6 +40,7 @@ namespace DaemonSettings
                         settingsTask = Task.Run(() => ShowSettings());
                     break;
                 case PipeCode.NOTIFY_WAITER:
+                    TrySetIdentity(msg);
                     NotifyWaiter();
                     break;
                 case PipeCode.KILL_SERVICE:
@@ -41,20 +58,38 @@ namespace DaemonSettings
 
         private static void PopupErr(PipeMessage msg)
         {
-            var pp = PipePopup.FromJsonZip(msg.Payload);
-            var buttons = (System.Windows.Forms.MessageBoxButtons)((int)pp.T);
+            var pp = PipePopup.FromJson(msg.Payload);
+            var buttons = (System.Windows.Forms.MessageBoxButtons)((int)pp.B);
             var icons = (System.Windows.Forms.MessageBoxIcon)((int)pp.I);
-            MessageBox.Show(null,pp.B,pp.C, buttons, icons);
+            var res = MessageBox.Show(null, pp.T, pp.C, buttons, icons);
+            if (pp.R)
+                Task.Run(() => SendMessage(PipeCode.DIALOG_RESULT, new PipeDialogResult() { R = (PipeDialogResult.DialogResult)(int)res }));
+            
         }
-        private static void KillTask()
+
+        private static void SendMessage(PipeCode code)
         {
-            using (NamedPipeServerStream serverStream = new NamedPipeServerStream(PipeMessage.PIPE_NAME, PipeDirection.InOut, 16, PipeTransmissionMode.Message))
+            using (NamedPipeClientStream serverStream = new NamedPipeClientStream(".", PipeMessage.PIPE_NAME, PipeDirection.Out))
             {
-                serverStream.WaitForConnection();
+                serverStream.Connect();
                 serverStream.Write(new PipeMessage() { Code = PipeCode.KILL_SERVICE }.ToSendable(), 0, PipeMessage.MAX_SIZE_IN_BYTES);
                 serverStream.Flush();
-                serverStream.WaitForPipeDrain();
             }
+        }
+
+        private static void SendMessage(PipeCode code, object content)
+        {
+            using (NamedPipeClientStream serverStream = new NamedPipeClientStream(".", PipeMessage.PIPE_NAME, PipeDirection.Out))
+            {
+                serverStream.Connect();
+                serverStream.Write(new PipeMessage() { Code = PipeCode.KILL_SERVICE,SerializePayload = content }.ToSendable(), 0, PipeMessage.MAX_SIZE_IN_BYTES);
+                serverStream.Flush();
+            }
+        }
+
+        private static void KillTask()
+        {
+            SendMessage(PipeCode.KILL_SERVICE);
         }
 
         private static void NotifyWaiter()
@@ -77,26 +112,41 @@ namespace DaemonSettings
             return Task.Run(() =>
             {
 
-                    try
+                try
+                {
+                    using (NamedPipeServerStream serverStream = new NamedPipeServerStream(PipeMessage.PIPE_NAME, PipeDirection.InOut, 2, PipeTransmissionMode.Message))
                     {
-                        using (NamedPipeServerStream serverStream = new NamedPipeServerStream(PipeMessage.PIPE_NAME, PipeDirection.InOut, 2, PipeTransmissionMode.Message))
+                        if (ServiceIdentity != null && pipeSecurity == null)
                         {
-                            serverStream.WaitForConnection();
-                            byte[] b = new byte[PipeMessage.MAX_SIZE_IN_BYTES];
-                            using (var reader = new BinaryReader(serverStream))
-                            {
-                                reader.Read(b, 0, b.Length);
-                                Task.Run(()=>HandleMessage(PipeMessage.Read(b)));
-                            }
+                            PipeSecurity ps = new PipeSecurity();
+                            ps.AddAccessRule(new PipeAccessRule(ServiceIdentity, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow));
+                            serverStream.SetAccessControl(ps);
+                            pipeSecurity = ps;
+                        }
+                        else if(pipeSecurity != null)
+                            serverStream.SetAccessControl(pipeSecurity);
+
+                        serverStream.SetAccessControl(new PipeSecurity() { });
+                        serverStream.WaitForConnection();
+                        byte[] b = new byte[PipeMessage.MAX_SIZE_IN_BYTES];
+                        using (var reader = new BinaryReader(serverStream))
+                        {
+                            reader.Read(b, 0, b.Length);
+                            Task.Run(() => HandleMessage(PipeMessage.Read(b)));
                         }
                     }
-                    catch (Exception e)
-                    {
-                        Application.Exit();
-                        return;
-                    }
+                }
+                catch(IdentityNotMappedException e)
+                {
 
-                
+                }
+                catch (Exception e)
+                {
+                    Application.Exit();
+                    return;
+                }
+
+
             }
             );
         }

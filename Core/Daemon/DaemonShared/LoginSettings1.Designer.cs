@@ -144,7 +144,7 @@ namespace DaemonShared {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("5000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("500")]
         public int LoginFailureWaitPeriodMs {
             get {
                 return ((int)(this["LoginFailureWaitPeriodMs"]));
@@ -258,6 +258,42 @@ namespace DaemonShared {
             }
             set {
                 this["StoreLocalErrorsLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PipeOK {
+            get {
+                return ((bool)(this["PipeOK"]));
+            }
+            set {
+                this["PipeOK"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300000")]
+        public int PipeConnectTimeoutMs {
+            get {
+                return ((int)(this["PipeConnectTimeoutMs"]));
+            }
+            set {
+                this["PipeConnectTimeoutMs"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SSLHttpFallback {
+            get {
+                return ((bool)(this["SSLHttpFallback"]));
+            }
+            set {
+                this["SSLHttpFallback"] = value;
             }
         }
     }

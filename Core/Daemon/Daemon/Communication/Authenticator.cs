@@ -83,6 +83,7 @@ namespace Daemon.Communication
                 version = Shared.Version.Parse(settings.Version)
             };
 
+
             var resp = await messenger.SendAsync<IntroductionResponse>(introductionMessage, "Introduction", System.Net.Http.HttpMethod.Put);
             logger.Log("Introduction úspěšný", LogType.INFORMATION);
             settings.Uuid = resp.ServerResponse.uuid;

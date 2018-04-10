@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace DaemonShared.Pipes
 {
-    public enum PipeCode : int
+    public class PipeCompressed
     {
-        SHOW_SETTINGS,NOTIFY_WAITER,KILL_SERVICE,NOTIFY_ALREADY_RUNNING,POPUP_ERR,INTEND_READ,YES,NO,DIALOG_RESULT
+        public byte[] Bytes { get; set; }
     }
 }
