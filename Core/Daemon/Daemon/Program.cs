@@ -65,6 +65,9 @@ namespace Daemon
                 logger.Log("NamedPipe - Vypršel čas na připojení", LogType.WARNING);
                 return;
             }
+
+            await pipes.SendMessageAsync(new PipeMessage() { Code = PipeCode.POPUP_ERR, Payload =new PipePopup() {B = "Test",  C="Backupper",I = PipePopup.MessageBoxIconsP.Question,T = PipePopup.MessageBoxButtonsP.OK }.ToJsonZip() });
+
             logger.Log("NamedPipe - Čtení připraveno", LogType.DEBUG);
 
         }

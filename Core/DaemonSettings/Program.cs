@@ -29,9 +29,23 @@ namespace DaemonSettings
                 case PipeCode.KILL_SERVICE:
                     KillTask();
                     break;
+                case PipeCode.NOTIFY_ALREADY_RUNNING:
+                    break;
+                case PipeCode.POPUP_ERR:
+                    PopupErr(msg);
+                    break;
             }
         }
 
+
+
+        private static void PopupErr(PipeMessage msg)
+        {
+            var pp = PipePopup.FromJsonZip(msg.Payload);
+            var buttons = (System.Windows.Forms.MessageBoxButtons)((int)pp.T);
+            var icons = (System.Windows.Forms.MessageBoxIcon)((int)pp.I);
+            MessageBox.Show(null,pp.B,pp.C, buttons, icons);
+        }
         private static void KillTask()
         {
             using (NamedPipeServerStream serverStream = new NamedPipeServerStream(PipeMessage.PIPE_NAME, PipeDirection.InOut, 16, PipeTransmissionMode.Message))
