@@ -74,11 +74,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources</DependentUpon>
     </Compile>
-    <Compile Include="Properties\Resources2.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources2.resx</DependentUpon>
-    </Compile>
     <Compile Include="Service.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -113,12 +108,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources2.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources2.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\BackupInfos\" />
