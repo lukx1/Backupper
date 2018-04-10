@@ -10,7 +10,7 @@ namespace Daemon.Backups
 {
     public class SmartBackupInfo
     {
-        public static string StorePath = "C:/Users/rambo_000/Desktop/TESTFOLDER/TestBackupInfos/";
+        public static string StorePath = "Data/BackupInfos/";
 
         public List<SmartFileInfo> fileInfos { get; set; }
         public DbTaskLocation location { get; set; }
