@@ -35,6 +35,9 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Renci.SshNet, Version=2016.1.0.0, Culture=neutral, PublicKeyToken=1cee9f8bde3db106, processorArchitecture=MSIL">
+      <HintPath>..\packages\SSH.NET.2016.1.0\lib\net40\Renci.SshNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
@@ -59,6 +62,7 @@
     <Compile Include="Communication\Authenticator.cs" />
     <Compile Include="Communication\FtpClient.cs" />
     <Compile Include="Communication\LogCommunicator.cs" />
+    <Compile Include="Communication\SftpClient.cs" />
     <Compile Include="DoNotStoreThisException.cs" />
     <Compile Include="LocalException.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
@@ -101,10 +105,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="Properties\Resources">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\BackupInfos\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
