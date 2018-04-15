@@ -48,13 +48,21 @@
             this.tabPageHlavni = new System.Windows.Forms.TabPage();
             this.button2 = new System.Windows.Forms.Button();
             this.tabPagePokrocile = new System.Windows.Forms.TabPage();
-            this.dataGridView = new System.Windows.Forms.DataGridView();
             this.buttonPUlozit = new System.Windows.Forms.Button();
+            this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.tabPageSoukromyKlic = new System.Windows.Forms.TabPage();
+            this.buttonKOK = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.textBoxKUsername = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.textBoxKPassword = new System.Windows.Forms.TextBox();
             this.tabControl.SuspendLayout();
             this.tabPageIntroduction.SuspendLayout();
             this.tabPageHlavni.SuspendLayout();
             this.tabPagePokrocile.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+            this.tabPageSoukromyKlic.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBoxHJmeno
@@ -145,6 +153,7 @@
             // 
             this.tabControl.Controls.Add(this.tabPageIntroduction);
             this.tabControl.Controls.Add(this.tabPageHlavni);
+            this.tabControl.Controls.Add(this.tabPageSoukromyKlic);
             this.tabControl.Controls.Add(this.tabPagePokrocile);
             this.tabControl.Location = new System.Drawing.Point(0, 1);
             this.tabControl.Name = "tabControl";
@@ -253,6 +262,16 @@
             this.tabPagePokrocile.Text = "Pokročilé nastavení";
             this.tabPagePokrocile.UseVisualStyleBackColor = true;
             // 
+            // buttonPUlozit
+            // 
+            this.buttonPUlozit.Location = new System.Drawing.Point(300, 316);
+            this.buttonPUlozit.Name = "buttonPUlozit";
+            this.buttonPUlozit.Size = new System.Drawing.Size(75, 23);
+            this.buttonPUlozit.TabIndex = 1;
+            this.buttonPUlozit.Text = "Uložit";
+            this.buttonPUlozit.UseVisualStyleBackColor = true;
+            this.buttonPUlozit.Click += new System.EventHandler(this.buttonPUlozit_Click);
+            // 
             // dataGridView
             // 
             this.dataGridView.AllowUserToAddRows = false;
@@ -264,15 +283,72 @@
             this.dataGridView.Size = new System.Drawing.Size(376, 297);
             this.dataGridView.TabIndex = 0;
             // 
-            // buttonPUlozit
+            // tabPageSoukromyKlic
             // 
-            this.buttonPUlozit.Location = new System.Drawing.Point(300, 316);
-            this.buttonPUlozit.Name = "buttonPUlozit";
-            this.buttonPUlozit.Size = new System.Drawing.Size(75, 23);
-            this.buttonPUlozit.TabIndex = 1;
-            this.buttonPUlozit.Text = "Uložit";
-            this.buttonPUlozit.UseVisualStyleBackColor = true;
-            this.buttonPUlozit.Click += new System.EventHandler(this.buttonPUlozit_Click);
+            this.tabPageSoukromyKlic.Controls.Add(this.textBoxKPassword);
+            this.tabPageSoukromyKlic.Controls.Add(this.label9);
+            this.tabPageSoukromyKlic.Controls.Add(this.label8);
+            this.tabPageSoukromyKlic.Controls.Add(this.textBoxKUsername);
+            this.tabPageSoukromyKlic.Controls.Add(this.label7);
+            this.tabPageSoukromyKlic.Controls.Add(this.buttonKOK);
+            this.tabPageSoukromyKlic.Location = new System.Drawing.Point(4, 22);
+            this.tabPageSoukromyKlic.Name = "tabPageSoukromyKlic";
+            this.tabPageSoukromyKlic.Size = new System.Drawing.Size(386, 351);
+            this.tabPageSoukromyKlic.TabIndex = 4;
+            this.tabPageSoukromyKlic.Text = "Klíče";
+            this.tabPageSoukromyKlic.UseVisualStyleBackColor = true;
+            // 
+            // buttonKOK
+            // 
+            this.buttonKOK.Location = new System.Drawing.Point(300, 316);
+            this.buttonKOK.Name = "buttonKOK";
+            this.buttonKOK.Size = new System.Drawing.Size(75, 23);
+            this.buttonKOK.TabIndex = 0;
+            this.buttonKOK.Text = "OK";
+            this.buttonKOK.UseVisualStyleBackColor = true;
+            this.buttonKOK.Click += new System.EventHandler(this.buttonKOK_Click);
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(8, 9);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(45, 13);
+            this.label7.TabIndex = 1;
+            this.label7.Text = "Uživatel";
+            // 
+            // textBoxKUsername
+            // 
+            this.textBoxKUsername.Location = new System.Drawing.Point(59, 34);
+            this.textBoxKUsername.Name = "textBoxKUsername";
+            this.textBoxKUsername.Size = new System.Drawing.Size(317, 20);
+            this.textBoxKUsername.TabIndex = 2;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(8, 63);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(34, 13);
+            this.label8.TabIndex = 3;
+            this.label8.Text = "Heslo";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(8, 37);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(38, 13);
+            this.label9.TabIndex = 4;
+            this.label9.Text = "Jméno";
+            // 
+            // textBoxKPassword
+            // 
+            this.textBoxKPassword.Location = new System.Drawing.Point(59, 60);
+            this.textBoxKPassword.Name = "textBoxKPassword";
+            this.textBoxKPassword.PasswordChar = '*';
+            this.textBoxKPassword.Size = new System.Drawing.Size(317, 20);
+            this.textBoxKPassword.TabIndex = 5;
             // 
             // Home
             // 
@@ -290,6 +366,8 @@
             this.tabPageHlavni.PerformLayout();
             this.tabPagePokrocile.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+            this.tabPageSoukromyKlic.ResumeLayout(false);
+            this.tabPageSoukromyKlic.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -318,5 +396,12 @@
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button buttonPUlozit;
         private System.Windows.Forms.DataGridView dataGridView;
+        private System.Windows.Forms.TabPage tabPageSoukromyKlic;
+        private System.Windows.Forms.TextBox textBoxKPassword;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox textBoxKUsername;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Button buttonKOK;
     }
 }

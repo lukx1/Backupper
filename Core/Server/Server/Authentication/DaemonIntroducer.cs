@@ -39,7 +39,7 @@ namespace Server.Authentication
         /// <returns></returns>
         private UuidPass EnterDBGetPass(DaemonPreSharedKey dbPreShared)
         {
-            return authenticator.IntroduceDaemon(dbPreShared,message.os,new string(message.macAdress),dbPreShared.IdUser);
+            return authenticator.IntroduceDaemon(dbPreShared,message.os,new string(message.macAdress),dbPreShared.IdUser,message.publicKey);
         }
 
         /// <summary>

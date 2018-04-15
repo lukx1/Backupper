@@ -18,6 +18,7 @@ namespace DaemonSettings
         private static List<NamedPipeServerStream> Readers = new List<NamedPipeServerStream>();
         private static string ServiceIdentity;
         private static PipeSecurity pipeSecurity;
+        private static List<Home> homes = new List<Home>();
 
         private static void TrySetIdentity(PipeMessage msg)
         {
@@ -35,13 +36,16 @@ namespace DaemonSettings
         {
             switch (msg.Code)
             {
+                case PipeCode.LOGIN_RESPONSE:
+                    homes.ForEach(h => h.MessageReceived(msg.Code, msg.Payload));
+                    break;
                 case PipeCode.SHOW_SETTINGS:
                     if (settingsTask != null)
-                        settingsTask = Task.Run(() => ShowSettings());
+                        settingsTask = Task.Run(() => ShowSettings(SendMessage)).ContinueWith((r) => { homes.Clear(); });
                     break;
                 case PipeCode.NOTIFY_WAITER:
                     TrySetIdentity(msg);
-                    NotifyWaiter();
+                    NotifyWaiter(SendMessage);
                     break;
                 case PipeCode.KILL_SERVICE:
                     KillTask();
@@ -53,8 +57,6 @@ namespace DaemonSettings
                     break;
             }
         }
-
-
 
         private static void PopupErr(PipeMessage msg)
         {
@@ -82,7 +84,7 @@ namespace DaemonSettings
             using (NamedPipeClientStream serverStream = new NamedPipeClientStream(".", PipeMessage.PIPE_NAME, PipeDirection.Out))
             {
                 serverStream.Connect();
-                serverStream.Write(new PipeMessage() { Code = PipeCode.KILL_SERVICE,SerializePayload = content }.ToSendable(), 0, PipeMessage.MAX_SIZE_IN_BYTES);
+                serverStream.Write(new PipeMessage() { Code = code,SerializePayload = content }.ToSendable(), 0, PipeMessage.MAX_SIZE_IN_BYTES);
                 serverStream.Flush();
             }
         }
@@ -92,18 +94,23 @@ namespace DaemonSettings
             SendMessage(PipeCode.KILL_SERVICE);
         }
 
-        private static void NotifyWaiter()
+        private static void NotifyWaiter(Action<PipeCode, object> SendMessage)
         {
             NotifyWaiter n = new DaemonSettings.NotifyWaiter();
-            n.Run(() => Task.Run(() => ShowSettings()), () => Task.Run(() => KillTask()));
+            n.Run(() => Task.Run(() => ShowSettings(SendMessage)), () => Task.Run(() => KillTask()));
         }
 
         [STAThread]
-        public static void ShowSettings()
+        public static void ShowSettings(Action<PipeCode, object> SendMessage)
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Home home = new Home();
+            try
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+            }
+            catch (InvalidOperationException) { }
+            Home home = new Home(SendMessage);
+            homes.Add(home);
             home.ShowDialog();
         }
 

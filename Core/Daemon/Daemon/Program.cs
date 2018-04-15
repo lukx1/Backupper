@@ -71,13 +71,20 @@ namespace Daemon
             }
             if ((e is DoNotStoreThisExceptionException))
                 return;
-            LocalLogManipulator logManipulator = new LocalLogManipulator();
-            DaemonCrashLog crashLog = new DaemonCrashLog();
-            crashLog.Content.CaughtException = e;
-            crashLog.Content.Message = "Nečekaná chyba";
-            crashLog.Content.PcInfo = "";
-            crashLog.Content.DaemonUuid = new LoginSettings().Uuid;
-            logManipulator.Store(crashLog);
+            try
+            {
+                LocalLogManipulator logManipulator = new LocalLogManipulator();
+                DaemonCrashLog crashLog = new DaemonCrashLog();
+                crashLog.Content.CaughtException = e;
+                crashLog.Content.Message = "Nečekaná chyba";
+                crashLog.Content.PcInfo = "";
+                crashLog.Content.DaemonUuid = new LoginSettings().Uuid;
+                logManipulator.Store(crashLog);
+            }
+            catch(Exception ex)
+            {
+                logger.Log($"Chyba při tvoření záznamu o chybě\r\n{ex.Message}\r\n{ex.StackTrace}", LogType.EMERGENCY);
+            }
         }
 
 
@@ -147,6 +154,7 @@ namespace Daemon
             {
                 //throw new ArgumentException("Test excep",new Exception("Test error please ignore", new Exception("Test inner", new Exception("Test inner 2"))));
                 DaemonClient = new DaemonClient();
+                logger = ConsoleLogger.CreateSourceInstance(DaemonClient.messenger);
                 DaemonClient.Run().Wait();
             }
             catch (Exception e)
@@ -155,13 +163,11 @@ namespace Daemon
             }
         }
 
-
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         static void Main()
         {
-            logger.Log("Služba spuštěna", LogType.INFORMATION);
             service = new Service();
             service.ServiceName = "Backupper";
             if (Environment.UserInteractive)

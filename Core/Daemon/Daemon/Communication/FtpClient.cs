@@ -8,13 +8,13 @@ using System.IO;
 
 namespace Daemon.Communication
 {
-    public class FtpClient
+    public class FtpClient : IDisposable
     {
         public string Host { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         private int bufferSize = 4 * 1024;
-        public FtpWebResponse ftpResponse {get;set;}
+        public FtpWebResponse ftpResponse { get; set; }
 
         private Logging.ILogger logger = Logging.LoggerFactory.CreateAppropriate();
 
@@ -25,9 +25,10 @@ namespace Daemon.Communication
             Password = password;
         }
 
-        public void upload( string source, string destination)
+        public void upload(string source, string destination)
         {
-            
+            try
+            {
                 FtpWebRequest ftpRequest = (FtpWebRequest)FtpWebRequest.Create(Host + "/" + destination);
                 ftpRequest.Credentials = new NetworkCredential(Username, Password);
 
@@ -54,7 +55,12 @@ namespace Daemon.Communication
                         catch (Exception) { logger.Log($"FtpClient failed upload [Source: {source}, Destination {destination}]", Shared.LogType.ERROR); }
                     }
                 }
-            return;
+                return;
+            }
+            finally
+            {
+                ftpResponse.Close();
+            }
         }
 
         public void createDirectory(string destination)
@@ -79,6 +85,10 @@ namespace Daemon.Communication
             return;
         }
 
-
+        public void Dispose()
+        {
+            Password = null;
+            ftpResponse.Close();
+        }
     }
 }

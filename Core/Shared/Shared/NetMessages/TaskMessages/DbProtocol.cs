@@ -19,6 +19,28 @@ namespace Shared.NetMessages.TaskMessages
 
         }
 
+        public static bool operator !=(DbProtocol a, DbProtocol b)
+        {
+            return a.Id != b.Id;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is DbProtocol)
+                return ((DbProtocol)obj).Id == this.Id;
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return this.Id;
+        }
+
+        public static bool operator ==(DbProtocol a, DbProtocol b)
+        {
+            return a.Id == b.Id;
+        }
+
         private DbProtocol(int id, string shortName, string longName)
         {
             this.Id = id;

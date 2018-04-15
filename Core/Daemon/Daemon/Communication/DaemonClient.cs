@@ -14,6 +14,7 @@ using Daemon.Logging;
 using Shared.LogObjects;
 using Shared.NetMessages.LogMessages;
 using DaemonShared;
+using DaemonShared.Pipes;
 
 namespace Daemon.Communication
 {
@@ -22,7 +23,7 @@ namespace Daemon.Communication
     /// </summary>
     public class DaemonClient
     {
-        private Messenger messenger;
+        public Messenger messenger { get; private set; }
         private LoginSettings settings = new LoginSettings();
         private TaskHandler taskHandler = new TaskHandler();
         private Authenticator authenticator;
@@ -39,11 +40,12 @@ namespace Daemon.Communication
 
         public DaemonClient()
         {
-            logger = ConsoleLogger.CreateSourceInstance(messenger);
+            
             if (settings.SSLUse)
                 messenger = new Messenger(settings.SSLServer, settings.SSLAllowSelfSigned);
             else
                 messenger = new Messenger(settings.Server);
+            logger = ConsoleLogger.CreateSourceInstance(messenger);
         }
 
         public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> CheckForLocalLogsAndSend()
@@ -64,7 +66,7 @@ namespace Daemon.Communication
                 else
                     logger.Log("Nebyli nalezeny žádné lokální logy", LogType.DEBUG);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 logger.Log("Chyba při odesílání lokálních logů", LogType.ERROR);
                 throw new DoNotStoreThisExceptionException(e.Message, e);
@@ -107,9 +109,9 @@ namespace Daemon.Communication
                     $"Příčina : server není zapnutý nebo odmítá připojení", LogType.WARNING
                     );
                 return false;
-                
+
             }
-            
+
         }
 
         /// <summary>
@@ -125,13 +127,13 @@ namespace Daemon.Communication
                 {
                     await authenticator.Introduce();
                 }
-                catch(INetException<IntroductionResponse> e)
+                catch (INetException<IntroductionResponse> e)
                 {
                     logger.Log(
                         $"Nebylo možné se představit{Util.Newline}" +
                         $"Error #1-{e.ErrorMessages[0].id}{Util.Newline}" +
                         $"Příčina : {e.ErrorMessages[0].message}{Util.Newline}" +
-                        $"Nelze pokračovat",LogType.CRITICAL
+                        $"Nelze pokračovat", LogType.CRITICAL
                         );
                     throw new LocalException("Nelze se introducnout", e);
                 }
@@ -140,18 +142,18 @@ namespace Daemon.Communication
                     logger.Log($"Nebylo možné se představit{Util.Newline}" +
                         $"Error #2-{e.Message}{Util.Newline}" +
                         $"Příčina : {e.StackTrace}{Util.Newline}" +
-                        $"Nelze pokračovat",LogType.CRITICAL
+                        $"Nelze pokračovat", LogType.CRITICAL
                         );
                     throw new LocalException("Nelze se introducnout - špatný formát", e);
                 }
             }
             int tryCount = 0;
-            while (!await AttemptLogin(authenticator,tryCount)) // Pokouší se příhlásit dokut se to nepovede
+            while (!await AttemptLogin(authenticator, tryCount)) // Pokouší se příhlásit dokut se to nepovede
             {
                 if (++tryCount > settings.LoginMaxRetryCount - 1)
                 {
                     logger.Log($"Byl dosažen maximální počet pokusů o připojení ({settings.LoginMaxRetryCount}){Util.Newline}Nelze pokračovat...", LogType.CRITICAL);
-                    throw new LocalException($"Nelze kontaktovat server {(settings.SSLUse ? settings.SSLServer : settings.Server )}");
+                    throw new LocalException($"Nelze kontaktovat server {(settings.SSLUse ? settings.SSLServer : settings.Server)}");
                 }
                 logger.Log("Přihlášení se nepovedlo, bude se opakovat za " + TimeSpan.FromMilliseconds(settings.LoginFailureWaitPeriodMs), LogType.WARNING);
                 Thread.Sleep(settings.LoginFailureWaitPeriodMs);
@@ -159,9 +161,66 @@ namespace Daemon.Communication
             return true;
         }
 
-        public void TryCreateNotifyIcon()
+        private async Task TryLoadPrivateKey()
+        {
+            if (settings.RSAPrivate == null || settings.RSAPrivate.Trim() == "")
+            {
+                logger.Log("Daemon nemá soukromý klíč a nemůže zjistit údaje pro vzdálené lokace(FTP,SMTP či SMB)", LogType.WARNING);
+                var log = new DaemonNeedsPasswordLog() { LogType = LogType.WARNING };
+                log.Content.DaemonGuid = settings.Uuid;
+                log.Content.Reason = "Daemon vyžaduje klíč vlastníka pro získání přístupu ke vzdáleným lokacím";
+                var faf = await logger.ServerLogAsync(log);
+                PipeComs.MessageReceived += PipeComs_MessageReceivedUserLogin;
+
+            }
+        }
+
+        private async Task DecodePK(string pass)
+        {
+            try
+            {
+                var result = await messenger.SendAsync<RSAForDaemonResponse>(new RSAForDaemonMessage() { sessionUuid = settings.SessionUuid }, "RSAForDaemon", HttpMethod.Post);
+                var newSettings = new LoginSettings();
+                newSettings.RSAPrivate = PasswordFactory.DecryptAES(result.ServerResponse.EncryptedPrivateKey,pass);
+                newSettings.Save()
+            }
+            catch (INetException<RSAForDaemonResponse> ex)
+            {
+                logger.Log("Chyba při pokusu získání soukromého klíče pro dešifrování hesel", LogType.ERROR);
+                var log = new GeneralServerResponseLog() { LogType = LogType.ERROR };
+                log.Content.DaemonUuid = settings.Uuid;
+                log.Content.StatusCode = ex.ServerResponse.StatusCode;
+                log.Content.Errors = ex.ErrorMessages ?? new List<ErrorMessage>();
+                var faf = logger.ServerLogAsync(log);
+            }
+        }
+
+        private async void PipeComs_MessageReceivedUserLogin(DaemonShared.Pipes.PipeMessage msg)
         {
 
+            if (msg.Code != DaemonShared.Pipes.PipeCode.USER_LOGIN)
+                return;
+            logger.Log("NamedPipe - Byl přijat požadavek o přihlášení\r\n", LogType.DEBUG);
+            try
+            {
+                var obj = msg.DeserializePayload<PipeLoginAttempt>();
+                var res = await messenger.SendAsync<UserLoginResponse>(new UserLoginMessage() { Password = obj.P, Username = obj.U }, "UserLogin", HttpMethod.Post);
+                PipeComs coms = new PipeComs();
+                var respTask =  coms.SendMessageAsync(new PipeMessage() { Code = PipeCode.LOGIN_RESPONSE, SerializePayload = new PipeLoginResponse() { B = true } });
+                await DecodePK(obj.P);
+                await respTask;
+            }
+            catch (INetException<LoginResponse> ex)
+            {
+                logger.Log("NamedPipe - pokus o přihlášení uživatele se nezdařil", LogType.WARNING);
+                var log = new GeneralDaemonError() { LogType = LogType.WARNING };
+                log.Content.DaemonUuid = settings.Uuid;
+                log.Content.Message = "Manuální pokus o přihlášení uživatele byl neúspěšný";
+                var taskL = logger.ServerLogAsync(log);
+                PipeComs coms = new PipeComs();
+                await coms.SendMessageAsync(new PipeMessage() { Code = PipeCode.LOGIN_RESPONSE, SerializePayload = new PipeLoginResponse() { B = true } });
+                await taskL;
+            }
         }
 
         public async Task Run()
@@ -173,12 +232,16 @@ namespace Daemon.Communication
 
             /**Už musí být přihlášen**/
 
+            var loadPrivTask = TryLoadPrivateKey();
+
             Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> logCheckTask = CheckForLocalLogsAndSend();//FaF
 
             sessionRefresher = new SessionRefresher(authenticator);// Opakuje login aby session nevyprsel
             sessionRefresher.Run();
-            TaskTickerTask = Task.Run(() => TaskTicker());//Refreshuje tasky aby byli aktualni se serverem
+            if(false)
+                TaskTickerTask = Task.Run(() => TaskTicker());//Refreshuje tasky aby byli aktualni se serverem
             await logCheckTask;
+            await loadPrivTask;
         }
 
         private async Task TaskTicker()
@@ -188,13 +251,13 @@ namespace Daemon.Communication
             {
                 logger.Log("Načítání tasků", LogType.DEBUG);
                 sessionRefresher.ExternalyRefreshed();
-                if(await LoadTasks())
+                if (await LoadTasks())
                     logger.Log("Tasky načteny", LogType.INFORMATION);
                 Thread.Sleep(settings.TaskRefreshPeriodMs);
             }
         }
 
-        
+
 
         private async Task<bool> LoadTasks()
         {
@@ -206,20 +269,20 @@ namespace Daemon.Communication
                     await ApplyTasks();
                 return true;
             }
-            catch(INetException<TaskResponse> e)
+            catch (INetException<TaskResponse> e)
             {
                 logger.Log(
                         $"Nebylo možná načíst tasky{Util.Newline}" +
                         $"Error #2-{e.ErrorMessages[0].id}{Util.Newline}" +
-                        $"Příčina : {e.ErrorMessages[0].message}{Util.Newline}",LogType.ERROR
+                        $"Příčina : {e.ErrorMessages[0].message}{Util.Newline}", LogType.ERROR
                         );
                 var faf = logger.ServerLogAsync(Dutil.CreateGSRL(LogType.ERROR, e.ErrorMessages));
                 return false;
             }
-            
+
         }
 
-        
+
 
         /// <summary>
         /// Pro testování tasků
@@ -227,7 +290,7 @@ namespace Daemon.Communication
         private void TaskTest()
         {
             logger.Log("Probíhá debugovací metoda taskTest", LogType.DEBUG);
-            taskHandler.Tasks = Messenger.ReadMessage<TaskResponse>("{\"Tasks\":[{\"id\":1,\"uuidDaemon\":\"50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e\",\"name\":\"DebugTask\",\"description\":\"For debugging\",\"taskLocations\":[{\"id\":1,\"source\":{\"id\":6,\"uri\":\"test.com/docs/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":4,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"destination\":{\"id\":7,\"uri\":\"test.com/backups/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":5,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"backupType\":{\"Id\":1,\"ShortName\":\"NORM\",\"LongName\":\"Normal\"},\"times\":[{\"id\":3,\"interval\":0,\"name\":\"Dneska\",\"repeat\":false,\"startTime\":\""+DateTime.Now.AddSeconds(5)+"\",\"endTime\":\"0001-01-01T00:00:00\"},{\"id\":4,\"interval\":"+5+",\"name\":\"Kazdy Patek\",\"repeat\":true,\"startTime\":\"2018-02-23T00:00:00\",\"endTime\":\"0001-01-01T00:00:00\"}]}]}],\"ErrorMessages\":[]}").Tasks ;
+            taskHandler.Tasks = Messenger.ReadMessage<TaskResponse>("{\"Tasks\":[{\"id\":1,\"uuidDaemon\":\"50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e\",\"name\":\"DebugTask\",\"description\":\"For debugging\",\"taskLocations\":[{\"id\":1,\"source\":{\"id\":6,\"uri\":\"test.com/docs/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":4,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"destination\":{\"id\":7,\"uri\":\"test.com/backups/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":5,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"backupType\":{\"Id\":1,\"ShortName\":\"NORM\",\"LongName\":\"Normal\"},\"times\":[{\"id\":3,\"interval\":0,\"name\":\"Dneska\",\"repeat\":false,\"startTime\":\"" + DateTime.Now.AddSeconds(5) + "\",\"endTime\":\"0001-01-01T00:00:00\"},{\"id\":4,\"interval\":" + 5 + ",\"name\":\"Kazdy Patek\",\"repeat\":true,\"startTime\":\"2018-02-23T00:00:00\",\"endTime\":\"0001-01-01T00:00:00\"}]}]}],\"ErrorMessages\":[]}").Tasks;
             taskHandler.CreateTimers();
         }
 
@@ -239,8 +302,8 @@ namespace Daemon.Communication
         private bool IsSessionStillValid(DateTime lastCheck)
         {
             return DateTime.Compare(DateTime.Now.AddMinutes(
-                settings.SessionLengthMinutes-settings.SessionLengthPaddingMinutes), lastCheck) == -1;
-                
+                settings.SessionLengthMinutes - settings.SessionLengthPaddingMinutes), lastCheck) == -1;
+
         }
 
         /// <summary>
@@ -254,7 +317,7 @@ namespace Daemon.Communication
                 taskHandler.Tasks = await GetAllTaskFromDB();
                 taskHandler.CreateTimers();
             }
-            catch(INetException<TaskResponse> e)
+            catch (INetException<TaskResponse> e)
             {
                 var faf = logger.ServerLogAsync(Dutil.CreateGSRL(LogType.ERROR, e.ErrorMessages));
                 DumpErrorMsgs(e);
@@ -267,9 +330,10 @@ namespace Daemon.Communication
         /// <returns></returns>
         private async Task<List<DbTask>> GetAllTaskFromDB()
         {
-            var resp = await messenger.SendAsync<TaskResponse>(new TaskMessage() {sessionUuid = settings.SessionUuid }, "task", HttpMethod.Post);
+            var resp = await messenger.SendAsync<TaskResponse>(new TaskMessage() { sessionUuid = settings.SessionUuid }, "task", HttpMethod.Post);
             sessionRefresher.ExternalyRefreshed();
-            return resp.ServerResponse.Tasks;
+            var tasks = resp.ServerResponse.Tasks;
+            return tasks;
         }
 
     }

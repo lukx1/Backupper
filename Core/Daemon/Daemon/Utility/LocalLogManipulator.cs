@@ -12,6 +12,11 @@ namespace Daemon.Utility
     {
         private readonly string StoreFolder = Path.Combine(Util.GetAppdataFolder(),"LocalLogs");
 
+        public LocalLogManipulator()
+        {
+            Directory.CreateDirectory(StoreFolder);
+        }
+
         private static string GetOrCreateStoreFolder()
         {
             var path = Path.Combine(Util.GetAppdataFolder(), "LocalLogs");

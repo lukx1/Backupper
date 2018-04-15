@@ -296,5 +296,41 @@ namespace DaemonShared {
                 this["SSLHttpFallback"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string RSAPrivate {
+            get {
+                return ((string)(this["RSAPrivate"]));
+            }
+            set {
+                this["RSAPrivate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool FirstSetup {
+            get {
+                return ((bool)(this["FirstSetup"]));
+            }
+            set {
+                this["FirstSetup"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SkipTasks {
+            get {
+                return ((bool)(this["SkipTasks"]));
+            }
+            set {
+                this["SkipTasks"] = value;
+            }
+        }
     }
 }

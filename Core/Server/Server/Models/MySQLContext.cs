@@ -4,12 +4,9 @@ namespace Server.Models
     using System.Data.Entity;
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Linq;
-    using MySql.Data.Entity;
-    //[DbConfigurationType(typeof(MySqlEFConfiguration))]
+
     public partial class MySQLContext : DbContext
     {
-
-        
         public MySQLContext()
             : base(MySQLConnectionStringMaker.GetConnectionString())
         {
@@ -129,7 +126,8 @@ namespace Server.Models
             modelBuilder.Entity<LocationCredential>()
                 .HasMany(e => e.Locations)
                 .WithOptional(e => e.LocationCredential)
-                .HasForeignKey(e => e.IdLocationCredentails);
+                .HasForeignKey(e => e.IdLocationCredentails)
+                .WillCascadeOnDelete();
 
             modelBuilder.Entity<Location>()
                 .Property(e => e.Uri)
@@ -239,6 +237,14 @@ namespace Server.Models
 
             modelBuilder.Entity<User>()
                 .Property(e => e.Password)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<User>()
+                .Property(e => e.PublicKey)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<User>()
+                .Property(e => e.PrivateKey)
                 .IsUnicode(false);
 
             modelBuilder.Entity<User>()

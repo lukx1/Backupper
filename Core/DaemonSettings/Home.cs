@@ -1,4 +1,5 @@
 ﻿using DaemonShared;
+using DaemonShared.Pipes;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,11 +20,14 @@ namespace DaemonSettings
     {
 
         private bool ProfiLoaded = false;
+        private Action<PipeCode, object> SendMessage;
 
-        public Home()
+        public Home(Action<PipeCode, object> SendMessage)
         {
             InitializeComponent();
+            this.SendMessage = SendMessage;
         }
+
         private void Home_Load(object sender, EventArgs e)
         {
 
@@ -159,7 +164,7 @@ namespace DaemonSettings
         {
             if (PushChanges())
             {
-                MessageBox.Show(null, $"Uloženo", "Úspešně uloženo", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(this, $"Uloženo", "Úspešně uloženo", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
@@ -170,6 +175,23 @@ namespace DaemonSettings
                 ProfiLoaded = true;
                 LoadProSettings();
             }
+        }
+
+        public void MessageReceived(PipeCode p, string s)
+        {
+            if(p == PipeCode.LOGIN_RESPONSE)
+            {
+                var r = PipeLoginResponse.Deserialize(s); ;
+                if (r.B)
+                    MessageBox.Show(this, $"Klíč úspěšně nastaven", "Úspešně nastaveno", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else
+                    MessageBox.Show(this, $"Nebylo možno se přihlásit", "Nastavení selhalo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void buttonKOK_Click(object sender, EventArgs e)
+        {
+            SendMessage(PipeCode.USER_LOGIN, new PipeLoginAttempt() { U = textBoxKUsername.Text, P = textBoxKPassword.Text });
         }
     }
 }

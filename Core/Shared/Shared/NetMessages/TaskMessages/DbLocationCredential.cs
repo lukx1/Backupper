@@ -28,8 +28,14 @@ namespace Shared.NetMessages.TaskMessages
         /// </summary>
         public DbLogonType LogonType;
 
-
+        /// <summary>
+        /// Username na host
+        /// </summary>
         public string username;
+
+        /// <summary>
+        /// Password encryptuntý
+        /// </summary>
         public string password;
     }
 }

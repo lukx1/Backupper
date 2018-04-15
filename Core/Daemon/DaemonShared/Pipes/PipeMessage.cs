@@ -13,10 +13,10 @@ namespace DaemonShared.Pipes
         public const string PIPE_NAME = "BackupperDeskToServCom";
         public PipeCode Code;
         /// <summary>
-        /// ASCII string
+        /// UTF8 string
         /// </summary>
         public string Payload= "";
-        public const int MAX_SIZE_IN_BYTES = 1024; 
+        public const int MAX_SIZE_IN_BYTES = 4096; 
 
         /// <summary>
         /// Serializes any object and sets payload to it

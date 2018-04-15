@@ -27,8 +27,7 @@ namespace Server.Models
         [StringLength(128)]
         public string Username { get; set; }
 
-        [Column(TypeName = "char")]
-        [StringLength(72)]
+        [StringLength(344)]
         public string Password { get; set; }
 
         public virtual LogonType LogonType { get; set; }

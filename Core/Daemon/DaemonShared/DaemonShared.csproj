@@ -53,6 +53,8 @@
     <Compile Include="Pipes\CompressString.cs" />
     <Compile Include="Pipes\PipeCompressed.cs" />
     <Compile Include="Pipes\PipeDialogResult.cs" />
+    <Compile Include="Pipes\PipeLoginAttempt.cs" />
+    <Compile Include="Pipes\PipeLoginResponse.cs" />
     <Compile Include="Pipes\PipeMessage.cs" />
     <Compile Include="Pipes\PipePopup.cs" />
     <Compile Include="Pipes\PipeServiceIdentity.cs" />

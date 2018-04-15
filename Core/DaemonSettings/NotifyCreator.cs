@@ -27,6 +27,7 @@ namespace DaemonSettings
             if (notifyIcon == null)
             {
                 notifyIcon = new NotifyIcon();
+                notifyIcon.DoubleClick += NotifyIcon_DoubleClick;
                 notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
                 notifyIcon.BalloonTipText = "Nastavení zálohování Backupperu";
                 notifyIcon.BalloonTipTitle = "Backupper";
@@ -44,6 +45,11 @@ namespace DaemonSettings
                 notifyIcon.ContextMenu = contextMenu;
                 notifyIcon.Visible = true;
             }
+        }
+
+        private void NotifyIcon_DoubleClick(object sender, EventArgs e)
+        {
+            settingsA();
         }
     }
 }

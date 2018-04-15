@@ -11,7 +11,7 @@ namespace Shared
     /// </summary>
     ///  {16FE7561-5DB1-413B-BB91-06EA98F980C4}
     ///  {0940828A-363F-4B09-8C94-1F8733F2B28D}
-    ///  {C120E029-5D7E-4FBD-B76D-8B7052B311A8}
+    ///  {}
     ///  {}
     ///  {}
     public sealed class LogContentType
@@ -24,6 +24,7 @@ namespace Shared
         public static readonly LogContentType DAEMON_FAILED_TASK_GENERAL = new LogContentType("9D58460A-23B7-48FB-B157-85AA74E6F9B1");
         public static readonly LogContentType DAEMON_GENERAL_SERVER_RESPONSE = new LogContentType("5BB6A5E2-0266-48E9-8E7A-E1B55455613E");
         public static readonly LogContentType DAEMON_GENERAL_ERROR = new LogContentType("A1374316-A7EC-43E0-B2C7-187FCEAF5D41");
+        public static readonly LogContentType DAEMON_NEEDS_PASSWORD = new LogContentType("C120E029-5D7E-4FBD-B76D-8B7052B311A8");
 
         public Guid Uuid { get; private set; }
 

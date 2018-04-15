@@ -54,10 +54,15 @@
     <Compile Include="DeserializeOnly.cs" />
     <Compile Include="LoginSettings.cs" />
     <Compile Include="LogObjects\DaemonFailedIntroductionLog.cs" />
+    <Compile Include="LogObjects\DaemonNeedsPasswordLog.cs" />
     <Compile Include="LogObjects\GeneralDaemonError.cs" />
     <Compile Include="LogObjects\GeneralServerResponseLog.cs" />
     <Compile Include="LogObjects\GeneralTaskFailedLog.cs" />
     <Compile Include="LogObjects\LogedInInfo.cs" />
+    <Compile Include="NetMessages\RSAForDaemonMessage.cs" />
+    <Compile Include="NetMessages\RSAForDaemonResponse.cs" />
+    <Compile Include="NetMessages\UserLoginMessage.cs" />
+    <Compile Include="NetMessages\UserLoginResponse.cs" />
     <Compile Include="SLog.cs" />
     <Compile Include="INetException.cs" />
     <Compile Include="IniReader.cs" />
