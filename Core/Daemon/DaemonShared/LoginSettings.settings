@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="Debug" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="Password" Type="System.String" Scope="User">
       <Value Profile="(Default)">VO0e+84BW4wqVYsuUpGeWw==</Value>
@@ -24,7 +24,7 @@
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="TimerDebugOnly" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="PreSharedKeyWithIdSemiColSep" Type="System.String" Scope="User">
       <Value Profile="(Default)">tRnhF0IfmkDrIZU6dbCusQ==;1</Value>

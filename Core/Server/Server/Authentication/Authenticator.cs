@@ -2,6 +2,7 @@
 using Server.Objects;
 using Shared;
 using Shared.NetMessages;
+using Shared.NetMessages.TaskMessages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -97,6 +98,31 @@ namespace Server.Authentication
         {
             LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == sessionUuid).FirstOrDefault();
             return mysql.Daemons.Where(r => r.Id == logedInDaemon.IdDaemon).FirstOrDefault();
+        }
+
+        public bool AreRequestedTasksDaemons(IEnumerable<int> taskIds, Guid sessionGuid)
+        {
+            var allowedTasks = (from users in mysql.Users
+                                join daemons in mysql.Daemons on users.Id equals daemons.Id
+                                join logedInDaemons in mysql.LogedInDaemons on daemons.Id equals logedInDaemons.IdDaemon
+                                join tasks in mysql.Tasks on daemons.Id equals tasks.IdDaemon
+                                where logedInDaemons.SessionUuid == sessionGuid
+                                select tasks.Id).ToList();
+            foreach (var taskId in taskIds)
+            {
+                bool ok = false;
+                foreach (var validTask in allowedTasks)
+                {
+                    if (taskId == validTask)
+                    {
+                        ok = true;
+                        break;
+                    }
+                }
+                if (!ok)
+                    return false;
+            }
+            return true;
         }
 
         public struct UuidPass

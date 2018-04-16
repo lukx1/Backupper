@@ -25,7 +25,7 @@ namespace DaemonShared {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool Debug {
             get {
                 return ((bool)(this["Debug"]));
@@ -108,7 +108,7 @@ namespace DaemonShared {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool TimerDebugOnly {
             get {
                 return ((bool)(this["TimerDebugOnly"]));

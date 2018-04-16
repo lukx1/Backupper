@@ -9,11 +9,6 @@ namespace Shared
     /// <summary>
     /// Tools -> Create Guid
     /// </summary>
-    ///  {16FE7561-5DB1-413B-BB91-06EA98F980C4}
-    ///  {0940828A-363F-4B09-8C94-1F8733F2B28D}
-    ///  {}
-    ///  {}
-    ///  {}
     public sealed class LogContentType
     {
         public static readonly LogContentType DEBUG = new LogContentType("F85A5D8F-6A99-48E6-B5C6-9D14DE7FE9BF");
