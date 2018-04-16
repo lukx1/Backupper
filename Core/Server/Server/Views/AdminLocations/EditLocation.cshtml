@@ -1,7 +1,33 @@
-﻿
+﻿@model global::Server.Models.Admin.LocationModel
+
 @{
-    ViewBag.Title = "EditLocation";
+	ViewBag.Title = "Edit Location";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>EditLocation</h2>
+@using (Html.BeginForm("EditLocation", "AdminLocations", FormMethod.Post))
+{
+	@Html.HiddenFor(m => m.DbLocation.Id)
 
+	<table>
+		<tr>
+			<td>
+				@Html.LabelFor(m => m.DbLocation.Uri)
+			</td>
+			<td>
+				@Html.TextBoxFor(m => m.DbLocation.Uri)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				Protocol
+			</td>
+			<td>
+				@Html.DropDownListFor(m => m.DbLocation.IdProtocol, Model.Protocols)
+			</td>
+		</tr>
+	</table>
+
+	<input type="submit" value="Confirm" />
+	<input type="reset" value="Cancel" />
+}

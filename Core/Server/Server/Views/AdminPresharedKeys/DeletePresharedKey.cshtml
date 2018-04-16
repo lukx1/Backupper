@@ -7,25 +7,24 @@
 
 <h2>Preshared Keys</h2>
 
+<table style="width:100%">
+    <tr>
+        <th>Key</th>
+        <th>User</th>
+        <th>Expires</th>
+        <th>Used</th>
+    </tr>
+    <tr>
+        <td>@Html.DisplayFor(model => model.PreSharedKey)</td>
+        <td>@Html.DisplayFor(model => model.User.Nickname)</td>
+        <td>@Html.DisplayFor(model => model.Expires)</td>
+        <td>@Html.DisplayFor(model => model.Used)</td>
+    </tr>
+</table>
+
 @using (Html.BeginForm("DeletePresharedKey", "AdminPresharedKeys", FormMethod.Post))
 {
 	@Html.HiddenFor(model => model.Id)
-
-    <table style="width:100%">
-	    <tr>
-		    <th>Key</th>
-		    <th>User</th>
-		    <th>Expires</th>
-		    <th>Used</th>
-	    </tr>
-	    <tr>
-		    <td>@Html.DisplayFor(model => model.PreSharedKey)</td>
-		    <td>@Html.DisplayFor(model => model.User.Nickname)</td>
-		    <td>@Html.DisplayFor(model => model.Expires)</td>
-		    <td>@Html.DisplayFor(model => model.Used)</td>
-	    </tr>
-    </table>
-
     <input type="submit" value="Confirm" />
 }
 

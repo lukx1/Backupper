@@ -1,7 +1,26 @@
-﻿
+﻿@model IEnumerable<global::Server.Models.Location>
+
 @{
-    ViewBag.Title = "Index";
+	ViewBag.Title = "Locations";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>Index</h2>
+<table style="width:100%">
+	<tr>
+		<th>Uri</th>
+		<th>Protocol</th>
+	</tr>
+	@foreach (var item in Model)
+	{
+	<tr>
+		<td>@item.Uri</td>
+		<td>@item.Protocol.ShortName</td>
+		<td>@(item.IdLocationCredentails.HasValue ? (item.LocationCredential.Host ?? "Nil") : "Nil")</td>
+		<td><a href="/AdminLocations/EditLocation?id=@(item.Id)">Edit</a></td>
+		<td><a href="/AdminLocations/DeleteLocation?id=@(item.Id)">Delete</a></td>
+		<td><a href="/AdminLocations/ShowOrAssignCredential?id=@(item.Id)">Credential</a></td>
+	</tr>
+	}
+</table>
 
+<a href="/AdminLocations/NewLocation">New Location</a>

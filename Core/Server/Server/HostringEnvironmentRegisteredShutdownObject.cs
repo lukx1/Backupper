@@ -43,8 +43,8 @@ namespace Server
                 {
                     updateLog.DateCreated = DateTime.Now;
                     ServerStatusLog.ServerStatusInfo info = JsonableUniversalLog.ParseContent<ServerStatusLog.ServerStatusInfo>(updateLog.Content);
-                    if (info.State != ServerStatusLog.ServerStatusInfo.Status.NO_CHANGE)
-                        throw new InvalidDataException("Poslední nalezený stav po začátku není 'Nebyla změna'");
+                    //if (info.State != ServerStatusLog.ServerStatusInfo.Status.NO_CHANGE)
+                    //    throw new InvalidDataException("Poslední nalezený stav po začátku není 'Nebyla změna'");
                     updateLog.DateCreated = DateTime.Now;
                     
                 }

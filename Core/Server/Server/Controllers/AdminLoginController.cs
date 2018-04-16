@@ -8,7 +8,7 @@ using Shared;
 
 namespace Server.Controllers
 {
-    public class AdminLoginController : Controller
+    public class AdminLoginController : AdminBaseController
     {
         [HttpGet]
         public ActionResult Login()

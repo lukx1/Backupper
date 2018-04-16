@@ -9,12 +9,12 @@ using Server.Authentication;
 
 namespace Server.Controllers
 {
-    public class AdminController : Controller
+	[AdminExc]
+    public class AdminController : AdminBaseController
     {
+		[AdminSec]
         public ActionResult Index()
         {
-            if(!Util.IsUserAlreadyLoggedIn(Session))
-                return RedirectToAction("Login", "AdminLogin", null);
             return View();
         }
     }

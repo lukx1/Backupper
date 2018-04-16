@@ -4,111 +4,62 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Server.Authentication;
 
 namespace Server.Controllers
 {
-    public class AdminDaemonsController : Controller
+	[AdminExc]
+    public class AdminDaemonsController : AdminBaseController
     {
+		[HttpGet]
         public ActionResult Index()
         {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new Models.MySQLContext())
-                {
-                    var daemons = db.Daemons
-                        .AsQueryable()
-                        .Include(x => x.DaemonInfo)
-                        .Include(x => x.User)
-                        .ToArray();
-                    return View(daemons);
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
+			using (var db = new Models.MySQLContext())
+			{
+			    var daemons = db.Daemons
+			        .AsQueryable()
+			        .Include(x => x.DaemonInfo)
+			        .Include(x => x.User)
+			        .ToArray();
+			    return View(daemons);
+			}
         }
 
         [HttpGet]
-        public ActionResult DaemonGroups(int id)
+		public ActionResult DaemonGroups(int id)
         {
-            try
-            {
-                var model = new Models.Admin.DaemonGroupsModel(id);
-                model.Load();
-                return View(model);
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
+			var model = new Models.Admin.DaemonGroupsModel(id);
+			model.Load();
+			return View(model);
         }
 
         [HttpPost]
-        public ActionResult DaemonGroups(Models.Admin.DaemonGroupsModel model)
+		public ActionResult DaemonGroups(Models.Admin.DaemonGroupsModel model)
         {
-            try
+			model.Save();
+			TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Group edition was successfull";
+			return RedirectToAction("Index", "AdminDaemons");
+        }
+
+		[HttpGet]
+		public ActionResult DaemonsByUser(int id)
+        {
+            using (var db = new Models.MySQLContext())
             {
-                model.Save();
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Group edition was successfull";
-                return RedirectToAction("Index", "AdminDaemons");
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
+                var daemons = db.Daemons
+                    .Where(x => x.IdUser == id)
+                    .Include(x => x.DaemonInfo)
+                    .Include(x => x.User)
+                    .ToArray();
+                return View("Index", daemons);
             }
         }
 
-        public ActionResult DaemonsByUser(int id)
+		[HttpGet]
+		public ActionResult LogedInDaemons()
         {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new Models.MySQLContext())
-                {
-                    var daemons = db.Daemons
-                        .Where(x => x.IdUser == id)
-                        .Include(x => x.DaemonInfo)
-                        .Include(x => x.User)
-                        .ToArray();
-                    return View("Index", daemons);
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
-
-        public ActionResult LogedInDaemons()
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new Models.MySQLContext())
-                    return View(db.LogedInDaemons.ToList());
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
+			using (var db = new Models.MySQLContext())
+				return View(db.LogedInDaemons.ToList());
         }
     }
 }

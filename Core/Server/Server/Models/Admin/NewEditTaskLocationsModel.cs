@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web;
@@ -13,19 +14,28 @@ namespace Server.Models.Admin
         public int IdSource { get; set; }
         public int IdDestination { get; set; }
 
-        public IList<Location> Locations { get; set; } = new List<Location>();
+        public IEnumerable<Location> Locations { get; set; }
+
+        public NewEditTaskLocationsModel()
+        {
+
+        }
 
         public void Load()
         {
             using (var db = new MySQLContext())
             {
-                Locations = db.Locations.ToList();
+                Locations = db.Locations.AsQueryable().Include(x => x.Protocol).ToArray();
 
                 if (Id.HasValue)
                 {
                     var taskLoc = db.TaskLocations.FirstOrDefault(x => x.Id == Id.Value);
                     if (taskLoc == null)
                         throw new Exception("Task location does not exists");
+
+                    IdTask = taskLoc.IdTask;
+                    IdSource = taskLoc.IdSource;
+                    IdDestination = taskLoc.IdDestination;
                 }
             }
         }
@@ -36,13 +46,14 @@ namespace Server.Models.Admin
             {
                 if (Id.HasValue)
                 {
-                    db.TaskLocations.AddOrUpdate(new TaskLocation()
-                    {
-                        Id = Id.Value,
-                        IdTask = IdTask,
-                        IdSource = IdSource,
-                        IdDestination = IdDestination
-                    });
+                    var tLoc = db.TaskLocations.FirstOrDefault(x => x.Id == Id.Value);
+                    if (tLoc == null)
+                        throw new Exception("Task location does not exists");
+
+                    tLoc.IdDestination = IdDestination;
+                    tLoc.IdSource = IdSource;
+
+                    db.Entry(tLoc).State = EntityState.Modified;
                 }
                 else
                 {

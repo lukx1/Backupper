@@ -7,11 +7,12 @@ using System.Web;
 using System.Web.Mvc;
 using Server.Authentication;
 using Server.Models;
+using Server.Models.Admin;
 using Shared;
 
 namespace Server.Controllers
 {
-    public class AdminLocationsController : Controller
+    public class AdminLocationsController : AdminBaseController
     {
         public ActionResult Index()
         {
@@ -21,7 +22,7 @@ namespace Server.Controllers
                     return RedirectToAction("Login", "AdminLogin");
 
                 using (var db = new Models.MySQLContext())
-                    return View(db.Locations.AsQueryable().Include(x => x.Protocol).ToList());
+                    return View(db.Locations.AsQueryable().Include(x => x.Protocol).Include(x => x.LocationCredential).ToList());
             }
             catch (Exception e)
             {
@@ -39,16 +40,7 @@ namespace Server.Controllers
                 if (!Util.IsUserAlreadyLoggedIn(Session))
                     return RedirectToAction("Login", "AdminLogin");
 
-                using (var db = new MySQLContext())
-                {
-                    ViewBag.LogonTypes =
-                        db.LogonTypes.Select(x => new SelectListItem()
-                        {
-                            Value = x.Id.ToString(),
-                            Text = x.Name
-                        }
-                        ).ToArray();
-                }
+                return View(new LocationModel());
             }
             catch (Exception e)
             {
@@ -56,23 +48,17 @@ namespace Server.Controllers
                 TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
                 return RedirectToAction("Index", "AdminError");
             }
-
-            return View(new Models.LocationCredential());
         }
 
         [HttpPost]
-        public ActionResult NewLocation(Models.LocationCredential cred)
+        public ActionResult NewLocation(Models.Admin.LocationModel loc)
         {
             try
             {
                 if (!Util.IsUserAlreadyLoggedIn(Session))
                     return RedirectToAction("Login", "AdminLogin");
 
-                using (var db = new Models.MySQLContext())
-                {
-                    db.LocationCredentials.Add(cred);
-                    db.SaveChanges();
-                }
+                loc.Create();
             }
             catch (Exception e)
             {
@@ -81,8 +67,8 @@ namespace Server.Controllers
                 return RedirectToAction("Index", "AdminError");
             }
 
-            TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "New credential was successfully created";
-            return RedirectToAction("Index", "AdminLocationCredentials");
+            TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "New location was successfully created";
+            return RedirectToAction("Index", "AdminLocations");
         }
 
         [HttpGet]
@@ -93,36 +79,7 @@ namespace Server.Controllers
                 if (!Util.IsUserAlreadyLoggedIn(Session))
                     return RedirectToAction("Login", "AdminLogin");
 
-                using (var db = new MySQLContext())
-                {
-                    ViewBag.LogonTypes =
-                        db.LogonTypes.Select(x => new SelectListItem()
-                        {
-                            Value = x.Id.ToString(),
-                            Text = x.Name
-                        }
-                        ).ToArray();
-                }
-
-                using (var db = new Models.MySQLContext())
-                {
-                    var cred = db.LocationCredentials.Where(x => x.Id == id).Include(x => x.LogonType).FirstOrDefault();
-                    if (cred == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential does not exists";
-                        return RedirectToAction("Index", "AdminLocationCredentials");
-                    }
-
-                    ViewBag.LogonTypes =
-                        db.LogonTypes.Select(x => new SelectListItem()
-                        {
-                            Value = x.Id.ToString(),
-                            Text = x.Name
-                        }
-                        ).ToArray();
-
-                    return View(cred);
-                }
+                return View(new LocationModel(id));
             }
             catch (Exception e)
             {
@@ -133,21 +90,14 @@ namespace Server.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditLocation(Models.LocationCredential cred)
+        public ActionResult EditLocation(Models.Admin.LocationModel loc)
         {
             try
             {
                 if (!Util.IsUserAlreadyLoggedIn(Session))
                     return RedirectToAction("Login", "AdminLogin");
 
-                using (var db = new Models.MySQLContext())
-                {
-                    db.LocationCredentials.AddOrUpdate(cred);
-                    db.SaveChanges();
-                }
-
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential was successfully updated";
-                return RedirectToAction("Index", "AdminLocationCredentials");
+                loc.Update();
             }
             catch (Exception e)
             {
@@ -155,6 +105,9 @@ namespace Server.Controllers
                 TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
                 return RedirectToAction("Index", "AdminError");
             }
+
+            TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Location was successfully updated";
+            return RedirectToAction("Index", "AdminLocations");
         }
 
         [HttpGet]
@@ -165,16 +118,7 @@ namespace Server.Controllers
                 if (!Util.IsUserAlreadyLoggedIn(Session))
                     return RedirectToAction("Login", "AdminLogin");
 
-                using (var db = new Models.MySQLContext())
-                {
-                    var cred = db.LocationCredentials.Where(x => x.Id == id).Include(x => x.LogonType).FirstOrDefault();
-                    if (cred == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credentials does not exists";
-                        return RedirectToAction("Index", "AdminLocationCredentials");
-                    }
-                    return View(cred);
-                }
+                return View(new LocationModel(id));
             }
             catch (Exception e)
             {
@@ -185,28 +129,14 @@ namespace Server.Controllers
         }
 
         [HttpPost]
-        public ActionResult DeleteLocation(Models.LocationCredential cred)
+        public ActionResult DeleteLocation(Models.Admin.LocationModel loc)
         {
             try
             {
                 if (!Util.IsUserAlreadyLoggedIn(Session))
                     return RedirectToAction("Login", "AdminLogin");
 
-                using (var db = new Models.MySQLContext())
-                {
-                    var dbLocCred = db.LocationCredentials.FirstOrDefault(x => x.Id == cred.Id);
-                    if (dbLocCred == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential does not exists";
-                        return RedirectToAction("Index", "AdminLocationCredentials");
-                    }
-
-                    db.LocationCredentials.Remove(dbLocCred);
-                    db.SaveChanges();
-
-                    TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential was successfully deleted";
-                    return RedirectToAction("Index", "AdminLocationCredentials");
-                }
+                loc.Delete();
             }
             catch (Exception e)
             {
@@ -214,6 +144,48 @@ namespace Server.Controllers
                 TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
                 return RedirectToAction("Index", "AdminError");
             }
+
+            TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Location was successfully deleted";
+            return RedirectToAction("Index", "AdminLocations");
+        }
+
+        [HttpGet]
+        public ActionResult ShowOrAssignCredential(int id)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
+                return View(new Models.Admin.ShowOrAssignCredentialModel(id));
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult ShowOrAssignCredential(Models.Admin.ShowOrAssignCredentialModel model)
+        {
+            try
+            {
+                if (!Util.IsUserAlreadyLoggedIn(Session))
+                    return RedirectToAction("Login", "AdminLogin");
+
+                model.Save();
+            }
+            catch (Exception e)
+            {
+                //TODO: LOG
+                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
+                return RedirectToAction("Index", "AdminError");
+            }
+
+            TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Operation completed successfully";
+            return RedirectToAction("Index", "AdminLocations");
         }
     }
 }

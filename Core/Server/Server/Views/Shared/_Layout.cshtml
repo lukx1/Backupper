@@ -1,33 +1,40 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	@Styles.Render("~/Content/css")
-	<title>@ViewBag.Title</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    @Styles.Render("~/Content/css")
+    <title>@ViewBag.Title</title>
 </head>
 
 <body>
-	<nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
-		<div class="navbar-nav">
-			@Html.ActionLink("Home", "Index", "Home", null, new { @class = "nav-link nav-item" })
-			@Html.ActionLink("API", "Index", "Help", null, new { @class = "nav-link nav-item" })
-			@Html.ActionLink("Admin", "Index", "Admin", null, new { @class = "nav-link nav-item" })
-		</div>
-	</nav>
+    <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
+        <ul class="mr-auto navbar-nav">
+            <li class="nav-item">
+                @Html.ActionLink("Home", "Index", "Home", null, new { @class = "nav-link" })
+            </li>
+            <li class="nav-item">
+                @Html.ActionLink("API", "Index", "Help", null, new { @class = "nav-link" })
+            </li>
+            <li class="nav-item">
+                @Html.ActionLink("Admin", "Index", "Admin", null, new { @class = "nav-link" })
+            </li>
+        </ul>
+        @if (ViewBag.IsUserLoggedIn ?? false)
+        {
+            @Html.Partial("~/Views/Shared/_AdminNavBarPart.cshtml");
+        }
+    </nav>
 
-    <img src="~/Images/oldManUnderConstruction.gif" style="float:left" alt="The Gif"/>
-	
-    <div class="container">
-		@RenderBody()
-		<hr />
-		<footer>
-			<p>&copy; @DateTime.Now.Year - Backupper</p>
-		</footer>
-	</div>
+    @RenderBody()
 
-	@Scripts.Render("~/bundles/jquery")
-	@Scripts.Render("~/bundles/bootstrap")
-	@RenderSection("scripts", required: false)
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jquery_validate")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection(name: "scripts", required: false)
+
+    <footer>
+        <p>&copy; @DateTime.Now.Year - Backupper</p>
+    </footer>
 </body>
 </html>

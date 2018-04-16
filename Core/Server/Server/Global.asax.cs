@@ -16,13 +16,20 @@ namespace Server
 
         protected void Application_Start()
         {
-            
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             HostingEnvironment.RegisterObject(new HostringEnvironmentRegisteredShutdownObject());
+            log4net.Config.XmlConfigurator.Configure();
+        }
+
+        protected void Application_Error(object sender, EventArgs e)
+        {
+            var ex = Server.GetLastError();
+
+            Objects.ServerLogger.Error("Framework exception: ", ex);
         }
     }
 }

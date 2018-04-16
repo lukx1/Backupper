@@ -10,7 +10,7 @@ using Shared;
 
 namespace Server.Controllers
 {
-    public class AdminPresharedKeysController : Controller
+    public class AdminPresharedKeysController : AdminBaseController
     {
         public ActionResult Index()
         {

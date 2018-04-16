@@ -1,7 +1,32 @@
-﻿
+﻿@model global::Server.Models.Admin.LocationModel
+
 @{
-    ViewBag.Title = "DeleteLocation";
+	ViewBag.Title = "Delete Location";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>DeleteLocation</h2>
+<table>
+	<tr>
+		<td>
+			@Html.LabelFor(m => m.DbLocation.Uri)
+		</td>
+		<td>
+			@Html.DisplayFor(m => m.DbLocation.Uri)
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Protocol
+		</td>
+		<td>
+			@Html.DisplayFor(m => m.DbLocation.Protocol.ShortName)
+		</td>
+	</tr>
+</table>
 
+@using (Html.BeginForm("DeleteLocation", "AdminLocations", FormMethod.Post))
+{
+	@Html.HiddenFor(m => m.DbLocation.Id)
+
+	<input type="submit" value="Confirm" />
+}

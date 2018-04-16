@@ -1,0 +1,31 @@
+﻿@model global::Server.Objects.MailHandler.SendMailProperties
+
+@{
+	ViewBag.Title = "Email Test";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@using (Ajax.BeginForm("SendMail", "AdminEmail", new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "mailResult" }))
+{
+	@Html.LabelFor(m => m.Subject)
+	@Html.EditorFor(m => m.Subject)
+	@Html.LabelFor(m => m.From)
+	@Html.EditorFor(m => m.From)
+	@Html.LabelFor(m => m.To)
+	@Html.EditorFor(m => m.To)
+	@Html.LabelFor(m => m.Body)
+	@Html.EditorFor(m => m.Body)
+	@Html.LabelFor(m => m.IsBodyHtml)
+	@Html.EditorFor(m => m.IsBodyHtml)
+
+	@Html.LabelFor(m => m.Username)
+	@Html.EditorFor(m => m.Username)
+	@Html.LabelFor(m => m.Password)
+	@Html.EditorFor(m => m.Password)
+	@Html.LabelFor(m => m.Host)
+	@Html.EditorFor(m => m.Host)
+	@Html.LabelFor(m => m.Port)
+	@Html.EditorFor(m => m.Port)
+	@Html.LabelFor(m => m.EnableSsl)
+	@Html.EditorFor(m => m.EnableSsl)
+}

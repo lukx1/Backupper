@@ -11,7 +11,7 @@ using Shared;
 
 namespace Server.Controllers
 {
-    public class AdminLocationCredentialsController : Controller
+    public class AdminLocationCredentialsController : AdminBaseController
     {
         public ActionResult Index()
         {

@@ -9,444 +9,247 @@ using Server.Models;
 
 namespace Server.Controllers
 {
-    public class AdminTasksController : Controller
-    {
-        public ActionResult Tasks(int id)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+	[AdminExc]
+	public class AdminTasksController : AdminBaseController
+	{
+		[HttpGet]
+		[AdminSec]
+		public ActionResult Tasks(int id)
+		{
+			using (var db = new Models.MySQLContext())
+			{
+				var daemon = db.Daemons
+					.Where(x => x.Id == id)
+					.Include(x => x.User)
+					.Include(x => x.Tasks.Select(z => z.TaskDetail))
+					.Include(x => x.Tasks.Select(z => z.BackupType))
+					.FirstOrDefault();
 
-                using (var db = new Models.MySQLContext())
-                {
-                    var daemon = db.Daemons
-                        .Where(x => x.Id == id)
-                        .Include(x => x.User)
-                        .Include(x => x.Tasks.Select(z => z.TaskDetail))
-                        .Include(x => x.Tasks.Select(z => z.BackupType))
-                        .FirstOrDefault();
+				return View(daemon);
+			}
+		}
 
-                    if (daemon == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Daemon does not exists";
-                        return RedirectToAction("Index", "AdminDaemons");
-                    }
-                    return View(daemon);
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
+		[HttpGet]
+		[AdminSec]
+		public ActionResult TaskTimes(int id)
+		{
+			var model = new Models.Admin.TaskTimesModel(id);
+			model.Load();
+			return View(model);
+		}
 
-        [HttpGet]
-        public ActionResult TaskTimes(int id)
-        {
-            try
-            {
-                var model = new Models.Admin.TaskTimesModel(id);
-                model.Load();
-                return View(model);
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
+		[HttpPost]
+		[AdminSec]
+		public ActionResult TaskTimes(Models.Admin.TaskTimesModel model)
+		{
+			model.Save();
+			OperationResultMessage = "Time edition was successfull";
+			return RedirectToAction("Tasks", "AdminTasks", new { id = model.IdDaemon });
+		}
 
-        [HttpPost]
-        public ActionResult TaskTimes(Models.Admin.TaskTimesModel model)
-        {
-            try
-            {
-                model.Save();
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Time edition was successfull";
-                return RedirectToAction("Tasks", "AdminTasks", new {id = model.IdDaemon});
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
+		[HttpGet]
+		[AdminSec]
+		public ActionResult NewTask(int id)
+		{
+			using (var db = new MySQLContext())
+			{
 
-        //TODO: CUSTOM MODEL
-        [HttpGet]
-        public ActionResult NewTask(int id)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+				ViewBag.BackupTypes = db.BackupTypes.Select(x => new SelectListItem()
+				{
+					Value = x.Id.ToString(),
+					Text = x.ShortName
+				}
+				).ToArray();
+			}
 
-                using (var db = new MySQLContext())
-                {
+			return View(new Models.Task() { IdDaemon = id });
+		}
 
-                    ViewBag.BackupTypes = db.BackupTypes.Select(x => new SelectListItem()
-                        {
-                            Value = x.Id.ToString(),
-                            Text = x.ShortName
-                        }
-                    ).ToArray();
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
+		[HttpPost]
+		[AdminSec]
+		public ActionResult NewTask(Models.Task task)
+		{
+			using (var db = new Models.MySQLContext())
+			{
+				task.LastChanged = DateTime.Now;
+				db.Tasks.Add(task);
+				db.SaveChanges();
+			}
 
-            return View(new Models.Task() { IdDaemon = id });
-        }
+			OperationResultMessage = "New task was successfully added";
+			return RedirectToAction("Tasks", "AdminTasks", new { id = task.IdDaemon });
+		}
 
-        [HttpPost]
-        public ActionResult NewTask(Models.Task task)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+		[HttpGet]
+		[AdminSec]
+		public ActionResult EditTask(int id)
+		{
+			using (var db = new Models.MySQLContext())
+			{
+				var task = db.Tasks
+					.Include(x => x.TaskDetail)
+					.FirstOrDefault(x => x.Id == id);
 
-                using (var db = new Models.MySQLContext())
-                {
-                    task.LastChanged = DateTime.Now;
-                    db.Tasks.Add(task);
-                    db.SaveChanges();
-                }
+				ViewBag.BackupTypes = db.BackupTypes.Select(x => new SelectListItem()
+				{
+					Value = x.Id.ToString(),
+					Text = x.ShortName
+				}
+				).ToArray();
 
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "New task was successfully added";
-                return RedirectToAction("Tasks", "AdminTasks", new { id = task.IdDaemon });
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
+				return View(task);
+			}
+		}
 
-        //TODO: CUSTOM MODEL
-        [HttpGet]
-        public ActionResult EditTask(int id)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+		[HttpPost]
+		[AdminSec]
+		public ActionResult EditTask(Models.Task task)
+		{
+			using (var db = new Models.MySQLContext())
+			{
+				var dbTask = db.Tasks.FirstOrDefault(x => x.Id == task.Id);
 
-                using (var db = new Models.MySQLContext())
-                {
-                    var task = db.Tasks
-                        .Include(x => x.TaskDetail)
-                        .FirstOrDefault(x => x.Id == id);
-                    if (task == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task does not exists";
-                        return RedirectToAction("Index", "AdminDaemons");
-                    }
+				dbTask.IdBackupTypes = task.IdBackupTypes;
+				dbTask.Name = task.Name;
+				dbTask.Description = task.Description;
+				dbTask.TaskDetail.ZipAlgorithm = task.TaskDetail.ZipAlgorithm;
+				dbTask.TaskDetail.CompressionLevel = task.TaskDetail.CompressionLevel;
+				dbTask.LastChanged = DateTime.Now;
 
-                    ViewBag.BackupTypes = db.BackupTypes.Select(x => new SelectListItem()
-                        {
-                            Value = x.Id.ToString(),
-                            Text = x.ShortName
-                        }
-                    ).ToArray();
+				db.Entry(dbTask.TaskDetail).State = EntityState.Modified;
+				db.Entry(dbTask).State = EntityState.Modified;
 
-                    return View(task);
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
+				db.SaveChanges();
+			}
 
-        [HttpPost]
-        public ActionResult EditTask(Models.Task task)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+			OperationResultMessage = "Task was successfully updated";
+			return RedirectToAction("Tasks", "AdminTasks", new { id = task.IdDaemon });
+		}
 
-                using (var db = new Models.MySQLContext())
-                {
-                    var dbTask = db.Tasks.FirstOrDefault(x => x.Id == task.Id);
+		[HttpGet]
+		[AdminSec]
+		public ActionResult DeleteTask(int id)
+		{
+			using (var db = new Models.MySQLContext())
+			{
+				var task = db.Tasks.Where(x => x.Id == id).Include(x => x.BackupType).FirstOrDefault();
+				if (task == null)
+				{
+					OperationResultMessage = "Task does not exists";
+					return RedirectToAction("Index", "AdminDaemons");
+				}
+				return View(task);
+			}
+		}
 
-                    if (dbTask == null)
-                        throw new Exception("Task does not exists");
+		[HttpPost]
+		[AdminSec]
+		public ActionResult DeleteTask(Models.Task task)
+		{
+			using (var db = new Models.MySQLContext())
+			{
+				var dbTask = db.Tasks.FirstOrDefault(x => x.Id == task.Id);
+				if (dbTask == null)
+				{
+					TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task does not exists";
+					return RedirectToAction("Index", "AdminDaemons");
+				}
 
-                    dbTask.IdBackupTypes = task.IdBackupTypes;
-                    dbTask.Name = task.Name;
-                    dbTask.Description = task.Description;
-                    dbTask.TaskDetail.ZipAlgorithm = task.TaskDetail.ZipAlgorithm;
-                    dbTask.TaskDetail.CompressionLevel = task.TaskDetail.CompressionLevel;
-                    dbTask.LastChanged = DateTime.Now;
+				db.Tasks.Remove(dbTask);
+				db.SaveChanges();
 
-                    db.Entry(dbTask.TaskDetail).State = EntityState.Modified;
-                    db.Entry(dbTask).State = EntityState.Modified;
+				OperationResultMessage = "Task was successfully deleted";
+				return RedirectToAction("Index", "AdminDaemons");
+			}
+		}
 
-                    db.SaveChanges();
-                }
+		[HttpGet]
+		[AdminSec]
+		public ActionResult TaskLocations(int id)
+		{
+			using (var db = new MySQLContext())
+			{
+				var model = db.Tasks
+					.Where(x => x.Id == id)
+					.Include(x => x.TaskLocations.Select(z => z.Location))
+					.Include(x => x.TaskLocations.Select(z => z.Location1))
+					.FirstOrDefault();
 
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task was successfully updated";
-                return RedirectToAction("Tasks", "AdminTasks", new { id = task.IdDaemon });
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
+				return View(model);
+			}
+		}
 
-        [HttpGet]
-        public ActionResult DeleteTask(int id)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+		[HttpGet]
+		[AdminSec]
+		public ActionResult NewTaskLocation(int id)
+		{
+			var model = new Models.Admin.NewEditTaskLocationsModel();
+			model.IdTask = id;
 
-                using (var db = new Models.MySQLContext())
-                {
-                    var task = db.Tasks.Where(x => x.Id == id).Include(x => x.BackupType).FirstOrDefault();
-                    if (task == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task does not exists";
-                        return RedirectToAction("Index", "AdminDaemons");
-                    }
-                    return View(task);
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
+			model.Load();
 
-        [HttpPost]
-        public ActionResult DeleteTask(Models.Task task)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+			return View(model);
+		}
 
-                using (var db = new Models.MySQLContext())
-                {
-                    var dbTask = db.Tasks.FirstOrDefault(x => x.Id == task.Id);
-                    if (dbTask == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task does not exists";
-                        return RedirectToAction("Index", "AdminDaemons");
-                    }
+		[HttpPost]
+		[AdminSec]
+		public ActionResult NewTaskLocation(Models.Admin.NewEditTaskLocationsModel model)
+		{
+			model.Save();
 
-                    db.Tasks.Remove(dbTask);
-                    db.SaveChanges();
+			OperationResultMessage = "New task location was successfully added";
+			return RedirectToAction("TaskLocations", "AdminTasks", new { id = model.IdTask });
+		}
 
-                    TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task was successfully deleted";
-                    return RedirectToAction("Index", "AdminDaemons");
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
+		[HttpGet]
+		[AdminSec]
+		public ActionResult EditTaskLocation(int id)
+		{
+			var model = new Models.Admin.NewEditTaskLocationsModel();
+			model.Id = id;
+			model.Load();
 
-        [HttpGet]
-        public ActionResult TaskLocations(int id)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+			return View(model);
+		}
 
-                using (var db = new MySQLContext())
-                {
-                    var model = db.Tasks
-                        .Where(x => x.Id == id)
-                        .Include(x => x.TaskLocations.Select(z => z.Location))
-                        .Include(x => x.TaskLocations.Select(z => z.Location1))
-                        .FirstOrDefault();
+		[HttpPost]
+		[AdminSec]
+		public ActionResult EditTaskLocation(Models.Admin.NewEditTaskLocationsModel model)
+		{
+			if (!Util.IsUserAlreadyLoggedIn(Session))
+				return RedirectToAction("Login", "AdminLogin");
 
-                    if (model == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task does not exists";
-                        return RedirectToAction("Index", "AdminDaemons");
-                    }
+			model.Save();
 
-                    return View(model);
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
+			OperationResultMessage = "Task location was successfully updated";
+			return RedirectToAction("TaskLocations", "AdminTasks", new { id = model.IdTask });
+		}
 
-        [HttpGet]
-        public ActionResult NewTaskLocation(int id)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+		[HttpGet]
+		[AdminSec]
+		public ActionResult DeleteTaskLocation(int id)
+		{
+			using (var db = new Models.MySQLContext())
+			{
+				var loc = db.TaskLocations.Where(x => x.Id == id).Include(x => x.Location).Include(x => x.Location1).FirstOrDefault();
+				return View(loc);
+			}
+		}
 
-                var model = new Models.Admin.NewEditTaskLocationsModel();
-                model.IdTask = id;
+		[HttpPost]
+		[AdminSec]
+		public ActionResult DeleteTaskLocation(Models.TaskLocation loc)
+		{
+			using (var db = new Models.MySQLContext())
+			{
+				var dbTask = db.TaskLocations.FirstOrDefault(x => x.Id == loc.Id);
 
-                model.Load();
+				db.TaskLocations.Remove(dbTask);
+				db.SaveChanges();
 
-                return View(model);
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
-
-        [HttpPost]
-        public ActionResult NewTaskLocation(Models.Admin.NewEditTaskLocationsModel model)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                model.Save();
-
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "New task was successfully added";
-                return RedirectToAction("TaskLocations", "AdminTasks", new { id = model.IdTask });
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
-
-        [HttpGet]
-        public ActionResult EditTaskLocation(int id)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                var model = new Models.Admin.NewEditTaskLocationsModel();
-                model.Id = id;
-
-                model.Load();
-
-                return View(model);
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
-
-        [HttpPost]
-        public ActionResult EditTaskLocation(Models.Admin.NewEditTaskLocationsModel model)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                model.Save();
-
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task location was successfully updated";
-                return RedirectToAction("TaskLocations", "AdminTasks", new {id = model.IdTask});
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
-
-        [HttpGet]
-        public ActionResult DeleteTaskLocation(int id)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new Models.MySQLContext())
-                {
-                    var loc = db.TaskLocations.Where(x => x.Id == id).Include(x => x.Location).Include(x => x.Location1).FirstOrDefault();
-                    if (loc == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task location does not exists";
-                        return RedirectToAction("Index", "AdminDaemons");
-                    }
-                    return View(loc);
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
-
-        [HttpPost]
-        public ActionResult DeleteTaskLocation(Models.TaskLocation loc)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new Models.MySQLContext())
-                {
-                    var dbTask = db.TaskLocations.FirstOrDefault(x => x.Id == loc.Id);
-                    if (dbTask == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task location does not exists";
-                        return RedirectToAction("Index", "AdminDaemons");
-                    }
-
-                    db.TaskLocations.Remove(dbTask);
-                    db.SaveChanges();
-
-                    TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task location was successfully deleted";
-                    return RedirectToAction("Index", "AdminDaemons");
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
-    }
+				OperationResultMessage = "Task location was successfully deleted";
+				return RedirectToAction("Index", "AdminDaemons");
+			}
+		}
+	}
 }

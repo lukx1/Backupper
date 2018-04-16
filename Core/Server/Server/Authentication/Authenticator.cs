@@ -236,6 +236,56 @@ namespace Server.Authentication
         }
 
         /// <summary>
+        /// Zjistí všechny skupiny uživatele z jeho nicku
+        /// </summary>
+        /// <param name="nickname"></param>
+        /// <returns></returns>
+        public IEnumerable<Models.Group> GetGroupsFromUserNickname(string nickname)
+        {
+            return GetGroupsFromUserId(mysql.Users.FirstOrDefault(x => x.Nickname == nickname).Id);
+        }
+
+        /// <summary>
+        /// Zjistí všechny skupiny uživatele z jeho Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IEnumerable<Models.Group> GetGroupsFromUserId(int id)
+        {
+            return (from userGroups in mysql.UserGroups
+                join groups in mysql.Groups on userGroups.IdGroup equals groups.Id
+                where userGroups.IdUser == id
+                select groups).ToArray();
+        }
+
+        /// <summary>
+        /// Zjistí všechny permisse uživatele z jeho nicku
+        /// Pokud má uživatel Permission.SKIP tak se vrátí kolekce pouze s tímto prvkem
+        /// </summary>
+        /// <param name="nickname"></param>
+        /// <returns></returns>
+        public IEnumerable<Permission> GetPermissionsFromUserNickname(string nickname)
+        {
+            return GetPermissionsFromUserId(mysql.Users.FirstOrDefault(x => x.Nickname == nickname).Id);
+        }
+
+        /// <summary>
+        /// Zjistí všechny permisse uživatele z jeho Id
+        /// Pokud má uživatel Permission.SKIP tak se vrátí kolekce pouze s tímto prvkem
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IEnumerable<Permission> GetPermissionsFromUserId(int id)
+        {
+            Permission[] permissions = (from userGroups in mysql.UserGroups
+                join groups in mysql.Groups on userGroups.IdGroup equals groups.Id
+                join groupPermissions in mysql.GroupPermissions on groups.Id equals groupPermissions.IdGroup
+                where userGroups.IdUser == id
+                select (Permission)groupPermissions.IdPermission).ToArray();
+            return permissions.Contains(Permission.SKIP) ? new[] {Permission.SKIP} : permissions;
+        }
+
+        /// <summary>
         /// Zjístí předzdílen=y klíč s daným ID, toto ID není ID uživatele
         /// </summary>
         /// <param name="id"></param>

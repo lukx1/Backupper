@@ -11,178 +11,96 @@ using Shared;
 
 namespace Server.Controllers
 {
-    public class AdminTimesController : Controller
-    {
-        public ActionResult Index()
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+	[AdminExc]
+	public class AdminTimesController : AdminBaseController
+	{
+		[AdminSec]
+		public ActionResult Index()
+		{
+			using (var db = new Models.MySQLContext())
+				return View(db.Times.ToList());
+		}
 
-                using (var db = new Models.MySQLContext())
-                    return View(db.Times.ToList());
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
+		[HttpGet]
+		[AdminSec]
+		public ActionResult NewTime()
+		{
+			return View(new Models.Time());
+		}
 
-        [HttpGet]
-        public ActionResult NewTime()
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
+		[HttpPost]
+		[AdminSec]
+		public ActionResult NewTime(Models.Time time)
+		{
+			using (var db = new Models.MySQLContext())
+			{
+				db.Times.Add(time);
+				db.SaveChanges();
+			}
 
-            return View(new Models.Time());
-        }
+			OperationResultMessage = "New time was successfully created";
+			return RedirectToAction("Index", "AdminTimes");
+		}
 
-        [HttpPost]
-        public ActionResult NewTime(Models.Time time)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+		[HttpGet]
+		[AdminSec]
+		public ActionResult EditTime(int id)
+		{
+			using (var db = new Models.MySQLContext())
+			{
+				var time = db.Times.FirstOrDefault(x => x.Id == id);
+				if (time == null)
+				{
+					OperationResultMessage = "Time does not exists";
+					return RedirectToAction("Index", "AdminTimes");
+				}
+				return View(time);
+			}
+		}
 
-                using (var db = new Models.MySQLContext())
-                {
-                    db.Times.Add(time);
-                    db.SaveChanges();
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
+		[HttpPost]
+		[AdminSec]
+		public ActionResult EditTime(Models.Time time)
+		{
+			using (var db = new Models.MySQLContext())
+			{
+				db.Times.AddOrUpdate(time);
+				db.SaveChanges();
+			}
 
-            TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "New time was successfully created";
-            return RedirectToAction("Index", "AdminTimes");
-        }
+			OperationResultMessage = "Time was successfully updated";
+			return RedirectToAction("Index", "AdminTimes");
+		}
 
-        [HttpGet]
-        public ActionResult EditTime(int id)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+		[HttpGet]
+		[AdminSec]
+		public ActionResult DeleteTime(int id)
+		{
+			using (var db = new Models.MySQLContext())
+			{
+				var time = db.Times.FirstOrDefault(x => x.Id == id);
+				if (time == null)
+				{
+					OperationResultMessage = "Time does not exists";
+					return RedirectToAction("Index", "AdminTimes");
+				}
+				return View(time);
+			}
+		}
 
-                using (var db = new Models.MySQLContext())
-                {
-                    var time = db.Times.FirstOrDefault(x => x.Id == id);
-                    if (time == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Time does not exists";
-                        return RedirectToAction("Index", "AdminTimes");
-                    }
-                    return View(time);
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
+		[HttpPost]
+		[AdminSec]
+		public ActionResult DeleteTime(Models.Time time)
+		{
+			using (var db = new Models.MySQLContext())
+			{
+				var dbTime = db.Times.FirstOrDefault(x => x.Id == time.Id);
+				db.Times.Remove(dbTime);
+				db.SaveChanges();
 
-        [HttpPost]
-        public ActionResult EditTime(Models.Time time)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new Models.MySQLContext())
-                {
-                    db.Times.AddOrUpdate(time);
-                    db.SaveChanges();
-                }
-
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Time was successfully updated";
-                return RedirectToAction("Index", "AdminTimes");
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
-
-        [HttpGet]
-        public ActionResult DeleteTime(int id)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new Models.MySQLContext())
-                {
-                    var time = db.Times.FirstOrDefault(x => x.Id == id);
-                    if (time == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Time does not exists";
-                        return RedirectToAction("Index", "AdminTimes");
-                    }
-                    return View(time);
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
-
-        [HttpPost]
-        public ActionResult DeleteTime(Models.Time time)
-        {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new Models.MySQLContext())
-                {
-                    var dbTime = db.Times.FirstOrDefault(x => x.Id == time.Id);
-                    if (dbTime == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Time does not exists";
-                        return RedirectToAction("Index", "AdminTimes");
-                    }
-
-                    db.Times.Remove(dbTime);
-                    db.SaveChanges();
-
-                    TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Time was successfully deleted";
-                    return RedirectToAction("Index", "AdminUsers");
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
-        }
-    }
+				OperationResultMessage = "Time was successfully deleted";
+				return RedirectToAction("Index", "AdminUsers");
+			}
+		}
+	}
 }

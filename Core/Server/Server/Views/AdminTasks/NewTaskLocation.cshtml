@@ -1,57 +1,29 @@
-﻿@model global::Server.Models.Task
+﻿@model global::Server.Models.Admin.NewEditTaskLocationsModel
 
 @{
-	ViewBag.Title = "New Task";
+	ViewBag.Title = "New Task Location";
 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-@using (Html.BeginForm("NewTask", "AdminTasks", FormMethod.Post))
-{
-	<table>
-		@Html.HiddenFor(x => x.IdDaemon)
+<table style="width:100%">
+	<tr>
+		<th>Uri</th>
+	</tr>
+	@foreach (var item in Model.Locations)
+	{
+		<tr>
+			<td>@item.Uri</td>
+			<td><input onclick="$('#@Html.IdFor(m => m.IdSource)').val('@item.Id')" type="button" value="Use as source" /></td>
+			<td><input onclick="$('#@Html.IdFor(m => m.IdDestination)').val('@item.Id')" type="button" value="Use as destination" /></td>
+		</tr>
+	}
+</table>
 
-		<tr>
-			<td>
-				@Html.LabelFor(x => x.Name)
-			</td>
-			<td>
-				@Html.TextBoxFor(x => x.Name)
-			</td>
-		</tr>
-		<tr>
-			<td>
-				@Html.LabelFor(x => x.Description)
-			</td>
-			<td>
-				@Html.TextAreaFor(x => x.Description)
-			</td>
-		</tr>
-		<tr>
-			<td>
-				@Html.LabelFor(x => x.TaskDetail.ZipAlgorithm)
-			</td>
-			<td>
-				@Html.TextBoxFor(x => x.TaskDetail.ZipAlgorithm)
-			</td>
-		</tr>
-		<tr>
-			<td>
-				@Html.LabelFor(x => x.TaskDetail.CompressionLevel)
-			</td>
-			<td>
-				@Html.TextBoxFor(x => x.TaskDetail.CompressionLevel)
-			</td>
-		</tr>
-		<tr>
-			<td>
-				Backup Type
-			</td>
-			<td>
-				@Html.DropDownListFor(x => x.IdBackupTypes, (IEnumerable<SelectListItem>)ViewBag.BackupTypes)
-			</td>
-		</tr>
-	</table>
+@using (Html.BeginForm("NewTaskLocation", "AdminTasks", FormMethod.Post))
+{
+	@Html.HiddenFor(m => m.IdTask)
+	@Html.HiddenFor(m => m.IdSource)
+	@Html.HiddenFor(m => m.IdDestination)
 
 	<input type="submit" value="Confirm" />
-	<input type="reset" value="Clear" />
 }

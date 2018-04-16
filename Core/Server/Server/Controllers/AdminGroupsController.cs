@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace Server.Controllers
 {
-    public class AdminGroupsController : Controller
+    public class AdminGroupsController : AdminBaseController
     {
         public ActionResult Index()
         {
