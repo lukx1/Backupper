@@ -182,7 +182,7 @@ namespace Daemon.Communication
                 var result = await messenger.SendAsync<RSAForDaemonResponse>(new RSAForDaemonMessage() { sessionUuid = settings.SessionUuid }, "RSAForDaemon", HttpMethod.Post);
                 var newSettings = new LoginSettings();
                 newSettings.RSAPrivate = PasswordFactory.DecryptAES(result.ServerResponse.EncryptedPrivateKey,pass);
-                newSettings.Save()
+                newSettings.Save();
             }
             catch (INetException<RSAForDaemonResponse> ex)
             {
@@ -238,8 +238,7 @@ namespace Daemon.Communication
 
             sessionRefresher = new SessionRefresher(authenticator);// Opakuje login aby session nevyprsel
             sessionRefresher.Run();
-            if(false)
-                TaskTickerTask = Task.Run(() => TaskTicker());//Refreshuje tasky aby byli aktualni se serverem
+            TaskTickerTask = Task.Run(() => TaskTicker());//Refreshuje tasky aby byli aktualni se serverem
             await logCheckTask;
             await loadPrivTask;
         }
@@ -264,7 +263,7 @@ namespace Daemon.Communication
             try
             {
                 if (settings.Debug)
-                    TaskTest();
+                    await TaskTest();
                 else
                     await ApplyTasks();
                 return true;
@@ -287,11 +286,20 @@ namespace Daemon.Communication
         /// <summary>
         /// Pro testování tasků
         /// </summary>
-        private void TaskTest()
+        private async Task TaskTest()
         {
             logger.Log("Probíhá debugovací metoda taskTest", LogType.DEBUG);
-            taskHandler.Tasks = Messenger.ReadMessage<TaskResponse>("{\"Tasks\":[{\"id\":1,\"uuidDaemon\":\"50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e\",\"name\":\"DebugTask\",\"description\":\"For debugging\",\"taskLocations\":[{\"id\":1,\"source\":{\"id\":6,\"uri\":\"test.com/docs/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":4,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"destination\":{\"id\":7,\"uri\":\"test.com/backups/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":5,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"backupType\":{\"Id\":1,\"ShortName\":\"NORM\",\"LongName\":\"Normal\"},\"times\":[{\"id\":3,\"interval\":0,\"name\":\"Dneska\",\"repeat\":false,\"startTime\":\"" + DateTime.Now.AddSeconds(5) + "\",\"endTime\":\"0001-01-01T00:00:00\"},{\"id\":4,\"interval\":" + 5 + ",\"name\":\"Kazdy Patek\",\"repeat\":true,\"startTime\":\"2018-02-23T00:00:00\",\"endTime\":\"0001-01-01T00:00:00\"}]}]}],\"ErrorMessages\":[]}").Tasks;
-            taskHandler.CreateTimers();
+            //taskHandler.Tasks = Messenger.ReadMessage<TaskResponse>("{\"Tasks\":[{\"id\":1,\"uuidDaemon\":\"50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e\",\"name\":\"DebugTask\",\"description\":\"For debugging\",\"taskLocations\":[{\"id\":1,\"source\":{\"id\":6,\"uri\":\"test.com/docs/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":4,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"destination\":{\"id\":7,\"uri\":\"test.com/backups/imgs\",\"protocol\":{\"Id\":3,\"ShortName\":\"FTP\",\"LongName\":\"File Transfer Protocol\"},\"LocationCredential\":{\"Id\":5,\"host\":\"test.com\",\"port\":21,\"LogonType\":{\"Id\":2,\"Name\":\"Normal\"},\"username\":\"myName\",\"password\":\"abc\"}},\"backupType\":{\"Id\":1,\"ShortName\":\"NORM\",\"LongName\":\"Normal\"},\"times\":[{\"id\":3,\"interval\":0,\"name\":\"Dneska\",\"repeat\":false,\"startTime\":\"" + DateTime.Now.AddSeconds(5) + "\",\"endTime\":\"0001-01-01T00:00:00\"},{\"id\":4,\"interval\":" + 5 + ",\"name\":\"Kazdy Patek\",\"repeat\":true,\"startTime\":\"2018-02-23T00:00:00\",\"endTime\":\"0001-01-01T00:00:00\"}]}]}],\"ErrorMessages\":[]}").Tasks;
+            try
+            {
+                taskHandler.Tasks = (await messenger.SendAsync<TaskResponse>(new TaskMessage() { IsDaemon = true, sessionUuid = settings.SessionUuid, tasks = new List<DbTask>() { new DbTask() { id = -1 }, new DbTask() { id = -2 }, new DbTask() { id = -3 } } }, "Task", HttpMethod.Post)).ServerResponse.Tasks;
+                taskHandler.CreateTimers();
+            }
+            catch(INetException<TaskResponse> ex)
+            {
+                logger.Log("Chyba při testování tasků v TaskTest\r\nTato chyba nebude zaznamenána!", LogType.ERROR);
+                logger.Log($"{ex.Message}\r\n{ex.StackTrace}",LogType.ERROR);
+            }
         }
 
         /// <summary>

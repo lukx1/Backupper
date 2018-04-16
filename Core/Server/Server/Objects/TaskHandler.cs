@@ -126,7 +126,7 @@ namespace Server.Objects
 
         private DbLocation CreateLocation(TaskLocation taskLocation, bool source)
         {
-            var location = source ? taskLocation.Location : taskLocation.Location1;
+            var location = source ? taskLocation.Location1 : taskLocation.Location;
             var dbLoc = new Shared.NetMessages.TaskMessages.DbLocation()
             {
                 id = location.Id,
@@ -244,17 +244,51 @@ namespace Server.Objects
             return dbTasks;
         }
 
+        private bool IsRequestAllowed(TaskMessage message)
+        {
+            var allowedTasks = (from users in mysql.Users
+                               join daemons in mysql.Daemons on users.Id equals daemons.Id
+                               join logedInDaemons in mysql.LogedInDaemons on daemons.Id equals logedInDaemons.IdDaemon
+                               join tasks in mysql.Tasks on daemons.Id equals tasks.IdDaemon
+                               where logedInDaemons.SessionUuid == message.sessionUuid
+                               select tasks.Id).ToList();
+            foreach (var task in message.tasks)
+            {
+                bool ok = false;
+                foreach (var validTask in allowedTasks)
+                {
+                    if(task.id == validTask)
+                    {
+                        ok = true;
+                        break;
+                    }
+                }
+                if (!ok)
+                    return false;
+            }
+            return true;
+        }
+
         public List<DbTask> GetTasks(TaskMessage message)
         {
+            var daemon = authenticator.GetDaemonFromUuid(message.sessionUuid);
             if (message.tasks == null | message.tasks.Count == 0)
                 return FetchAll(message);
             else
             {
-                throw new NotImplementedException("Tato část není dokončena");
-                List<DbTask> tasks = new List<DbTask>(); 
-                for (int i = 0; i < message.tasks.Count; i++)
+                if (!IsRequestAllowed(message))
                 {
-                    tasks.Add(ExtractData(mysql.Tasks.Where(r => r.Id == message.tasks[i].id).FirstOrDefault())); //TODO: Fixnout tenhle fetch
+                    errors.Add(new ErrorMessage() { id = 404,message="Daemon nemá permise pro tento požadavek"});
+                    return new List<DbTask>();
+                }
+                IEnumerable<int> wantedTasks = message.tasks.Select(r => r.id);
+                List<Task> ttasks = (from dTasks in mysql.Tasks
+                                 where  wantedTasks.Contains(dTasks.Id)
+                                 select dTasks).ToList();
+                List<DbTask> tasks = new List<DbTask>();
+                foreach (var task in ttasks)
+                {
+                    tasks.Add(ExtractData(task));
                 }
                 return tasks;
             }

@@ -24,7 +24,7 @@
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="TimerDebugOnly" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="PreSharedKeyWithIdSemiColSep" Type="System.String" Scope="User">
       <Value Profile="(Default)">tRnhF0IfmkDrIZU6dbCusQ==;1</Value>

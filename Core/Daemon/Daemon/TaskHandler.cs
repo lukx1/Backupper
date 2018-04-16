@@ -54,7 +54,7 @@ namespace Daemon
         {
             if (period == null || period <= 0)
                 return TimeSpan.FromMilliseconds(0);
-            double res = (double)period - ((((double)(DateTime.Now - startTime).TotalSeconds)%(double)period));
+            double res = /*(double)period - */Math.Abs(((((double)(DateTime.Now - startTime).TotalSeconds)%(double)period)));
             return TimeSpan.FromSeconds(res);
         }
 
@@ -71,7 +71,7 @@ namespace Daemon
                 timedBackup.Dispose(); // Zničí timer
                 return;
             }
-            if (time.startTime < DateTime.Now && !time.repeat)
+            if (time.startTime.AddMinutes(5) < DateTime.Now && !time.repeat)/*5 minut jako padding casu*/
             {
                 logger.Log($"{time.id * task.id}:Timer měl proběhnout v minulosti a neměl se opakovat, bude zničen", LogType.DEBUG);
                 timedBackup.ShouldRun.Value = false;
@@ -90,6 +90,7 @@ namespace Daemon
                 try
                 {
                     timedBackup.Backup.StartBackup();
+                    logger.Log($"Zálohování {timedBackup.Backup.ID} dokončeno", LogType.INFORMATION);
                 }
                 catch (Exception ex)
                 {
@@ -168,9 +169,20 @@ namespace Daemon
             logger.Log("Čištení tObj OK",LogType.DEBUG);
         }
 
+        private void ReshapeToTestingTime(DbTime time)
+        {
+            var ttime = CreateTestingTime();
+            time.endTime = ttime.endTime;
+            time.id = ttime.id;
+            time.interval = ttime.interval;
+            time.name = ttime.name;
+            time.repeat = ttime.repeat;
+            time.startTime = ttime.startTime;
+        }
+
         private DbTime CreateTestingTime()
         {
-            return new DbTime() {endTime = null,id = 999,interval = 5,name = "Test time",repeat = true,startTime = DateTime.Now.AddSeconds(5) };
+            return new DbTime() {endTime = null,id = 999,interval = 300,name = "Test time",repeat = false,startTime = DateTime.Now.AddSeconds(5) };
         }
 
         /// <summary>
@@ -182,12 +194,17 @@ namespace Daemon
             ClearTObjs();
             foreach (var task in Tasks)
             {
+                if(task.times.Count < 1)
+                {
+                    logger.Log($"Byl přijat task({task.name}) bez času, nikdy neproběhne",LogType.WARNING);
+                    var faf = logger.ServerLogAsync(new GeneralTaskFailedLog(task.id, new ArgumentNullException("Nebyl nastaven čas, kdy má úloha běžet"),null) { LogType = LogType.WARNING});
+                }
                 foreach (var time in task.times)
                 {
-                    if (tBackups.Count > 0)
-                        return;
+                    if(new LoginSettings().TimerDebugOnly)
+                        ReshapeToTestingTime(time);
                     logger.Log($"Vytvořen timer pro task #{task.id},time #{time.id}{Util.Newline}Čas start:{time.startTime}, interval:{time.interval}s,opakovat:{time.repeat}, konec:{(time.endTime == null ? "Nikdy":time.endTime.ToString())}", LogType.DEBUG);
-                    tBackups.Add(CreateTimedBackup(task, new LoginSettings().TimerDebugOnly ? CreateTestingTime() : time));
+                    tBackups.Add(CreateTimedBackup(task, time));
                 }
             }
         }
