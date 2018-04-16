@@ -40,8 +40,6 @@ namespace Daemon.Backups
                 {
                     info.UnionAllSimilarInfos();
                 }
-
-
                 if (item.destination.protocol == DbProtocol.FTP)
                 {
                     BackupFTP(info, item);
@@ -83,11 +81,12 @@ namespace Daemon.Backups
                 {
                     File.Copy(item.destination, copyPath);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
                     logger.Log($"Backup: Failed to Copy file [Backup: Normal, CopyPath: {copyPath}] backup failed]", Shared.LogType.ERROR);
                     successful = false;
-                    break;
+                    throw e;
+                    //break;
                 }
             }
 

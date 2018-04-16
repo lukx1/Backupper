@@ -16,6 +16,11 @@ namespace Server.Objects
         private MySQLContext mysql;
         public List<ErrorMessage> errors = new List<ErrorMessage>();
 
+        public TaskHandler(MySQLContext context)
+        {
+            this.mysql = context;
+        }
+
         public TaskHandler()
         {
             this.mysql = new MySQLContext();
@@ -162,7 +167,7 @@ namespace Server.Objects
             return dbLoc;
         }
 
-        private DbTask ExtractData(Task task)
+        public DbTask ExtractDataFromTask(Task task)
         {
             var dbTask = new DbTask()
             {
@@ -230,7 +235,7 @@ namespace Server.Objects
             {
                 try
                 {
-                    dbTasks.Add(ExtractData(task));
+                    dbTasks.Add(ExtractDataFromTask(task));
                 }
                 catch (Exception e)
                 {
@@ -288,7 +293,7 @@ namespace Server.Objects
                 List<DbTask> tasks = new List<DbTask>();
                 foreach (var task in ttasks)
                 {
-                    tasks.Add(ExtractData(task));
+                    tasks.Add(ExtractDataFromTask(task));
                 }
                 return tasks;
             }

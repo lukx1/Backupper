@@ -204,6 +204,7 @@
     <Compile Include="Controllers\AdminTimesController.cs" />
     <Compile Include="Controllers\AdminUptimeController.cs" />
     <Compile Include="Controllers\AdminUsersController.cs" />
+    <Compile Include="Controllers\ChangedTaskController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IntroductionController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
