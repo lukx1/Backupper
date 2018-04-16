@@ -10,15 +10,15 @@ namespace Server.Objects
     public class SqlLogger
     {
 
-        private IEnumerable<UniversalLog> CreateUnisFromLogs<T>(params ILog<T>[] logs) where T : class
+        private IEnumerable<UniversalLog> CreateUnisFromLogs<T>(params SLog<T>[] logs) where T : class
         {
             foreach (var log in logs)
             {
-                yield return CreateUniversalFromILog(log);
+                yield return CreateUniversalFromSLog(log);
             }
         }
 
-        public UniversalLog CreateUniversalFromILog<T>(ILog<T> log) where T : class
+        public UniversalLog CreateUniversalFromSLog<T>(SLog<T> log) where T : class
         {
             var jLog = JsonableUniversalLog.CreateFrom(log);
             var uLog = new UniversalLog()
@@ -31,7 +31,7 @@ namespace Server.Objects
             return uLog;
         }
 
-        public int SubmitLog<T>(params ILog<T>[] logs) where T : class
+        public int SubmitLog<T>(params SLog<T>[] logs) where T : class
         {
 
             using (MySQLContext sql = new MySQLContext())
@@ -46,7 +46,7 @@ namespace Server.Objects
 
 
 
-        public async System.Threading.Tasks.Task<int> SubmitLogAsync<T>(params ILog<T>[] logs) where T : class
+        public async System.Threading.Tasks.Task<int> SubmitLogAsync<T>(params SLog<T>[] logs) where T : class
         {
             
             using (MySQLContext sql = new MySQLContext())

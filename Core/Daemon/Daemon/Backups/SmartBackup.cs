@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
 using Shared.NetMessages.TaskMessages;
 using System.IO;
 
@@ -12,12 +13,14 @@ namespace Daemon.Backups
     {
         public DbBackupType BackupType { get; set; }
         public DbTaskDetails TaskDetails { get; set; }
-        public List<DbTaskLocation> TaskLocations { get; set; }
+        public IEnumerable<DbTaskLocation> TaskLocations { get; set; }
         public int ID { get; set; }
+
+        private Logging.ILogger logger = Logging.LoggerFactory.CreateAppropriate();
 
         public SmartBackup()
         {
-            TaskLocations = new List<DbTaskLocation>();
+            
         }
 
         public void StartBackup()
@@ -37,7 +40,20 @@ namespace Daemon.Backups
                 {
                     info.UnionAllSimilarInfos();
                 }
-                BackupNormal(info, item);
+
+
+                if (item.destination.protocol == DbProtocol.FTP)
+                {
+                    BackupFTP(info, item);
+                }
+                else if (item.destination.protocol == DbProtocol.SFTP)
+                {
+                    BackupSFTP(info, item);
+                }
+                else if (item.destination.protocol == DbProtocol.WND || item.destination.protocol == DbProtocol.WRD)
+                {
+                    BackupNormal(info, item);
+                }
             }
         }
 
@@ -49,6 +65,8 @@ namespace Daemon.Backups
         /// <param name="taskLocation"></param>
         private void BackupNormal(SmartBackupInfo backupInfo,DbTaskLocation taskLocation)
         {
+            bool successful = true;
+
             string DestinationPath = taskLocation.destination.uri + $"/{taskLocation.id}_{DateTime.Now.ToFileTimeUtc()}";
             if (!Directory.Exists(DestinationPath))
                 Directory.CreateDirectory(DestinationPath);
@@ -56,15 +74,99 @@ namespace Daemon.Backups
             string SourcePath = taskLocation.source.uri;
             foreach (SmartFileInfo item in backupInfo.fileInfos)
             {
-                // Definice cesty kam se to bude kopírovat je = DestinationPath + SubPath + FileName, a kopáruje se z SourcePath + SubPath + FileName (aneb item.destination)
+                // Definice cesty kam se to bude kopírovat je = DestinationPath + SubPath + FileName, a kopiruje se z SourcePath + SubPath + FileName (aneb item.destination)
                 string subPath = item.destination.Substring(SourcePath.Length, item.destination.Length - SourcePath.Length - item.filename.Length);
                 if (!Directory.Exists(DestinationPath + subPath))
                     Directory.CreateDirectory(DestinationPath + subPath);
                 string copyPath = DestinationPath + subPath + item.filename;
-                File.Copy(item.destination, copyPath);
+                try
+                {
+                    File.Copy(item.destination, copyPath);
+                }
+                catch (Exception)
+                {
+                    logger.Log($"Backup: Failed to Copy file [Backup: Normal, CopyPath: {copyPath}] backup failed]", Shared.LogType.ERROR);
+                    successful = false;
+                    break;
+                }
             }
 
-            backupInfo.WriteToFile(SmartBackupInfo.StorePath + $"{taskLocation.id}_{DateTime.Now.ToFileTimeUtc()}.bki");
+            if(successful)
+                backupInfo.WriteToFile(SmartBackupInfo.StorePath + $"{taskLocation.id}_{DateTime.Now.ToFileTimeUtc()}.bki");
+        }
+
+        private void BackupFTP(SmartBackupInfo backupInfo, DbTaskLocation taskLocation)
+        {
+            Communication.FtpClient client = new Communication.FtpClient(
+                taskLocation.destination.LocationCredential.host,
+                taskLocation.destination.LocationCredential.username,
+                taskLocation.destination.LocationCredential.password
+                );
+
+            bool successful = true;
+
+            string DestinationPath = taskLocation.destination.uri + $"/{taskLocation.id}_{DateTime.Now.ToFileTimeUtc()}";
+
+            client.createDirectory(DestinationPath);
+
+            string SourcePath = taskLocation.source.uri;
+            foreach (SmartFileInfo item in backupInfo.fileInfos)
+            {
+                // Definice cesty kam se to bude kopírovat je = DestinationPath + SubPath + FileName, a kopiruje se z SourcePath + SubPath + FileName (aneb item.destination)
+                string subPath = item.destination.Substring(SourcePath.Length, item.destination.Length - SourcePath.Length - item.filename.Length);
+                client.createDirectory(DestinationPath + subPath);
+                string copyPath = DestinationPath + subPath + item.filename;
+                try
+                {
+                    client.upload(item.destination, copyPath);
+                }
+                catch (Exception)
+                {
+                    logger.Log($"Backup: Failed to Copy file [Backup: Normal, CopyPath: {copyPath}] backup failed]", Shared.LogType.ERROR);
+                    successful = false;
+                    break;
+                }
+            }
+
+            if (successful)
+                backupInfo.WriteToFile(SmartBackupInfo.StorePath + $"{taskLocation.id}_{DateTime.Now.ToFileTimeUtc()}.bki");
+        }
+
+        private void BackupSFTP(SmartBackupInfo backupInfo, DbTaskLocation taskLocation)
+        {
+            Communication.SftpClient client = new Communication.SftpClient(
+                taskLocation.destination.LocationCredential.host, 
+                taskLocation.destination.LocationCredential.username, 
+                taskLocation.destination.LocationCredential.password
+                );
+
+            bool successful = true;
+
+            string DestinationPath = taskLocation.destination.uri + $"/{taskLocation.id}_{DateTime.Now.ToFileTimeUtc()}";
+
+            client.CreateDirectory(DestinationPath);
+
+            string SourcePath = taskLocation.source.uri;
+            foreach (SmartFileInfo item in backupInfo.fileInfos)
+            {
+                // Definice cesty kam se to bude kopírovat je = DestinationPath + SubPath + FileName, a kopiruje se z SourcePath + SubPath + FileName (aneb item.destination)
+                string subPath = item.destination.Substring(SourcePath.Length, item.destination.Length - SourcePath.Length - item.filename.Length);
+                client.CreateDirectory(DestinationPath + subPath);
+                string copyPath = DestinationPath + subPath + item.filename;
+                try
+                {
+                    client.Upload(item.destination, copyPath);
+                }
+                catch (Exception)
+                {
+                    logger.Log($"Backup: Failed to Copy file [Backup: Normal, CopyPath: {copyPath}] backup failed]", Shared.LogType.ERROR);
+                    successful = false;
+                    break;
+                }
+            }
+
+            if (successful)
+                backupInfo.WriteToFile(SmartBackupInfo.StorePath + $"{taskLocation.id}_{DateTime.Now.ToFileTimeUtc()}.bki");
         }
 
     }

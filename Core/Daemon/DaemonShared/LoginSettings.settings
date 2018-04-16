@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Daemon" GeneratedClassName="LoginSettings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="DaemonShared" GeneratedClassName="LoginSettings">
   <Profiles />
   <Settings>
     <Setting Name="Debug" Type="System.Boolean" Scope="User">
@@ -24,7 +24,7 @@
       <Value Profile="(Default)">1</Value>
     </Setting>
     <Setting Name="TimerDebugOnly" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="PreSharedKeyWithIdSemiColSep" Type="System.String" Scope="User">
       <Value Profile="(Default)">tRnhF0IfmkDrIZU6dbCusQ==;1</Value>
@@ -33,7 +33,7 @@
       <Value Profile="(Default)">0.1.0</Value>
     </Setting>
     <Setting Name="LoginFailureWaitPeriodMs" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">300000</Value>
+      <Value Profile="(Default)">500</Value>
     </Setting>
     <Setting Name="TaskRefreshPeriodMs" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">900000</Value>
@@ -43,6 +43,42 @@
     </Setting>
     <Setting Name="SessionUuid" Type="System.Guid" Scope="User">
       <Value Profile="(Default)">00000000-0000-0000-0000-000000000000</Value>
+    </Setting>
+    <Setting Name="LoginMaxRetryCount" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="SSLServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://localhost:44318</Value>
+    </Setting>
+    <Setting Name="SSLUse" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="SSLAllowSelfSigned" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="LocalErrors" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="StoreLocalErrorsLevel" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">6</Value>
+    </Setting>
+    <Setting Name="PipeOK" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="PipeConnectTimeoutMs" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">300000</Value>
+    </Setting>
+    <Setting Name="SSLHttpFallback" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="RSAPrivate" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="FirstSetup" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="SkipTasks" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

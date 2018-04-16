@@ -12,7 +12,7 @@ namespace Daemon.Backups
         void StartBackup();
         DbBackupType BackupType { get; set; }
         DbTaskDetails TaskDetails { get; set; }
-        List<DbTaskLocation> TaskLocations { get; set; }
+        IEnumerable<DbTaskLocation> TaskLocations { get; set; }
         int ID { get; set; }
     }
 }

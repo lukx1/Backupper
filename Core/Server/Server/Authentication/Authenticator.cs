@@ -91,11 +91,11 @@ namespace Server.Authentication
         /// <summary>
         /// Vracé z Uuid objekt daemona
         /// </summary>
-        /// <param name="uuid"></param>
+        /// <param name="sessionUuid"></param>
         /// <returns></returns>
-        public Daemon GetDaemonFromUuid(Guid uuid)
+        public Daemon GetDaemonFromUuid(Guid sessionUuid)
         {
-            LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == uuid).FirstOrDefault();
+            LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == sessionUuid).FirstOrDefault();
             return mysql.Daemons.Where(r => r.Id == logedInDaemon.IdDaemon).FirstOrDefault();
         }
 
@@ -113,7 +113,7 @@ namespace Server.Authentication
         /// <param name="mac"></param>
         /// <param name="idUser"></param>
         /// <returns></returns>
-        public UuidPass IntroduceDaemon(DaemonPreSharedKey preSharedKey, string os, string mac, int idUser)
+        public UuidPass IntroduceDaemon(DaemonPreSharedKey preSharedKey, string os, string mac, int idUser, char[] pubKey)
         {
             preSharedKey.Used = true;
 
@@ -347,12 +347,12 @@ namespace Server.Authentication
         /// <summary>
         /// Zjistí zda sezení daemona je platné
         /// </summary>
-        /// <param name="uuid"></param>
+        /// <param name="sessionUuid"></param>
         /// <param name="refreshTime"></param>
         /// <returns></returns>
-        public bool IsDaemonSessionValid(Guid uuid, bool refreshTime = true)
+        public bool IsDaemonSessionValid(Guid sessionUuid, bool refreshTime = true)
         {
-            LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == uuid).FirstOrDefault();
+            LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == sessionUuid).FirstOrDefault();
             if (logedInDaemon == null)
                 return false;
             if (Util.IsExpired(logedInDaemon.Expires))

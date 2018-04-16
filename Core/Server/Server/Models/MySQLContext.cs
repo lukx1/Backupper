@@ -126,7 +126,8 @@ namespace Server.Models
             modelBuilder.Entity<LocationCredential>()
                 .HasMany(e => e.Locations)
                 .WithOptional(e => e.LocationCredential)
-                .HasForeignKey(e => e.IdLocationCredentails);
+                .HasForeignKey(e => e.IdLocationCredentails)
+                .WillCascadeOnDelete();
 
             modelBuilder.Entity<Location>()
                 .Property(e => e.Uri)
@@ -236,6 +237,14 @@ namespace Server.Models
 
             modelBuilder.Entity<User>()
                 .Property(e => e.Password)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<User>()
+                .Property(e => e.PublicKey)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<User>()
+                .Property(e => e.PrivateKey)
                 .IsUnicode(false);
 
             modelBuilder.Entity<User>()

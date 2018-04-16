@@ -126,40 +126,39 @@ namespace Server.Objects
 
         private DbLocation CreateLocation(TaskLocation taskLocation, bool source)
         {
-            var location = source ? taskLocation.Location : taskLocation.Location1;
-
+            var location = source ? taskLocation.Location1 : taskLocation.Location;
+            var dbLoc = new Shared.NetMessages.TaskMessages.DbLocation()
+            {
+                id = location.Id,
+                uri = location.Uri,
+            };
             var protocol = new Shared.NetMessages.TaskMessages.DbProtocol()
             {
                 Id = location.Protocol.Id,
                 LongName = location.Protocol.LongName,
                 ShortName = location.Protocol.ShortName
             };
-            var locCred = new Shared.NetMessages.TaskMessages.DbLocationCredential()
-            {
-                Id = location.LocationCredential.Id,
-                host = location.LocationCredential.Host,
-                password = location.LocationCredential.Password,
-                port = location.LocationCredential.Port == null ? 0 : (int)location.LocationCredential.Port,
-                username = location.LocationCredential.Username,
-
-            };
             if (location.LocationCredential != null)
             {
-                locCred.LogonType =
-             new Shared.NetMessages.TaskMessages.DbLogonType()
-             {
-                 Id = location.LocationCredential.LogonType.Id,
-                 Name = location.LocationCredential.LogonType.Name
-             };
+                var locCred = new Shared.NetMessages.TaskMessages.DbLocationCredential()
+                {
+                    Id = location.LocationCredential.Id,
+                    host = location.LocationCredential.Host,
+                    password = location.LocationCredential.Password,
+                    port = location.LocationCredential.Port == null ? 0 : (int)location.LocationCredential.Port,
+                    username = location.LocationCredential.Username,
+                    LogonType = new DbLogonType()
+                    {
+                        Id = location.LocationCredential.LogonType.Id,
+                        Name = location.LocationCredential.LogonType.Name
+                    }
+                };
+                dbLoc.LocationCredential = locCred;
             }
 
-            var dbLoc = new Shared.NetMessages.TaskMessages.DbLocation()
-            {
-                id = location.Id,
-                uri = location.Uri,
-            };
+            
             dbLoc.protocol = protocol;
-            dbLoc.LocationCredential = locCred;
+            
             return dbLoc;
         }
 
@@ -245,17 +244,51 @@ namespace Server.Objects
             return dbTasks;
         }
 
+        private bool IsRequestAllowed(TaskMessage message)
+        {
+            var allowedTasks = (from users in mysql.Users
+                               join daemons in mysql.Daemons on users.Id equals daemons.Id
+                               join logedInDaemons in mysql.LogedInDaemons on daemons.Id equals logedInDaemons.IdDaemon
+                               join tasks in mysql.Tasks on daemons.Id equals tasks.IdDaemon
+                               where logedInDaemons.SessionUuid == message.sessionUuid
+                               select tasks.Id).ToList();
+            foreach (var task in message.tasks)
+            {
+                bool ok = false;
+                foreach (var validTask in allowedTasks)
+                {
+                    if(task.id == validTask)
+                    {
+                        ok = true;
+                        break;
+                    }
+                }
+                if (!ok)
+                    return false;
+            }
+            return true;
+        }
+
         public List<DbTask> GetTasks(TaskMessage message)
         {
+            var daemon = authenticator.GetDaemonFromUuid(message.sessionUuid);
             if (message.tasks == null | message.tasks.Count == 0)
                 return FetchAll(message);
             else
             {
-                throw new NotImplementedException("Tato část není dokončena");
-                List<DbTask> tasks = new List<DbTask>(); 
-                for (int i = 0; i < message.tasks.Count; i++)
+                if (!IsRequestAllowed(message))
                 {
-                    tasks.Add(ExtractData(mysql.Tasks.Where(r => r.Id == message.tasks[i].id).FirstOrDefault())); //TODO: Fixnout tenhle fetch
+                    errors.Add(new ErrorMessage() { id = 404,message="Daemon nemá permise pro tento požadavek"});
+                    return new List<DbTask>();
+                }
+                IEnumerable<int> wantedTasks = message.tasks.Select(r => r.id);
+                List<Task> ttasks = (from dTasks in mysql.Tasks
+                                 where  wantedTasks.Contains(dTasks.Id)
+                                 select dTasks).ToList();
+                List<DbTask> tasks = new List<DbTask>();
+                foreach (var task in ttasks)
+                {
+                    tasks.Add(ExtractData(task));
                 }
                 return tasks;
             }

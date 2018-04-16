@@ -31,7 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\Daemon\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\Daemon\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Rijndael256, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\Daemon\packages\Rijndael256.3.2.0\lib\net452\Rijndael256.dll</HintPath>
@@ -41,6 +41,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -51,11 +52,24 @@
   <ItemGroup>
     <Compile Include="Crc32.cs" />
     <Compile Include="DeserializeOnly.cs" />
-    <Compile Include="ILog.cs" />
+    <Compile Include="LoginSettings.cs" />
+    <Compile Include="LogObjects\DaemonFailedIntroductionLog.cs" />
+    <Compile Include="LogObjects\DaemonNeedsPasswordLog.cs" />
+    <Compile Include="LogObjects\GeneralDaemonError.cs" />
+    <Compile Include="LogObjects\GeneralServerResponseLog.cs" />
+    <Compile Include="LogObjects\GeneralTaskFailedLog.cs" />
+    <Compile Include="LogObjects\LogedInInfo.cs" />
+    <Compile Include="NetMessages\RSAForDaemonMessage.cs" />
+    <Compile Include="NetMessages\RSAForDaemonResponse.cs" />
+    <Compile Include="NetMessages\UserLoginMessage.cs" />
+    <Compile Include="NetMessages\UserLoginResponse.cs" />
+    <Compile Include="SLog.cs" />
     <Compile Include="INetException.cs" />
     <Compile Include="IniReader.cs" />
     <Compile Include="JsonableUniversalLog.cs" />
     <Compile Include="LogContentType.cs" />
+    <Compile Include="LogObjects\DaemonCrashLog.cs" />
+    <Compile Include="LogObjects\DaemonFailedLoginLog.cs" />
     <Compile Include="LogObjects\DebugLog.cs" />
     <Compile Include="LogObjects\ServerStatusLog.cs" />
     <Compile Include="LogTable.cs" />

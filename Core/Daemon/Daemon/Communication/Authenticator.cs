@@ -1,5 +1,7 @@
 ﻿using Daemon.Logging;
+using DaemonShared;
 using Shared;
+using Shared.LogObjects;
 using Shared.NetMessages;
 using System;
 using System.Collections.Generic;
@@ -15,11 +17,12 @@ namespace Daemon.Communication
     {
         private Messenger messenger;
         private LoginSettings settings = new LoginSettings();
-        private ILogger logger = LoggerFactory.CreateAppropriate();
+        private ILogger logger;
 
         public Authenticator(Messenger messenger)
         {
             this.messenger = messenger;
+            logger = ConsoleLogger.CreateInstance();
         }
 
         /// <summary>
@@ -80,6 +83,7 @@ namespace Daemon.Communication
                 version = Shared.Version.Parse(settings.Version)
             };
 
+
             var resp = await messenger.SendAsync<IntroductionResponse>(introductionMessage, "Introduction", System.Net.Http.HttpMethod.Put);
             logger.Log("Introduction úspěšný", LogType.INFORMATION);
             settings.Uuid = resp.ServerResponse.uuid;
@@ -101,8 +105,17 @@ namespace Daemon.Communication
             {
                 logger.Log("Chyba při pokusu o přihlášení :" + e.Message,LogType.ERROR);
                 e.ErrorMessages.ForEach(r => logger.Log(r.id + ":" + r.message + "->" + r.value,LogType.ERROR));
+                var x = Task.Run(async () => await logger.ServerLogAsync(
+                    new DaemonFailedLoginLog(
+                        LogType.ERROR,
+                        settings.SSLUse ? settings.SSLServer : settings.Server,
+                        settings.Uuid,
+                        settings.Password == null,
+                        e.ErrorMessages
+                    )));
                 return Guid.Empty;
             }
+
         }
 
     }

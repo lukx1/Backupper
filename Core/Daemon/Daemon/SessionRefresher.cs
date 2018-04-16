@@ -1,5 +1,6 @@
 ﻿using Daemon.Communication;
 using Daemon.Logging;
+using DaemonShared;
 using Shared;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace Daemon
     /// <summary>
     /// Opakovaně kontaktuje server aby session nevypršel
     /// </summary>
-    public class SessionRefresher
+    public class SessionRefresher : IDisposable
     {
         private Task ticker;
         private LoginSettings settings = new LoginSettings();
@@ -21,7 +22,7 @@ namespace Daemon
         private DateTime refreshAt;
         private DateTime wakeUpAt;
         private bool externRec = false;
-        private ILogger logger = LoggerFactory.CreateAppropriate();
+        private ILogger logger = ConsoleLogger.CreateInstance();
 
         public SessionRefresher(Authenticator logginer)
         {
@@ -70,5 +71,9 @@ namespace Daemon
             }
         }
 
+        public void Dispose()
+        {
+            this.ticker.Dispose();
+        }
     }
 }

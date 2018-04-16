@@ -61,12 +61,12 @@ namespace Daemon
         /// <summary>
         /// Zálohování začlo
         /// </summary>
-        public RunChange BackupStarted;
+        //public event RunChange BackupStarted;
 
         /// <summary>
         /// Zálohování skončilo
         /// </summary>
-        public RunChange BackupEnded;
+        //public event RunChange BackupEnded;
 
         /// <summary>
         /// Pokud je nastaveno na false, bude tento objekt zničen při

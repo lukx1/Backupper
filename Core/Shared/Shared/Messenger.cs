@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,7 +21,6 @@ namespace Shared
     public class Messenger
     {
         private HttpClient client;
-        private string jsonResponse;
         /// <summary>
         /// Nepoužívat pokud klient je používán asynchroně
         /// </summary>
@@ -30,9 +30,23 @@ namespace Shared
         /// Vytvoří instanci a uloží si kontaktní server
         /// </summary>
         /// <param name="serverUrl"></param>
-        public Messenger(string serverUrl)
+        public Messenger(string serverUrl, bool allowSelfSignedCerts = false)
         {
-            client = new HttpClient();
+            if (serverUrl.ToUpper().StartsWith("HTTPS://"))
+            {
+                WebRequestHandler handler = new WebRequestHandler();
+                X509Certificate2 certificate = new X509Certificate2();
+                handler.ClientCertificates.Add(certificate);
+                client = new HttpClient(handler);
+                if (allowSelfSignedCerts)
+                {
+                    ServicePointManager.ServerCertificateValidationCallback += (s, crt, chn,sslpe) => true;
+                }
+            }
+            else
+            {
+                client = new HttpClient();
+            }
             client.DefaultRequestHeaders
                   .Accept
                   .Add(new MediaTypeWithQualityHeaderValue("application/json"));//ACCEPT header

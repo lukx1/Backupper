@@ -28,6 +28,12 @@ namespace Shared.NetMessages
         /// Předzdílený klíč, nešifrovaný
         /// </summary>
         public string preSharedKey;
+
+        /// <summary>
+        /// Unikátní public key vytvořený daemonem. Server nidky neposílá
+        /// </summary>
+        public char[] publicKey;
+
         /// <summary>
         /// Verze komunikačního protokolu
         /// </summary>

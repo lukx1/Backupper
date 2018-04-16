@@ -8,7 +8,7 @@ namespace Shared
     /// <summary>
     /// Tvoří, šifruje a porovnává hesla. 
     /// </summary>
-    public class PasswordFactory
+    public static class PasswordFactory
     {
 
         private const int saltBytes = 128 / 8;
@@ -31,6 +31,8 @@ namespace Shared
 
             return SlowEquals(Encoding.ASCII.GetBytes(HashPasswordPbkdf2(plain, salt)),Encoding.ASCII.GetBytes(hashed));
         }
+
+        
 
         /// <summary>
         /// Vypočítá CRC32 stringu, pouze pro kontrolu.
@@ -86,6 +88,97 @@ namespace Shared
             return Convert.ToBase64String(GenerateRandomBytes(bytes));
         }
 
+        /// <summary>
+        /// Odšifruje pomocí private klíče. Pokud není v xml obsažen
+        /// bude hozen CryptoGraphicException
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="xml"></param>
+        /// <returns></returns>
+        public static string DecryptRSA(string data, string xml)
+        {
+            RSACryptoServiceProvider.UseMachineKeyStore = false;
+            using (var rsa = new RSACryptoServiceProvider(2048))
+            {
+                try
+                {
+                    rsa.FromXmlString(xml);
+                    return Encoding.UTF8.GetString(rsa.Decrypt(Convert.FromBase64String(data), false));
+                }
+                finally
+                {
+                    rsa.PersistKeyInCsp = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Zašifruje pomocí public klíče. Xml může obsahovat i private klíč,
+        /// který bude ignorován
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="xml"></param>
+        /// <returns></returns>
+        public static string EncryptRSA(string data,string xml)
+        {
+            RSACryptoServiceProvider.UseMachineKeyStore = false;
+            using (var rsa = new RSACryptoServiceProvider(2048))
+            {
+                try
+                {
+                    rsa.FromXmlString(xml);
+                    return Convert.ToBase64String(rsa.Encrypt(Encoding.UTF8.GetBytes(data), false));
+                }
+                finally
+                {
+                    rsa.PersistKeyInCsp = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Extrahuje z XML veřejný klíč
+        /// </summary>
+        /// <param name="xml"></param>
+        /// <returns></returns>
+        public static string GetPublicFromRSAKeyPair(string xml)
+        {
+            RSACryptoServiceProvider.UseMachineKeyStore = false;
+
+            using (var rsa = new RSACryptoServiceProvider(2048))
+            {
+                try
+                {
+                    rsa.FromXmlString(xml);
+                    return rsa.ToXmlString(false);
+                }
+                finally
+                {
+                    rsa.PersistKeyInCsp = false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Vytovří nový RSA privátní klíč ve formátu XML. Obsahuje i public klíč
+        /// </summary>
+        /// <returns></returns>
+        public static string CreateRSAPrivateKey()
+        {
+            RSACryptoServiceProvider.UseMachineKeyStore = false;
+            using (var rsa = new RSACryptoServiceProvider(2048))
+            {
+                try
+                {
+                    return rsa.ToXmlString(true);
+                }
+                finally
+                {
+                    rsa.PersistKeyInCsp = false;
+                }
+            }
+        }
+
         private static byte[] GenerateRandomBytes(int count)
         {
             byte[] b = new byte[saltBytes];
@@ -96,7 +189,7 @@ namespace Shared
             return b;
         }
 
-        public byte[] HashSha1(byte[] bytes)
+        public static byte[] HashSha1(byte[] bytes)
         {
             using (SHA1Managed sha1 = new SHA1Managed())
             {

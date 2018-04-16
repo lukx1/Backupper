@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Shared.LogObjects
 {
-    public class ServerStatusLog : ILog<ServerStatusLog.ServerStatusInfo>
+    public class ServerStatusLog : SLog<ServerStatusLog.ServerStatusInfo>
     {
 
         public ServerStatusLog(ServerStatusInfo.Status status)
@@ -16,23 +16,9 @@ namespace Shared.LogObjects
             this.DateCreated = DateTime.Now;
         }
 
-        public int Id { get; set; }
+        public override LogContentType Code => LogContentType.SERVER_STATUS;
 
-        public LogType LogType { get; set; } = LogType.INFORMATION;
-
-        public LogContentType Code => LogContentType.SERVER_STATUS;
-
-        public DateTime DateCreated { get; set; }
-
-        public ServerStatusInfo Content { get; set; } = new ServerStatusInfo();
-
-        public void Load(JsonableUniversalLog universalLog)
-        {
-            this.Id = universalLog.Id;
-            this.DateCreated = universalLog.DateCreated;
-            this.LogType = universalLog.LogType;
-            this.Content = JsonConvert.DeserializeObject<ServerStatusLog.ServerStatusInfo>(universalLog.Content);
-        }
+        public override ServerStatusInfo Content { get; protected set; } = new ServerStatusInfo();
 
         public class ServerStatusInfo
         {
