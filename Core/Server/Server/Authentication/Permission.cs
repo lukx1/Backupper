@@ -20,5 +20,12 @@ namespace Server.Authentication
         MANAGEPERMISSION = 8,
         MANAGEGROUPS = 9,
         DAEMONFETCHTASKS = 10,
+        MANAGETIMES = 11,
+        MANAGELOCATIONS = 12,
+        MANAGECREDENTIALS = 13,
+        MANAGESERVERSTATUS = 14,
+        MANAGELOGS = 15,
+        MANAGEPOWER = 16,
+        MANAGEEMAIL = 17
     }
 }
