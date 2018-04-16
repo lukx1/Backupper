@@ -8,7 +8,7 @@ using Server.Authentication;
 namespace Server.Controllers
 {
 	[AdminExc]
-    public class AdminUptimeController : Controller
+    public class AdminUptimeController : AdminBaseController
     {
 		[AdminSec]
         public ActionResult Index()

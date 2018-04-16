@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using log4net;
+using log4net.Core;
 
 namespace Server.Objects
 {
@@ -19,54 +20,83 @@ namespace Server.Objects
             debugLogger = LogManager.GetLogger("DebugLogger");
         }
 
-        public static void Debug(string message)
+        public static void Emergency(string message)
         {
-            debugLogger.Debug(message);
+            Emergency(message, null);
         }
 
-        public static void Debug(string message, System.Exception exception)
+        public static void Emergency(string message, Exception exception)
         {
-            debugLogger.Debug(message, exception);
+            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
         }
 
-        public static void Info(string message)
+        public static void Alert(string message)
         {
-            _instance.regularLogger.Info(message);
+            Alert(message, null);
         }
 
-        public static void Info(string message, System.Exception exception)
+        public static void Alert(string message, Exception exception)
         {
-            _instance.regularLogger.Info(message, exception);
+            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
         }
 
-        public static void Warn(string message)
+        public static void Critical(string message)
         {
-            _instance.regularLogger.Warn(message);
+            Critical(message, null);
         }
 
-        public static void Warn(string message, System.Exception exception)
+        public static void Critical(string message, Exception exception)
         {
-            _instance.regularLogger.Warn(message, exception);
+            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
         }
 
         public static void Error(string message)
         {
-            _instance.regularLogger.Error(message);
+            Error(message, null);
         }
 
-        public static void Error(string message, System.Exception exception)
+        public static void Error(string message, Exception exception)
         {
-            _instance.regularLogger.Error(message, exception);
+            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
         }
 
-        public static void Fatal(string message)
+        public static void Warning(string message)
         {
-            _instance.regularLogger.Fatal(message);
+            Warning(message, null);
         }
 
-        public static void Fatal(string message, System.Exception exception)
+        public static void Warning(string message, Exception exception)
         {
-            _instance.regularLogger.Fatal(message, exception);
+            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
+        }
+
+        public static void Notification(string message)
+        {
+            Notification(message, null);
+        }
+
+        public static void Notification(string message, Exception exception)
+        {
+            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
+        }
+
+        public static void Information(string message)
+        {
+            Information(message, null);
+        }
+
+        public static void Information(string message, Exception exception)
+        {
+            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
+        }
+        public static void Debug(string message)
+        {
+            Debug(message, null);
+        }
+
+        public static void Debug(string message, Exception exception)
+        {
+            debugLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
         }
     }
 }

@@ -65,7 +65,7 @@ namespace Server.Controllers
             var ctr = (AdminBaseController)filterContext.Controller;
             ctr.ViewBag.IsUserLoggedIn = false;
 
-            ServerLogger.Info("Authentication for: " + filterContext.ActionDescriptor.ActionName);
+            ServerLogger.Information("Authentication for: " + filterContext.ActionDescriptor.ActionName);
 
             if (!Util.IsUserAlreadyLoggedIn(ctr.Session))
             {
@@ -91,7 +91,7 @@ namespace Server.Controllers
 
         public void OnAuthorization(AuthorizationContext filterContext)
         {
-            ServerLogger.Info("Authorization for: " + filterContext.ActionDescriptor.ActionName);
+            ServerLogger.Information("Authorization for: " + filterContext.ActionDescriptor.ActionName);
 
             var ctr = (AdminBaseController)filterContext.Controller;
 

@@ -9,7 +9,6 @@ namespace Server.Objects
 {
     public class SqlLogger
     {
-
         private IEnumerable<UniversalLog> CreateUnisFromLogs<T>(params SLog<T>[] logs) where T : class
         {
             foreach (var log in logs)
@@ -44,11 +43,9 @@ namespace Server.Objects
             }
         }
 
-
-
         public async System.Threading.Tasks.Task<int> SubmitLogAsync<T>(params SLog<T>[] logs) where T : class
         {
-            
+
             using (MySQLContext sql = new MySQLContext())
             {
                 foreach (var uni in CreateUnisFromLogs(logs))
@@ -61,8 +58,7 @@ namespace Server.Objects
 
         public SqlLogger()
         {
-            
-        }
 
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿<ul class="mr-auto navbar-nav">
+﻿<ul class="navbar-nav flex-row mb-2">
 	<li class="nav-item">
 		@Html.ActionLink("Daemons", "Index", "AdminDaemons", null, new { @class = "nav-link" })
 	</li>
@@ -8,9 +8,6 @@
 	<li class="nav-item">
 		@Html.ActionLink("Groups", "Index", "AdminGroups", null, new { @class = "nav-link" })
 	</li>
-</ul>
-
-<ul class="ml-auto navbar-nav">
 	<li class="nav-item">
 		@Html.ActionLink("Locations", "Index", "AdminLocations", null, new { @class = "nav-link" })
 	</li>
@@ -21,6 +18,6 @@
 		@Html.ActionLink("Credentials", "Index", "AdminLocationCredentials", null, new { @class = "nav-link" })
 	</li>
 	<li class="nav-item">
-		@Html.ActionLink("Log Out", "Logout", "AdminLogin", null, new { @class = "nav-link", style="color:red;" });
+		@Html.ActionLink("Log Out", "Logout", "AdminLogin", null, new { @class = "nav-link", style = "color:red;" });
 	</li>
 </ul>

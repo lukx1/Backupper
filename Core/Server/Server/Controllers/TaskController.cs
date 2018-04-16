@@ -12,7 +12,6 @@ namespace Server.Controllers
 {
     public class TaskController : ApiController
     {
-
         private Authenticator authenticator;
         private TaskHandler taskHandler;
 

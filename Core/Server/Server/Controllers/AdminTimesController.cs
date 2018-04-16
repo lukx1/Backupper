@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -14,7 +15,8 @@ namespace Server.Controllers
 	[AdminExc]
 	public class AdminTimesController : AdminBaseController
 	{
-		[AdminSec]
+        [HttpGet]
+        [AdminSec]
 		public ActionResult Index()
 		{
 			using (var db = new Models.MySQLContext())
@@ -49,11 +51,6 @@ namespace Server.Controllers
 			using (var db = new Models.MySQLContext())
 			{
 				var time = db.Times.FirstOrDefault(x => x.Id == id);
-				if (time == null)
-				{
-					OperationResultMessage = "Time does not exists";
-					return RedirectToAction("Index", "AdminTimes");
-				}
 				return View(time);
 			}
 		}
@@ -79,11 +76,6 @@ namespace Server.Controllers
 			using (var db = new Models.MySQLContext())
 			{
 				var time = db.Times.FirstOrDefault(x => x.Id == id);
-				if (time == null)
-				{
-					OperationResultMessage = "Time does not exists";
-					return RedirectToAction("Index", "AdminTimes");
-				}
 				return View(time);
 			}
 		}
