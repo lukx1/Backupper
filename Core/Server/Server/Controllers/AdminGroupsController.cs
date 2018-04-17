@@ -12,6 +12,7 @@ namespace Server.Controllers
     public class AdminGroupsController : AdminBaseController
     {
         [HttpGet]
+        [AdminSec]
         public ActionResult Index()
         {
             using (var db = new Models.MySQLContext())

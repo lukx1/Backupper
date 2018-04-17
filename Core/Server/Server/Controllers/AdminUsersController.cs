@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
@@ -49,7 +50,10 @@ namespace Server.Controllers
         {
             using (var db = new Models.MySQLContext())
             {
+                string RSAPair = PasswordFactory.CreateRSAPrivateKey();
+                user.PrivateKey = PasswordFactory.EncryptAES(RSAPair, user.Password);
                 user.Password = PasswordFactory.HashPasswordPbkdf2(user.Password);
+                user.PublicKey = PasswordFactory.GetPublicFromRSAKeyPair(RSAPair);
                 db.Users.Add(user);
                 db.SaveChanges();
             }
@@ -79,9 +83,14 @@ namespace Server.Controllers
                 dbUser.Nickname = user.Nickname;
                 dbUser.FullName = user.FullName;
                 if (!user.Password.IsNullOrWhiteSpace())
-                    dbUser.Password = user.Password;
+                {
+                    string RSAPair = PasswordFactory.CreateRSAPrivateKey();
+                    dbUser.PrivateKey = PasswordFactory.EncryptAES(RSAPair, user.Password);
+                    dbUser.Password = PasswordFactory.HashPasswordPbkdf2(user.Password);
+                    dbUser.PublicKey = PasswordFactory.GetPublicFromRSAKeyPair(RSAPair);
+                }
 
-                db.Users.AddOrUpdate(user);
+                db.Entry(dbUser).State = EntityState.Modified;
                 db.SaveChanges();
             }
 

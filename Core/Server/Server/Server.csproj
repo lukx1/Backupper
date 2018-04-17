@@ -265,6 +265,7 @@
     <Compile Include="Models\UserGroup.cs" />
     <Compile Include="Objects\AdminExceptions\AdminException.cs" />
     <Compile Include="Objects\AdminExceptions\AdminModelErrorException.cs" />
+    <Compile Include="Objects\AdminExceptions\AdminSecurityException.cs" />
     <Compile Include="Objects\MagicStrings.cs" />
     <Compile Include="Objects\LogHandler.cs" />
     <Compile Include="Objects\MailHandler.cs" />

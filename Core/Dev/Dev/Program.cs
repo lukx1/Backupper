@@ -10,12 +10,29 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Dev
 {
     class Program
     {
+        private static void TestEncryption()
+        {
+            string raw = "Admin123456";
+            string publicPrivateXml = PasswordFactory.CreateRSAPrivateKey();
+            string publicRsa = PasswordFactory.GetPublicFromRSAKeyPair(publicPrivateXml);
+            string privateAesEncypt = PasswordFactory.EncryptAES(publicPrivateXml, raw);
+            Console.WriteLine("Raw password: " + raw);
+            Console.WriteLine("RSA Private and Public XML: " + publicPrivateXml);
+            Console.WriteLine("RSA Public XML: " + publicRsa);
+            Console.WriteLine("AES Encypted Private Key: " + privateAesEncypt);
+            Console.WriteLine("AES Encypted Private Key Lenght: " + privateAesEncypt.Length);
+
+            File.WriteAllLines("C:/DATA/KLICE.TXT", new []{raw,publicPrivateXml,publicRsa,privateAesEncypt});
+
+        }
+
         private static void CreateParsingScripts()
         {
             List<string> filePaths = Directory.GetFiles(@"..\..\..\Shared\NetMessages\", "*.cs",
@@ -122,12 +139,14 @@ namespace Dev
             //messenger.Send(taskMessage, "task", HttpMethod.Post);
             //var res = messenger.ReadMessage<TaskResponse>();
 
-            DebugLog debugLog = new DebugLog();
-            JsonableUniversalLog debugUni = JsonableUniversalLog.CreateFrom(debugLog);
-            DebugLog copy = new DebugLog();
-            copy.Load(debugUni);
+            //DebugLog debugLog = new DebugLog();
+            //JsonableUniversalLog debugUni = JsonableUniversalLog.CreateFrom(debugLog);
+            //DebugLog copy = new DebugLog();
+            //copy.Load(debugUni);
             //Console.WriteLine();
             //Console.ReadLine();
+
+            TestEncryption();
         }
 
         /*static void Main(string[] args)
