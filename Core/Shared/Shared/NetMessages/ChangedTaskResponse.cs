@@ -11,5 +11,9 @@ namespace Shared.NetMessages
     {
         public IEnumerable<DbTask> ChangedTasks { get; set; }
         public List<ErrorMessage> ErrorMessages { get; set; }
+        /// <summary>
+        /// Počet tasku co by na daemonovi měli, podle serveru, bežet
+        /// </summary>
+        public int CompareTaskAmount { get; set; }
     }
 }

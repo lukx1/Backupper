@@ -172,6 +172,8 @@ namespace Server.Objects
             var dbTask = new DbTask()
             {
                 name = task.Name,
+                ActionAfter = task.ActionAfter,
+                ActionBefore = task.ActionBefore,
                 backupType = new DbBackupType()
                 {
                     Id = task.BackupType.Id,

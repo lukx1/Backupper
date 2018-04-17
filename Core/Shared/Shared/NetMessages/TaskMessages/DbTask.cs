@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -61,5 +62,26 @@ namespace Shared.NetMessages.TaskMessages
         /// Naposledy změněno
         /// </summary>
         public DateTime lastChanged;
+
+        /// <summary>
+        /// Obsah souboru co má být spuštěn před zálohováním
+        /// </summary>
+        public string ActionBefore;
+
+        /// <summary>
+        /// Obsah souboru co má být spuštěn po zálohováním
+        /// </summary>
+        public string ActionAfter;
+
+        public string Serialize()
+        {
+            return JsonConvert.SerializeObject(this);
+        }
+
+        public static DbTask Deserialize(string json)
+        {
+            return JsonConvert.DeserializeObject<DbTask>(json);
+        }
+
     }
 }

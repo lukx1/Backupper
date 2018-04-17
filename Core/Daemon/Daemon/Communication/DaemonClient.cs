@@ -15,6 +15,7 @@ using Shared.LogObjects;
 using Shared.NetMessages.LogMessages;
 using DaemonShared;
 using DaemonShared.Pipes;
+using Daemon.Data;
 
 namespace Daemon.Communication
 {
@@ -250,8 +251,15 @@ namespace Daemon.Communication
             {
                 logger.Log("Načítání tasků", LogType.DEBUG);
                 sessionRefresher.ExternalyRefreshed();
-                if (await LoadTasks())
-                    logger.Log("Tasky načteny", LogType.INFORMATION);
+                try
+                {
+                    if (await LoadTasks())
+                        logger.Log("Tasky načteny", LogType.INFORMATION);
+                }
+                catch(Exception e)
+                {
+                    logger.Log(e.StackTrace,LogType.ERROR);//TODO : dodelat
+                }
                 Thread.Sleep(settings.TaskRefreshPeriodMs);
             }
         }
@@ -327,7 +335,8 @@ namespace Daemon.Communication
             }
             catch (INetException<TaskResponse> e)
             {
-                var faf = logger.ServerLogAsync(Dutil.CreateGSRL(LogType.ERROR, e.ErrorMessages));
+                var faf = logger.ServerLogAsync(Dutil.CreateGSRL(LogType.CRITICAL, e.ErrorMessages));
+                var log = new GeneralDaemonError() { LogType = LogType.CRITICAL};
                 DumpErrorMsgs(e);
             }
         }
@@ -338,10 +347,12 @@ namespace Daemon.Communication
         /// <returns></returns>
         private async Task<List<DbTask>> GetAllTaskFromDB()
         {
-            var resp = await messenger.SendAsync<TaskResponse>(new TaskMessage() { sessionUuid = settings.SessionUuid }, "task", HttpMethod.Post);
+            TaskKeeper keeper = new TaskKeeper(messenger);
+            return await keeper.GetAppropriate(settings.SessionUuid);
+            /*var resp = await messenger.SendAsync<TaskResponse>(new TaskMessage() { sessionUuid = settings.SessionUuid }, "task", HttpMethod.Post);
             sessionRefresher.ExternalyRefreshed();
             var tasks = resp.ServerResponse.Tasks;
-            return tasks;
+            return tasks;*/
         }
 
     }

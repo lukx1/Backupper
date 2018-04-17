@@ -105,6 +105,7 @@
     <Compile Include="Communication\LogCommunicator.cs" />
     <Compile Include="Communication\SftpClient.cs" />
     <Compile Include="Communication\SqlCommunicator.cs" />
+    <Compile Include="Data\TaskKeeper.cs" />
     <Compile Include="DoNotStoreThisException.cs" />
     <Compile Include="LocalException.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />

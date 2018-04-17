@@ -34,6 +34,12 @@ namespace Server.Models
         [Column(TypeName = "timestamp")]
         public DateTime LastChanged { get; set; }
 
+        [StringLength(4096)]
+        public string ActionBefore { get; set; }
+
+        [StringLength(4096)]
+        public string ActionAfter { get; set; }
+
         public virtual BackupType BackupType { get; set; }
 
         public virtual Daemon Daemon { get; set; }
