@@ -61,8 +61,16 @@ namespace Daemon.Backups
         /// </summary>
         /// <param name="backupInfo"></param>
         /// <param name="taskLocation"></param>
-        private void BackupNormal(SmartBackupInfo backupInfo,DbTaskLocation taskLocation)
+        private void BackupNormal(SmartBackupInfo backupInfo, DbTaskLocation taskLocation)
         {
+            SmartBackupInfo trulyBackupedInfo = backupInfo;
+
+            if (TaskDetails.ZipAlgorithm == "gz")
+            {
+                trulyBackupedInfo = new SmartBackupInfo();
+                trulyBackupedInfo.CreateFullBackupInfo(new Compressions.ZipCompressor(TaskDetails, backupInfo).Compress());
+            }
+
             bool successful = true;
 
             string DestinationPath = taskLocation.destination.uri + $"/{taskLocation.id}_{DateTime.Now.ToFileTimeUtc()}";
@@ -70,7 +78,7 @@ namespace Daemon.Backups
                 Directory.CreateDirectory(DestinationPath);
 
             string SourcePath = taskLocation.source.uri;
-            foreach (SmartFileInfo item in backupInfo.fileInfos)
+            foreach (SmartFileInfo item in trulyBackupedInfo.fileInfos)
             {
                 // Definice cesty kam se to bude kopírovat je = DestinationPath + SubPath + FileName, a kopiruje se z SourcePath + SubPath + FileName (aneb item.destination)
                 string subPath = item.destination.Substring(SourcePath.Length, item.destination.Length - SourcePath.Length - item.filename.Length);
@@ -81,16 +89,15 @@ namespace Daemon.Backups
                 {
                     File.Copy(item.destination, copyPath);
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     logger.Log($"Backup: Failed to Copy file [Backup: Normal, CopyPath: {copyPath}] backup failed]", Shared.LogType.ERROR);
                     successful = false;
-                    throw e;
-                    //break;
+                    break;
                 }
             }
 
-            if(successful)
+            if (successful)
                 backupInfo.WriteToFile(SmartBackupInfo.StorePath + $"{taskLocation.id}_{DateTime.Now.ToFileTimeUtc()}.bki");
         }
 
