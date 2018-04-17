@@ -10,10 +10,10 @@ using Server.Models;
 namespace Server.Controllers
 {
 	[AdminExc]
+    [AdminSec(Authentication.Permission.MANAGEOTHERDAEMONS, Authentication.Permission.MANAGESELFDAEMONS)]
 	public class AdminTasksController : AdminBaseController
 	{
 		[HttpGet]
-		[AdminSec]
 		public ActionResult Tasks(int id)
 		{
 			using (var db = new Models.MySQLContext())
@@ -30,7 +30,6 @@ namespace Server.Controllers
 		}
 
 		[HttpGet]
-		[AdminSec]
 		public ActionResult TaskTimes(int id)
 		{
 			var model = new Models.Admin.TaskTimesModel(id);
@@ -39,7 +38,6 @@ namespace Server.Controllers
 		}
 
 		[HttpPost]
-		[AdminSec]
 		public ActionResult TaskTimes(Models.Admin.TaskTimesModel model)
 		{
 			model.Save();
@@ -48,7 +46,6 @@ namespace Server.Controllers
 		}
 
 		[HttpGet]
-		[AdminSec]
 		public ActionResult NewTask(int id)
 		{
 			using (var db = new MySQLContext())
@@ -66,7 +63,6 @@ namespace Server.Controllers
 		}
 
 		[HttpPost]
-		[AdminSec]
 		public ActionResult NewTask(Models.Task task)
 		{
 			using (var db = new Models.MySQLContext())
@@ -81,7 +77,6 @@ namespace Server.Controllers
 		}
 
 		[HttpGet]
-		[AdminSec]
 		public ActionResult EditTask(int id)
 		{
 			using (var db = new Models.MySQLContext())
@@ -102,7 +97,6 @@ namespace Server.Controllers
 		}
 
 		[HttpPost]
-		[AdminSec]
 		public ActionResult EditTask(Models.Task task)
 		{
 			using (var db = new Models.MySQLContext())
@@ -127,34 +121,21 @@ namespace Server.Controllers
 		}
 
 		[HttpGet]
-		[AdminSec]
 		public ActionResult DeleteTask(int id)
 		{
 			using (var db = new Models.MySQLContext())
 			{
 				var task = db.Tasks.Where(x => x.Id == id).Include(x => x.BackupType).FirstOrDefault();
-				if (task == null)
-				{
-					OperationResultMessage = "Task does not exists";
-					return RedirectToAction("Index", "AdminDaemons");
-				}
 				return View(task);
 			}
 		}
 
 		[HttpPost]
-		[AdminSec]
 		public ActionResult DeleteTask(Models.Task task)
 		{
 			using (var db = new Models.MySQLContext())
 			{
 				var dbTask = db.Tasks.FirstOrDefault(x => x.Id == task.Id);
-				if (dbTask == null)
-				{
-					TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Task does not exists";
-					return RedirectToAction("Index", "AdminDaemons");
-				}
-
 				db.Tasks.Remove(dbTask);
 				db.SaveChanges();
 
@@ -164,7 +145,6 @@ namespace Server.Controllers
 		}
 
 		[HttpGet]
-		[AdminSec]
 		public ActionResult TaskLocations(int id)
 		{
 			using (var db = new MySQLContext())
@@ -180,45 +160,32 @@ namespace Server.Controllers
 		}
 
 		[HttpGet]
-		[AdminSec]
 		public ActionResult NewTaskLocation(int id)
 		{
-			var model = new Models.Admin.NewEditTaskLocationsModel();
-			model.IdTask = id;
-
+			var model = new Models.Admin.NewEditTaskLocationsModel() { IdTask = id };
 			model.Load();
-
 			return View(model);
 		}
 
 		[HttpPost]
-		[AdminSec]
 		public ActionResult NewTaskLocation(Models.Admin.NewEditTaskLocationsModel model)
 		{
 			model.Save();
-
 			OperationResultMessage = "New task location was successfully added";
 			return RedirectToAction("TaskLocations", "AdminTasks", new { id = model.IdTask });
 		}
 
 		[HttpGet]
-		[AdminSec]
 		public ActionResult EditTaskLocation(int id)
 		{
-			var model = new Models.Admin.NewEditTaskLocationsModel();
-			model.Id = id;
+			var model = new Models.Admin.NewEditTaskLocationsModel() { Id = id };
 			model.Load();
-
 			return View(model);
 		}
 
 		[HttpPost]
-		[AdminSec]
 		public ActionResult EditTaskLocation(Models.Admin.NewEditTaskLocationsModel model)
 		{
-			if (!Util.IsUserAlreadyLoggedIn(Session))
-				return RedirectToAction("Login", "AdminLogin");
-
 			model.Save();
 
 			OperationResultMessage = "Task location was successfully updated";
@@ -226,7 +193,6 @@ namespace Server.Controllers
 		}
 
 		[HttpGet]
-		[AdminSec]
 		public ActionResult DeleteTaskLocation(int id)
 		{
 			using (var db = new Models.MySQLContext())
@@ -237,16 +203,15 @@ namespace Server.Controllers
 		}
 
 		[HttpPost]
-		[AdminSec]
 		public ActionResult DeleteTaskLocation(Models.TaskLocation loc)
 		{
 			using (var db = new Models.MySQLContext())
 			{
 				var dbTask = db.TaskLocations.FirstOrDefault(x => x.Id == loc.Id);
-
+                dbTask.Task.LastChanged = DateTime.Now;
+			    db.Entry(dbTask.Task).State = EntityState.Modified;
 				db.TaskLocations.Remove(dbTask);
 				db.SaveChanges();
-
 				OperationResultMessage = "Task location was successfully deleted";
 				return RedirectToAction("Index", "AdminDaemons");
 			}

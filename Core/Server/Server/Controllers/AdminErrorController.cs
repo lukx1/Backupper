@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace Server.Controllers
 {
+    [AdminExc]
     public class AdminErrorController : Controller
     {
         public ActionResult Index()

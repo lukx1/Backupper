@@ -37,7 +37,7 @@ namespace Server.Objects
 
         public static void Alert(string message, Exception exception)
         {
-            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
+            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Alert, message, exception);
         }
 
         public static void Critical(string message)
@@ -47,7 +47,7 @@ namespace Server.Objects
 
         public static void Critical(string message, Exception exception)
         {
-            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
+            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Critical, message, exception);
         }
 
         public static void Error(string message)
@@ -57,7 +57,7 @@ namespace Server.Objects
 
         public static void Error(string message, Exception exception)
         {
-            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
+            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Error, message, exception);
         }
 
         public static void Warning(string message)
@@ -67,7 +67,7 @@ namespace Server.Objects
 
         public static void Warning(string message, Exception exception)
         {
-            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
+            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Warn, message, exception);
         }
 
         public static void Notification(string message)
@@ -77,7 +77,7 @@ namespace Server.Objects
 
         public static void Notification(string message, Exception exception)
         {
-            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
+            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Notice, message, exception);
         }
 
         public static void Information(string message)
@@ -87,7 +87,7 @@ namespace Server.Objects
 
         public static void Information(string message, Exception exception)
         {
-            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
+            _instance.regularLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Info, message, exception);
         }
         public static void Debug(string message)
         {
@@ -96,7 +96,7 @@ namespace Server.Objects
 
         public static void Debug(string message, Exception exception)
         {
-            debugLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Emergency, message, exception);
+            debugLogger.Logger.Log(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType, Level.Debug, message, exception);
         }
     }
 }

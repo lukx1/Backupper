@@ -5,56 +5,35 @@ using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Ajax.Utilities;
 using Server.Authentication;
-using Server.Models;
 using Shared;
 
 namespace Server.Controllers
 {
+    [AdminExc]
+    [AdminSec(Permission.MANAGECREDENTIALS)]
     public class AdminLocationCredentialsController : AdminBaseController
     {
+        [HttpGet]
         public ActionResult Index()
         {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new Models.MySQLContext())
-                    return View(db.LocationCredentials.AsQueryable().Include(x => x.LogonType).ToList());
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
+            using (var db = new Models.MySQLContext())
+                return View(db.LocationCredentials.AsQueryable().Include(x => x.LogonType).ToList());
         }
 
         [HttpGet]
         public ActionResult NewLocationCredential()
         {
-            try
+            using (var db = new Models.MySQLContext())
             {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new MySQLContext())
-                {
-                    ViewBag.LogonTypes =
-                        db.LogonTypes.Select(x => new SelectListItem()
-                            {
-                                Value = x.Id.ToString(),
-                                Text = x.Name
-                            }
-                        ).ToArray();
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
+                ViewBag.LogonTypes =
+                    db.LogonTypes.Select(x => new SelectListItem()
+                    {
+                        Value = x.Id.ToString(),
+                        Text = x.Name
+                    }
+                    ).ToArray();
             }
 
             return View(new Models.LocationCredential());
@@ -63,156 +42,112 @@ namespace Server.Controllers
         [HttpPost]
         public ActionResult NewLocationCredential(Models.LocationCredential cred)
         {
-            try
+            using (var db = new Models.MySQLContext())
             {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new Models.MySQLContext())
-                {
-                    db.LocationCredentials.Add(cred);
-                    db.SaveChanges();
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
+                db.LocationCredentials.Add(cred);
+                db.SaveChanges();
             }
 
-            TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "New credential was successfully created";
+            OperationResultMessage = "New credential was successfully created";
             return RedirectToAction("Index", "AdminLocationCredentials");
         }
 
         [HttpGet]
         public ActionResult EditLocationCredential(int id)
         {
-            try
+            using (var db = new Models.MySQLContext())
             {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+                var cred = db.LocationCredentials.Where(x => x.Id == id).Include(x => x.LogonType).FirstOrDefault();
 
-                using (var db = new MySQLContext())
-                {
-                    ViewBag.LogonTypes =
-                        db.LogonTypes.Select(x => new SelectListItem()
-                            {
-                                Value = x.Id.ToString(),
-                                Text = x.Name
-                            }
-                        ).ToArray();
-                }
-
-                using (var db = new Models.MySQLContext())
-                {
-                    var cred = db.LocationCredentials.Where(x => x.Id == id).Include(x => x.LogonType).FirstOrDefault();
-                    if (cred == null)
+                ViewBag.LogonTypes =
+                    db.LogonTypes.Select(x => new SelectListItem()
                     {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential does not exists";
-                        return RedirectToAction("Index", "AdminLocationCredentials");
+                        Value = x.Id.ToString(),
+                        Text = x.Name
                     }
+                    ).ToArray();
 
-                    ViewBag.LogonTypes =
-                        db.LogonTypes.Select(x => new SelectListItem()
-                            {
-                                Value = x.Id.ToString(),
-                                Text = x.Name
-                            }
-                        ).ToArray();
+                cred.Password = null;
 
-                    return View(cred);
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
+                return View(cred);
             }
         }
 
         [HttpPost]
         public ActionResult EditLocationCredential(Models.LocationCredential cred)
         {
-            try
+            using (var db = new Models.MySQLContext())
             {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+                var dbLocCred = db.LocationCredentials.FirstOrDefault(x => x.Id == cred.Id);
 
-                using (var db = new Models.MySQLContext())
+                dbLocCred.Username = cred.Username;
+                if(!cred.Password.IsNullOrWhiteSpace())
+                    dbLocCred.Password = cred.Password;
+                dbLocCred.Host = cred.Host;
+                dbLocCred.Port = cred.Port;
+                dbLocCred.IdLogonType = cred.IdLogonType;
+
+                db.Entry(dbLocCred).State = EntityState.Modified;
+
+                foreach (var loc in dbLocCred.Locations)
                 {
-                    db.LocationCredentials.AddOrUpdate(cred);
-                    db.SaveChanges();
+                    foreach (var sourceLoc in loc.TaskLocations)
+                    {
+                        sourceLoc.Task.LastChanged = DateTime.Now;
+                        db.Entry(sourceLoc.Task).State = EntityState.Modified;
+                    }
+
+                    foreach (var destLoc in loc.TaskLocations)
+                    {
+                        destLoc.Task.LastChanged = DateTime.Now;
+                        db.Entry(destLoc.Task).State = EntityState.Modified;
+                    }
                 }
 
-                TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential was successfully updated";
-                return RedirectToAction("Index", "AdminLocationCredentials");
+                db.SaveChanges();
             }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
+
+            OperationResultMessage = "Credential was successfully updated";
+            return RedirectToAction("Index", "AdminLocationCredentials");
         }
 
         [HttpGet]
         public ActionResult DeleteLocationCredential(int id)
         {
-            try
+            using (var db = new Models.MySQLContext())
             {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new Models.MySQLContext())
-                {
-                    var cred = db.LocationCredentials.Where(x => x.Id == id).Include(x => x.LogonType).FirstOrDefault();
-                    if (cred == null)
-                    {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credentials does not exists";
-                        return RedirectToAction("Index", "AdminLocationCredentials");
-                    }
-                    return View(cred);
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
+                var cred = db.LocationCredentials.Where(x => x.Id == id).Include(x => x.LogonType).FirstOrDefault();
+                return View(cred);
             }
         }
 
         [HttpPost]
         public ActionResult DeleteLocationCredential(Models.LocationCredential cred)
         {
-            try
+            using (var db = new Models.MySQLContext())
             {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+                var dbLocCred = db.LocationCredentials.FirstOrDefault(x => x.Id == cred.Id);
+                db.LocationCredentials.Remove(dbLocCred);
 
-                using (var db = new Models.MySQLContext())
+                foreach (var loc in dbLocCred.Locations)
                 {
-                    var dbLocCred = db.LocationCredentials.FirstOrDefault(x => x.Id == cred.Id);
-                    if (dbLocCred == null)
+                    foreach (var sourceLoc in loc.TaskLocations)
                     {
-                        TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential does not exists";
-                        return RedirectToAction("Index", "AdminLocationCredentials");
+                        sourceLoc.Task.LastChanged = DateTime.Now;
+                        db.Entry(sourceLoc.Task).State = EntityState.Modified;
                     }
 
-                    db.LocationCredentials.Remove(dbLocCred);
-                    db.SaveChanges();
-
-                    TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Credential was successfully deleted";
-                    return RedirectToAction("Index", "AdminLocationCredentials");
+                    foreach (var destLoc in loc.TaskLocations)
+                    {
+                        destLoc.Task.LastChanged = DateTime.Now;
+                        db.Entry(destLoc.Task).State = EntityState.Modified;
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
+
+                db.SaveChanges();
+
+                OperationResultMessage = "Credential was successfully deleted";
+                return RedirectToAction("Index", "AdminLocationCredentials");
             }
         }
     }

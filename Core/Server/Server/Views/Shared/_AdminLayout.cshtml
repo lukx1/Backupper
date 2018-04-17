@@ -1,11 +1,13 @@
-﻿@{
+﻿@using global::Server.Objects
+
+@{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@if (TempData[global::Server.Objects.MagicStrings.OPERATION_RESULT_MESSAGE] != null)
+@if (TempData[MagicStrings.OPERATION_RESULT_MESSAGE] != null)
 {
     <div class="alert alert-info" role="alert">
-        @TempData[global::Server.Objects.MagicStrings.OPERATION_RESULT_MESSAGE]
+        @TempData[MagicStrings.OPERATION_RESULT_MESSAGE]
     </div>
 }
 

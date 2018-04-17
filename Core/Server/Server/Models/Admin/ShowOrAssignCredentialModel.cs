@@ -43,6 +43,19 @@ namespace Server.Models.Admin
 
                 loc.IdLocationCredentails = IdCredential;
                 db.Entry(loc).State = EntityState.Modified;
+
+                foreach (var sourceLoc in loc.TaskLocations)
+                {
+                    sourceLoc.Task.LastChanged = DateTime.Now;
+                    db.Entry(sourceLoc.Task).State = EntityState.Modified;
+                }
+
+                foreach (var destLoc in loc.TaskLocations)
+                {
+                    destLoc.Task.LastChanged = DateTime.Now;
+                    db.Entry(destLoc.Task).State = EntityState.Modified;
+                }
+
                 db.SaveChanges();
             }
         }

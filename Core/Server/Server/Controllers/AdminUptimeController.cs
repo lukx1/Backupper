@@ -8,6 +8,7 @@ using Server.Authentication;
 namespace Server.Controllers
 {
 	[AdminExc]
+    [AdminSec(Permission.MANAGESERVERSTATUS)]
     public class AdminUptimeController : AdminBaseController
     {
 		[AdminSec]

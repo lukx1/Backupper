@@ -10,124 +10,64 @@ using Shared;
 
 namespace Server.Controllers
 {
+    [AdminExc]
+    [AdminSec(Authentication.Permission.MANAGEPRESHARED)]
     public class AdminPresharedKeysController : AdminBaseController
     {
         public ActionResult Index()
         {
-            try
+            using (var db = new Models.MySQLContext())
             {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new Models.MySQLContext())
-                {
-                    var model = db.DaemonPreSharedKeys.AsQueryable().Include(x => x.User).ToArray();
-                    return View(model);
-                }
-            }
-            catch(Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
+                var model = db.DaemonPreSharedKeys.AsQueryable().Include(x => x.User).ToArray();
+                return View(model);
             }
         }
 
         [HttpGet]
         public ActionResult NewPresharedKey()
         {
-            try
-            {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                return View(new Models.DaemonPreSharedKey());
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
+            return View(new Models.DaemonPreSharedKey());
         }
 
         [HttpPost]
         public ActionResult NewPresharedKey(Models.DaemonPreSharedKey key)
         {
-            try
+            using (var db = new MySQLContext())
             {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
+                var auth = new Authenticator(db);
+                var user = auth.GetUserFromUuid((Guid)Session[Objects.MagicStrings.SESSION_UUID]);
 
-                using (var db = new MySQLContext())
-                {
-                    var auth = new Authenticator(db);
-                    var user = auth.GetUserFromUuid((Guid)Session[Objects.MagicStrings.SESSION_UUID]);
+                key.IdUser = user.Id;
+                key.PreSharedKey = PasswordFactory.HashPasswordPbkdf2(PasswordFactory.CreateRandomPassword(16));
 
-                    key.IdUser = user.Id;
-                    key.PreSharedKey = PasswordFactory.HashPasswordPbkdf2(PasswordFactory.CreateRandomPassword(16));
+                db.DaemonPreSharedKeys.Add(key);
 
-                    db.DaemonPreSharedKeys.Add(key);
-
-                    db.SaveChanges();
-                }
-
-                return RedirectToAction("Index", "AdminPresharedKeys");
+                db.SaveChanges();
             }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
+
+            return RedirectToAction("Index", "AdminPresharedKeys");
         }
 
         [HttpGet]
         public ActionResult DeletePresharedKey(int id)
         {
-            try
+            using (var db = new MySQLContext())
             {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new MySQLContext())
-                {
-                    var key = db.DaemonPreSharedKeys.AsQueryable().Include(x => x.User).FirstOrDefault(x => x.Id == id);
-                    if (key == null)
-                        throw new Exception("Preshared key does not exists");
-                    return View(key);
-                }
-            }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
+                var key = db.DaemonPreSharedKeys.AsQueryable().Include(x => x.User).FirstOrDefault(x => x.Id == id);
+                return View(key);
             }
         }
 
         [HttpPost]
         public ActionResult DeletePresharedKey(Models.DaemonPreSharedKey key)
         {
-            try
+            using (var db = new MySQLContext())
             {
-                if (!Util.IsUserAlreadyLoggedIn(Session))
-                    return RedirectToAction("Login", "AdminLogin");
-
-                using (var db = new MySQLContext())
-                {
-                    db.Entry(key).State = EntityState.Deleted;
-                    db.SaveChanges();
-                }
-
-                return RedirectToAction("Index", "AdminPresharedKeys");
+                db.Entry(key).State = EntityState.Deleted;
+                db.SaveChanges();
             }
-            catch (Exception e)
-            {
-                //TODO: LOG
-                TempData[Objects.MagicStrings.ERROR_MESSAGE] = e.Message;
-                return RedirectToAction("Index", "AdminError");
-            }
+
+            return RedirectToAction("Index", "AdminPresharedKeys");
         }
     }
 }

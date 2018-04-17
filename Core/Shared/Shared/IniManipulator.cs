@@ -57,7 +57,7 @@ namespace Shared
                 }
                 else
                     builder.Append(kv.key).Append(delimiter).Append(kv.val);
-                builder.Append(Util.Newline);
+                builder.Append(Environment.NewLine);
             }
             File.WriteAllText(filePath, builder.ToString());
             return removed;
@@ -78,10 +78,10 @@ namespace Shared
                 }
                 else
                     builder.Append(kv.key).Append(delimiter).Append(kv.val);
-                builder.Append(Util.Newline);
+                builder.Append(Environment.NewLine);
             }
             if(!written)
-                builder.Append(key).Append(delimiter).Append(val).Append(Util.Newline);
+                builder.Append(key).Append(delimiter).Append(val).Append(Environment.NewLine);
             File.WriteAllText(filePath, builder.ToString());
         }
         public string Read(string key)

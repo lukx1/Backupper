@@ -9,6 +9,7 @@ using Server.Authentication;
 namespace Server.Controllers
 {
 	[AdminExc]
+    [AdminSec(Permission.MANAGEOTHERDAEMONS, Permission.MANAGESELFDAEMONS)]
     public class AdminDaemonsController : AdminBaseController
     {
 		[HttpGet]
@@ -26,7 +27,7 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-		public ActionResult DaemonGroups(int id)
+        public ActionResult DaemonGroups(int id)
         {
 			var model = new Models.Admin.DaemonGroupsModel(id);
 			model.Load();
@@ -34,7 +35,7 @@ namespace Server.Controllers
         }
 
         [HttpPost]
-		public ActionResult DaemonGroups(Models.Admin.DaemonGroupsModel model)
+        public ActionResult DaemonGroups(Models.Admin.DaemonGroupsModel model)
         {
 			model.Save();
 			TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = "Group edition was successfull";
@@ -42,7 +43,7 @@ namespace Server.Controllers
         }
 
 		[HttpGet]
-		public ActionResult DaemonsByUser(int id)
+        public ActionResult DaemonsByUser(int id)
         {
             using (var db = new Models.MySQLContext())
             {
@@ -53,13 +54,6 @@ namespace Server.Controllers
                     .ToArray();
                 return View("Index", daemons);
             }
-        }
-
-		[HttpGet]
-		public ActionResult LogedInDaemons()
-        {
-			using (var db = new Models.MySQLContext())
-				return View(db.LogedInDaemons.ToList());
         }
     }
 }

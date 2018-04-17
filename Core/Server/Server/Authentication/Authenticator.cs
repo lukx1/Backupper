@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Server.Objects.AdminExceptions;
 
 namespace Server.Authentication
 {
@@ -47,11 +48,11 @@ namespace Server.Authentication
         /// <returns></returns>
         public Guid LoginUser(string nickname, string password)
         {
-            User user = mysql.Users.Where(r => r.Nickname == nickname).FirstOrDefault();
+            User user = mysql.Users.FirstOrDefault(r => r.Nickname == nickname);
             if (user == null)
-                throw new NullReferenceException("Uživatel s daným jménem nebyl nalezen");
+                throw new AdminSecurityException("Uživatel s daným jménem nebyl nalezen");
             if (!PasswordFactory.ComparePasswordsPbkdf2(password, user.Password))
-                throw new ArgumentException("Heslo není platné");
+                throw new AdminSecurityException("Heslo není platné");
             return GetValidUuid(user);
         }
 
@@ -63,7 +64,7 @@ namespace Server.Authentication
         private Guid GetValidUuid(User user)
         {
             Guid guid = Guid.NewGuid();
-            LogedInUser logedInUser = mysql.LogedInUsers.Where(r => r.IdUser == user.Id).FirstOrDefault();
+            LogedInUser logedInUser = mysql.LogedInUsers.FirstOrDefault(r => r.IdUser == user.Id);
             if (logedInUser == null) //First login
             {
                 logedInUser = new LogedInUser() { IdUser = user.Id, SessionUuid = guid, Expires = DateTime.Now.AddMinutes(15) };
@@ -85,8 +86,11 @@ namespace Server.Authentication
         /// <returns></returns>
         public User GetUserFromUuid(Guid uuid)
         {
-            LogedInUser logedInUsers = mysql.LogedInUsers.Where(r => r.SessionUuid == uuid).FirstOrDefault();
-            return mysql.Users.Where(r => r.Id == logedInUsers.IdUser).FirstOrDefault();
+            LogedInUser logedInUsers = mysql.LogedInUsers.FirstOrDefault(r => r.SessionUuid == uuid);
+            if(logedInUsers == null)
+                throw new AdminSecurityException("Session neexistuje");
+
+            return mysql.Users.FirstOrDefault(r => r.Id == logedInUsers.IdUser);
         }
 
         /// <summary>
@@ -96,8 +100,8 @@ namespace Server.Authentication
         /// <returns></returns>
         public Daemon GetDaemonFromUuid(Guid sessionUuid)
         {
-            LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == sessionUuid).FirstOrDefault();
-            return mysql.Daemons.Where(r => r.Id == logedInDaemon.IdDaemon).FirstOrDefault();
+            LogedInDaemon logedInDaemon = mysql.LogedInDaemons.FirstOrDefault(r => r.SessionUuid == sessionUuid);
+            return mysql.Daemons.FirstOrDefault(r => r.Id == logedInDaemon.IdDaemon);
         }
 
         public bool AreRequestedTasksDaemons(IEnumerable<int> taskIds, Guid sessionGuid)
@@ -243,7 +247,7 @@ namespace Server.Authentication
         /// <returns></returns>
         public bool IsUserAllowed(string nickname, Server.Authentication.Permission permission)
         {
-            var user = mysql.Users.Where(r => r.Nickname == nickname).FirstOrDefault();
+            var user = mysql.Users.FirstOrDefault(r => r.Nickname == nickname);
             if (user == null)
                 return false;
             var groups = mysql.DaemonGroups.Where(r => r.IdDaemon == user.Id);
@@ -268,7 +272,10 @@ namespace Server.Authentication
         /// <returns></returns>
         public IEnumerable<Models.Group> GetGroupsFromUserNickname(string nickname)
         {
-            return GetGroupsFromUserId(mysql.Users.FirstOrDefault(x => x.Nickname == nickname).Id);
+            var user = mysql.Users.FirstOrDefault(x => x.Nickname == nickname);
+            if(user == null)
+                throw new AdminSecurityException("Uživatel neexistuje");
+            return GetGroupsFromUserId(user.Id);
         }
 
         /// <summary>
@@ -292,7 +299,10 @@ namespace Server.Authentication
         /// <returns></returns>
         public IEnumerable<Permission> GetPermissionsFromUserNickname(string nickname)
         {
-            return GetPermissionsFromUserId(mysql.Users.FirstOrDefault(x => x.Nickname == nickname).Id);
+            var user = mysql.Users.FirstOrDefault(x => x.Nickname == nickname);
+            if (user == null)
+                throw new AdminSecurityException("Uživatel neexistuje");
+            return GetPermissionsFromUserId(user.Id);
         }
 
         /// <summary>
@@ -318,7 +328,7 @@ namespace Server.Authentication
         /// <returns></returns>
         public DaemonPreSharedKey GetPresharedFromId(int id)
         {
-            return mysql.DaemonPreSharedKeys.Where(r => r.Id == id).FirstOrDefault();
+            return mysql.DaemonPreSharedKeys.FirstOrDefault(r => r.Id == id);
         }
 
         /// <summary>
@@ -329,7 +339,7 @@ namespace Server.Authentication
         /// <returns></returns>
         public bool IsPresharedValid(int id, string key)
         {
-            var preshared = mysql.DaemonPreSharedKeys.Where(r => r.Id == id).FirstOrDefault();
+            var preshared = mysql.DaemonPreSharedKeys.FirstOrDefault(r => r.Id == id);
             if (preshared == null)
                 return false;
             if (preshared.Used || DateTime.Compare(preshared.Expires, DateTime.Now) < 0 /*Expired*/)
@@ -360,7 +370,7 @@ namespace Server.Authentication
         /// <returns></returns>
         public bool IsUserSessionValid(Guid uuid, bool refreshTime = true)
         {
-            LogedInUser logedInUser = mysql.LogedInUsers.Where(r => r.SessionUuid == uuid).FirstOrDefault();
+            LogedInUser logedInUser = mysql.LogedInUsers.FirstOrDefault(r => r.SessionUuid == uuid);
             if (logedInUser == null)
                 return false;
             if (Util.IsExpired(logedInUser.Expires))
@@ -378,7 +388,7 @@ namespace Server.Authentication
         /// <returns></returns>
         public bool IsDaemonSessionValid(Guid sessionUuid, bool refreshTime = true)
         {
-            LogedInDaemon logedInDaemon = mysql.LogedInDaemons.Where(r => r.SessionUuid == sessionUuid).FirstOrDefault();
+            LogedInDaemon logedInDaemon = mysql.LogedInDaemons.FirstOrDefault(r => r.SessionUuid == sessionUuid);
             if (logedInDaemon == null)
                 return false;
             if (Util.IsExpired(logedInDaemon.Expires))

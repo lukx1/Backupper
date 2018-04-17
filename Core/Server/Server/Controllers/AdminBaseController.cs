@@ -15,7 +15,7 @@ namespace Server.Controllers
 {
     public abstract class AdminBaseController : Controller
     {
-        public IEnumerable<Authentication.Permission> CurrentUserPermissions { get; set; }
+        public IEnumerable<Permission> CurrentUserPermissions { get; set; }
         public IEnumerable<Models.Group> CurrentUserGroups { get; set; }
         public Models.User CurrentUser { get; set; }
 

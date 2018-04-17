@@ -15,7 +15,6 @@ namespace Shared
     public static class Util
     {
         public const bool IsDebug = false;
-        public const string Newline = "\r\n"; //TODO dodelat
 
         public static string GetAppdataFolder()
         {
