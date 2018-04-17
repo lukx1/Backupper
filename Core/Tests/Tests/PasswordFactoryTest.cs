@@ -29,18 +29,6 @@ namespace Tests
             Assert.IsTrue(result == "message","Sifra nerozlustena");
         }
 
-        /*private async void killMe()
-        {
-            Messenger client = new Messenger("");
-            await client.SendPost(new IntroductionMessage()
-            {
-                macAdress = new char[12] { '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0' },
-                os = "Win10",
-                version = 1,
-                preSharedKey = "tRnhF0IfmkDrIZU6dbCusQ=="
-            );
-        }*/
-
         [TestMethod]
         public void Test()
         {
