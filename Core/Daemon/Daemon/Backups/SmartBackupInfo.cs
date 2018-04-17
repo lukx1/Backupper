@@ -11,7 +11,7 @@ namespace Daemon.Backups
 {
     public class SmartBackupInfo
     {
-        public static string StorePath = Path.Combine(Util.GetAppdataFolder(),"Data","BackupInfos");
+        public static string StorePath = Path.Combine(Util.GetAppdataFolder(), "Data", "BackupInfos");
 
         public List<SmartFileInfo> fileInfos { get; set; }
         public DbTaskLocation location { get; set; }
@@ -31,7 +31,8 @@ namespace Daemon.Backups
             DirectoryInfo dir = new DirectoryInfo(path);
             foreach (FileInfo item in dir.GetFiles())
             {
-                fileInfos.Add(new SmartFileInfo() {
+                fileInfos.Add(new SmartFileInfo()
+                {
                     filename = item.Name,
                     destination = item.FullName,
                     lastDateModified = item.LastWriteTime
@@ -110,10 +111,10 @@ namespace Daemon.Backups
                     throw new Exception("id doesnt match");
                 if (reader.ReadLine() != location.source.uri)
                     throw new Exception("source doesnt match");
-                if(reader.ReadLine() != location.destination.uri)
+                if (reader.ReadLine() != location.destination.uri)
                     throw new Exception("destination doesnt match");
 
-                while(!reader.EndOfStream)
+                while (!reader.EndOfStream)
                 {
                     string[] data = reader.ReadLine().Split(';');
                     FileInfo info = new FileInfo(data[0]);
@@ -141,12 +142,12 @@ namespace Daemon.Backups
                 string[] name = item.Name.Split('_');
                 if (Convert.ToInt32(name[0]) == location.id)
                 {
-                    SmartBackupInfo temp = new SmartBackupInfo() { location = this.location};
+                    SmartBackupInfo temp = new SmartBackupInfo() { location = this.location };
                     temp.ReadFromFile(item.FullName);
                     infos.Add(temp);
                 }
             }
-
+            
             foreach (SmartBackupInfo item in infos)
                 this.Differentiate(item);
         }

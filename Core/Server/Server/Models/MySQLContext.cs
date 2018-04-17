@@ -205,6 +205,14 @@ namespace Server.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<Task>()
+                .Property(e => e.ActionBefore)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Task>()
+                .Property(e => e.ActionAfter)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<Task>()
                 .HasMany(e => e.TaskLocations)
                 .WithRequired(e => e.Task)
                 .HasForeignKey(e => e.IdTask);

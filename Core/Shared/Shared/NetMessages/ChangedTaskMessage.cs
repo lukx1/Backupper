@@ -8,8 +8,6 @@ namespace Shared.NetMessages
 {
     public class ChangedTaskMessage : SessionMessage
     {
-
-        public IEnumerable<int> TaskID{ get; set; }
         public DateTime LastLoaded { get; set; }
     }
 }
