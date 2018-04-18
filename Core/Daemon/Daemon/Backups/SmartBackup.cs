@@ -30,16 +30,17 @@ namespace Daemon.Backups
                 SmartBackupInfo info = new SmartBackupInfo();
                 info.location = item;
                 info.CreateFullBackupInfo(item.source.uri);
-                if (BackupType == DbBackupType.DIFF)
+                if (BackupType.Id == DbBackupType.DIFF.Id)
                 {
                     SmartBackupInfo temp = new SmartBackupInfo() { location = item };
                     temp.ReadOldestSimilar();
                     info.Differentiate(temp);
                 }
-                else if (BackupType == DbBackupType.INCR)
+                else if (BackupType.Id == DbBackupType.INCR.Id)
                 {
                     info.UnionAllSimilarInfos();
                 }
+
                 if (item.destination.protocol == DbProtocol.FTP)
                 {
                     BackupFTP(info, item);

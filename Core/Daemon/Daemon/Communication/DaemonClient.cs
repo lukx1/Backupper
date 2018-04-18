@@ -104,9 +104,9 @@ namespace Daemon.Communication
             catch (HttpRequestException e)
             {
                 logger.Log(
-                    $"Server není dostupný{Util.Newline}" +
-                    $"Pokus číslo {tryCount + 1}/{settings.LoginMaxRetryCount}{Util.Newline}" +
-                    $"Error : {e.Message}{Util.Newline}" +
+                    $"Server není dostupný{Environment.NewLine}" +
+                    $"Pokus číslo {tryCount + 1}/{settings.LoginMaxRetryCount}{Environment.NewLine}" +
+                    $"Error : {e.Message}{Environment.NewLine}" +
                     $"Příčina : server není zapnutý nebo odmítá připojení", LogType.WARNING
                     );
                 return false;
@@ -131,18 +131,18 @@ namespace Daemon.Communication
                 catch (INetException<IntroductionResponse> e)
                 {
                     logger.Log(
-                        $"Nebylo možné se představit{Util.Newline}" +
-                        $"Error #1-{e.ErrorMessages[0].id}{Util.Newline}" +
-                        $"Příčina : {e.ErrorMessages[0].message}{Util.Newline}" +
+                        $"Nebylo možné se představit{Environment.NewLine}" +
+                        $"Error #1-{e.ErrorMessages[0].id}{Environment.NewLine}" +
+                        $"Příčina : {e.ErrorMessages[0].message}{Environment.NewLine}" +
                         $"Nelze pokračovat", LogType.CRITICAL
                         );
                     throw new LocalException("Nelze se introducnout", e);
                 }
                 catch (FormatException e)
                 {
-                    logger.Log($"Nebylo možné se představit{Util.Newline}" +
-                        $"Error #2-{e.Message}{Util.Newline}" +
-                        $"Příčina : {e.StackTrace}{Util.Newline}" +
+                    logger.Log($"Nebylo možné se představit{Environment.NewLine}" +
+                        $"Error #2-{e.Message}{Environment.NewLine}" +
+                        $"Příčina : {e.StackTrace}{Environment.NewLine}" +
                         $"Nelze pokračovat", LogType.CRITICAL
                         );
                     throw new LocalException("Nelze se introducnout - špatný formát", e);
@@ -153,7 +153,7 @@ namespace Daemon.Communication
             {
                 if (++tryCount > settings.LoginMaxRetryCount - 1)
                 {
-                    logger.Log($"Byl dosažen maximální počet pokusů o připojení ({settings.LoginMaxRetryCount}){Util.Newline}Nelze pokračovat...", LogType.CRITICAL);
+                    logger.Log($"Byl dosažen maximální počet pokusů o připojení ({settings.LoginMaxRetryCount}){Environment.NewLine}Nelze pokračovat...", LogType.CRITICAL);
                     throw new LocalException($"Nelze kontaktovat server {(settings.SSLUse ? settings.SSLServer : settings.Server)}");
                 }
                 logger.Log("Přihlášení se nepovedlo, bude se opakovat za " + TimeSpan.FromMilliseconds(settings.LoginFailureWaitPeriodMs), LogType.WARNING);
@@ -279,9 +279,9 @@ namespace Daemon.Communication
             catch (INetException<TaskResponse> e)
             {
                 logger.Log(
-                        $"Nebylo možná načíst tasky{Util.Newline}" +
-                        $"Error #2-{e.ErrorMessages[0].id}{Util.Newline}" +
-                        $"Příčina : {e.ErrorMessages[0].message}{Util.Newline}", LogType.ERROR
+                        $"Nebylo možná načíst tasky{Environment.NewLine}" +
+                        $"Error #2-{e.ErrorMessages[0].id}{Environment.NewLine}" +
+                        $"Příčina : {e.ErrorMessages[0].message}{Environment.NewLine}", LogType.ERROR
                         );
                 var faf = logger.ServerLogAsync(Dutil.CreateGSRL(LogType.ERROR, e.ErrorMessages));
                 return false;

@@ -11,7 +11,7 @@ namespace Daemon.Backups
 {
     public class SmartBackupInfo
     {
-        public static string StorePath = Path.Combine(Util.GetAppdataFolder(), "Data", "BackupInfos");
+        public static string StorePath = Path.Combine(Util.GetAppdataFolder(), "Data", "BackupInfos") + @"\";
 
         public List<SmartFileInfo> fileInfos { get; set; }
         public DbTaskLocation location { get; set; }
