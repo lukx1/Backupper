@@ -30,16 +30,38 @@ namespace Server.Controllers
             return response;
         }
 
+        private IntroductionResponse OneClick(IntroductionMessage msg, DaemonIntroducer introducer)
+        {
+
+                var wwwaiting = (from infos in mySQL.DaemonInfos
+                             join wwaiting in mySQL.WaitingForOneClicks on infos.Id equals wwaiting.IdDaemonInfo
+                             where infos.PCUuid == msg.PCUuid
+                             select wwaiting).FirstOrDefault();
+
+            if (wwwaiting == null)
+            {
+                DaemonInfo info = new DaemonInfo() { Mac = new string(msg.macAdress), Os = msg.os, PCUuid = msg.PCUuid, DateAdded = DateTime.Now };
+                WaitingForOneClick waiting = new WaitingForOneClick() { DaemonInfo = info, User = msg.User,DateReceived = DateTime.Now };
+                mySQL.DaemonInfos.Add(info);
+                mySQL.WaitingForOneClicks.Add(waiting);
+                mySQL.SaveChanges();
+                return new IntroductionResponse() { WaitForIntroduction = true, WaitID = waiting.Id };
+            }
+            return new IntroductionResponse() { WaitForIntroduction = true, WaitID = wwwaiting.Id };
+        }
+
         private IntroductionResponse HandleIntroduction(IntroductionMessage message)
         {
             if (message == null)
                 return IntroErrMaker(HttpStatusCode.BadRequest, "message = null");
 
-                
-
             if (authenticator == null)
                 authenticator = new DaemonIntroducer((mySQL = new MySQLContext()));
 
+            if((message.preSharedKey == null || message.preSharedKey.Trim() == "") && true)
+            {
+                return OneClick(message,authenticator);
+            }
             authenticator.ReadIntroduction(message);
             if (!authenticator.IsValid())
             {

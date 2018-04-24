@@ -122,7 +122,7 @@ namespace Daemon.Communication
         private async Task<bool> Startup() //TODO : returnovat log + standardizace logu interface
         {
             authenticator = new Authenticator(messenger);
-            if (settings.Uuid == null)// Daemon nema Uuid -> musi se introducnout
+            if (settings.Uuid == null || settings.Uuid == Guid.Empty)// Daemon nema Uuid -> musi se introducnout
             {
                 try
                 {
@@ -234,6 +234,8 @@ namespace Daemon.Communication
             /**Už musí být přihlášen**/
 
             var loadPrivTask = TryLoadPrivateKey();
+
+            
 
             Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> logCheckTask = CheckForLocalLogsAndSend();//FaF
 

@@ -332,5 +332,41 @@ namespace DaemonShared {
                 this["SkipTasks"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("7556")]
+        public int ReceivePort {
+            get {
+                return ((int)(this["ReceivePort"]));
+            }
+            set {
+                this["ReceivePort"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("127.0.0.1")]
+        public string ReceiveIP {
+            get {
+                return ((string)(this["ReceiveIP"]));
+            }
+            set {
+                this["ReceiveIP"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server")]
+        public string OwnerUserNickname {
+            get {
+                return ((string)(this["OwnerUserNickname"]));
+            }
+            set {
+                this["OwnerUserNickname"] = value;
+            }
+        }
     }
 }

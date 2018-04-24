@@ -11,6 +11,7 @@
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -23,7 +24,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -106,8 +106,10 @@
     <Compile Include="Communication\LogCommunicator.cs" />
     <Compile Include="Communication\SftpClient.cs" />
     <Compile Include="Communication\SqlCommunicator.cs" />
+    <Compile Include="Controllers\TaskUpdateController.cs" />
     <Compile Include="Data\TaskKeeper.cs" />
     <Compile Include="DoNotStoreThisException.cs" />
+    <Compile Include="ListenController.cs" />
     <Compile Include="LocalException.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\ILog.cs" />
@@ -131,12 +133,12 @@
     <Compile Include="TaskHandler.cs" />
     <Compile Include="TimedBackup.cs" />
     <Compile Include="Logging\FileLogger.cs" />
+    <Compile Include="ToServerListener.cs" />
     <Compile Include="Utility\Dutil.cs" />
     <Compile Include="Utility\LocalLogManipulator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="ds.zip" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Shared\Shared.csproj">
@@ -156,6 +158,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ControllerMessages\" />
     <Folder Include="Data\BackupInfos\" />
   </ItemGroup>
   <ItemGroup>
