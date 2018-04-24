@@ -80,5 +80,14 @@
     <Setting Name="SkipTasks" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="ReceivePort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">7556</Value>
+    </Setting>
+    <Setting Name="ReceiveIP" Type="System.String" Scope="User">
+      <Value Profile="(Default)">127.0.0.1</Value>
+    </Setting>
+    <Setting Name="OwnerUserNickname" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Server</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

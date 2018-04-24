@@ -213,16 +213,18 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\IntroductionController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\OneClickController.cs" />
     <Compile Include="Controllers\RSAForDaemonController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\UniversalLogController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Controllers\UserLoginController.cs" />
     <Compile Include="DatabaseSettings.Designer.cs">
-      <DependentUpon>DatabaseSettings.settings</DependentUpon>
+      <DependentUpon>ServerSettings.settings</DependentUpon>
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="ExtendedSettings.Designer.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -260,6 +262,7 @@
     <Compile Include="Models\UpTime.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserGroup.cs" />
+    <Compile Include="Models\WaitingForOneClick.cs" />
     <Compile Include="Objects\MagicStrings.cs" />
     <Compile Include="Objects\LogHandler.cs" />
     <Compile Include="Objects\MailHandler.cs" />

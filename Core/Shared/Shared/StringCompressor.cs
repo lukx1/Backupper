@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DaemonShared.Pipes
 {
-    internal static class StringCompressor
+    public static class StringCompressor
     {
         /// <summary>
         /// Compresses the string.

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Daemon.Communication
@@ -59,7 +60,7 @@ namespace Daemon.Communication
         /// <summary>
         /// Introduces Daemon to the server
         /// </summary>
-        public async Task Introduce()
+        public async Task<bool> Introduce()
         {
             logger.Log("Začíná introducování", LogType.DEBUG);
 
@@ -69,25 +70,73 @@ namespace Daemon.Communication
                 .Select(nic => nic.GetPhysicalAddress().ToString())
                 .FirstOrDefault();
 
-            string[] keyId = settings.PreSharedKeyWithIdSemiColSep.Split(';');
-            if (!IsKeyIdValid(keyId))
-                throw new FormatException("Introduction string nemohl být přečten");
-            KeyId kid = new KeyId(keyId);
+            var pcInfo = new PcInfo();
+            pcInfo.CreateDxDiag();
+            pcInfo.ParseDxDiag();
+
 
             IntroductionMessage introductionMessage = new IntroductionMessage()
             {
-                preSharedKey = kid.Key,
-                id = kid.Id,
+
                 macAdress = firstMacAddress.ToCharArray(),
                 os = Environment.OSVersion.ToString(),
-                version = Shared.Version.Parse(settings.Version)
+                version = Shared.Version.Parse(settings.Version),
+                PCUuid = pcInfo.GetUniqueId()
             };
 
+            bool OCI = false;
+
+            if (settings.PreSharedKeyWithIdSemiColSep == null || settings.PreSharedKeyWithIdSemiColSep.Trim() == "")
+            {
+                logger.Log("Pokus o OneClick introduction", LogType.DEBUG);
+                introductionMessage.User = settings.OwnerUserNickname;
+                OCI = true;
+            }
+            else
+            {
+                string[] keyId = settings.PreSharedKeyWithIdSemiColSep.Split(';');
+                if (!IsKeyIdValid(keyId))
+                    throw new FormatException("Introduction string nemohl být přečten");
+                KeyId kid = new KeyId(keyId);
+                introductionMessage.preSharedKey = kid.Key;
+                introductionMessage.id = kid.Id;
+            }
 
             var resp = await messenger.SendAsync<IntroductionResponse>(introductionMessage, "Introduction", System.Net.Http.HttpMethod.Put);
+            if (resp.ServerResponse.WaitForIntroduction)
+            {
+                logger.Log("Daemon musi cekat na overeni od administratora serveru", LogType.DEBUG);
+                var startTime = DateTime.Now;
+                while ((DateTime.Now - startTime).Hours < 2)
+                {
+
+                    try
+                    {
+                        var rest = await messenger.SendAsync<OneClickResponse>(new OneClickMessage() { ID = resp.ServerResponse.WaitID }, "OneClick", HttpMethod.Post);
+
+                        settings.Uuid = rest.ServerResponse.uuid;
+                        settings.Password = rest.ServerResponse.password;
+                        settings.Save();
+                        return true;
+                    }
+                    catch (INetException<OneClickResponse> e)
+                    {
+                        logger.Log("Daemon nebyl jeste pomoci OCI overen", LogType.DEBUG);
+                    }
+                    Thread.Sleep(10000);
+                }
+
+                logger.Log("Daemon nebyl overen do vypreseni casove lhuty", LogType.ERROR);
+                return false;
+
+            }
+            else if (OCI)
+                return false;
             logger.Log("Introduction úspěšný", LogType.INFORMATION);
             settings.Uuid = resp.ServerResponse.uuid;
             settings.Password = resp.ServerResponse.password;
+            settings.Save();
+            return true;
         }
 
         /// <summary>
@@ -103,8 +152,8 @@ namespace Daemon.Communication
             }
             catch (INetException<LoginResponse> e)
             {
-                logger.Log("Chyba při pokusu o přihlášení :" + e.Message,LogType.ERROR);
-                e.ErrorMessages.ForEach(r => logger.Log(r.id + ":" + r.message + "->" + r.value,LogType.ERROR));
+                logger.Log("Chyba při pokusu o přihlášení :" + e.Message, LogType.ERROR);
+                e.ErrorMessages.ForEach(r => logger.Log(r.id + ":" + r.message + "->" + r.value, LogType.ERROR));
                 var x = Task.Run(async () => await logger.ServerLogAsync(
                     new DaemonFailedLoginLog(
                         LogType.ERROR,

@@ -139,13 +139,14 @@ namespace Server.Authentication
         /// <param name="mac"></param>
         /// <param name="idUser"></param>
         /// <returns></returns>
-        public UuidPass IntroduceDaemon(DaemonPreSharedKey preSharedKey, string os, string mac, int idUser, char[] pubKey)
+        public UuidPass IntroduceDaemon(DaemonPreSharedKey preSharedKey, string os, string mac, int idUser, char[] pubKey, string PCUUid)
         {
             preSharedKey.Used = true;
 
             var dbDaemonInfo = new DaemonInfo();
             dbDaemonInfo.Os = os;
             dbDaemonInfo.Mac = mac;
+            dbDaemonInfo.PCUuid = PCUUid;
 
             var dbDaemon = new Daemon();
             var unhashedPass = PasswordFactory.CreateRandomPassword(16);

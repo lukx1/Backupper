@@ -36,6 +36,7 @@ namespace Server.Models
         public virtual DbSet<UpTime> UpTimes { get; set; }
         public virtual DbSet<UserGroup> UserGroups { get; set; }
         public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<WaitingForOneClick> WaitingForOneClicks { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -57,11 +58,20 @@ namespace Server.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<DaemonInfo>()
+                .Property(e => e.PCUuid)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<DaemonInfo>()
                 .Property(e => e.Mac)
                 .IsUnicode(false);
 
             modelBuilder.Entity<DaemonInfo>()
                 .HasMany(e => e.Daemons)
+                .WithRequired(e => e.DaemonInfo)
+                .HasForeignKey(e => e.IdDaemonInfo);
+
+            modelBuilder.Entity<DaemonInfo>()
+                .HasMany(e => e.WaitingForOneClicks)
                 .WithRequired(e => e.DaemonInfo)
                 .HasForeignKey(e => e.IdDaemonInfo);
 
@@ -274,6 +284,10 @@ namespace Server.Models
                 .HasMany(e => e.UserGroups)
                 .WithRequired(e => e.User)
                 .HasForeignKey(e => e.IdUser);
+
+            modelBuilder.Entity<WaitingForOneClick>()
+                .Property(e => e.User)
+                .IsUnicode(false);
         }
     }
 }
