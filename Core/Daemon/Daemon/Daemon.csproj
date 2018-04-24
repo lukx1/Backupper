@@ -95,8 +95,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backups\BackupFactory.cs" />
-    <Compile Include="Backups\Compressions\ICompression.cs" />
-    <Compile Include="Backups\Compressions\ZipCompressor.cs" />
+    <Compile Include="Backups\Compressions\Compressor.cs" />
     <Compile Include="Backups\IBackup.cs" />
     <Compile Include="Backups\SmartBackup.cs" />
     <Compile Include="Backups\SmartBackupInfo.cs" />
