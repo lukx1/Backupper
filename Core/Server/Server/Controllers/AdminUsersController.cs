@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.Ajax.Utilities;
 using Server.Authentication;
 using Shared;
 
 namespace Server.Controllers
 {
     [AdminExc]
+    [AdminSec(Permission.MANAGEOTHERUSERS, Permission.MANAGESELFUSER)]
     public class AdminUsersController : AdminBaseController
     {
         [HttpGet]
-        [AdminSec(Permission.MANAGEOTHERUSERS)]
         public ActionResult Index()
         {
             using (var db = new Models.MySQLContext())
@@ -22,7 +24,6 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        [AdminSec(Permission.MANAGEOTHERUSERS)]
         public ActionResult UserGroups(int id)
         {
             var model = new Models.Admin.UserGroupsModel(id);
@@ -31,7 +32,6 @@ namespace Server.Controllers
         }
 
         [HttpPost]
-        [AdminSec(Permission.MANAGEOTHERUSERS)]
         public ActionResult UserGroups(Models.Admin.UserGroupsModel model)
         {
             model.Save();
@@ -40,20 +40,20 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        [AdminSec(Permission.MANAGEOTHERUSERS)]
         public ActionResult NewUser()
         {
             return View(new Models.User());
         }
 
         [HttpPost]
-        [AdminSec(Permission.MANAGEOTHERUSERS)]
         public ActionResult NewUser(Models.User user)
         {
             using (var db = new Models.MySQLContext())
             {
+                string RSAPair = PasswordFactory.CreateRSAPrivateKey();
+                user.PrivateKey = PasswordFactory.EncryptAES(RSAPair, user.Password);
                 user.Password = PasswordFactory.HashPasswordPbkdf2(user.Password);
-
+                user.PublicKey = PasswordFactory.GetPublicFromRSAKeyPair(RSAPair);
                 db.Users.Add(user);
                 db.SaveChanges();
             }
@@ -63,28 +63,34 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        [AdminSec(Permission.MANAGEOTHERUSERS)]
         public ActionResult EditUser(int id)
         {
             using (var db = new Models.MySQLContext())
             {
                 var user = db.Users.FirstOrDefault(x => x.Id == id);
-                if (user == null)
-                {
-                    OperationResultMessage = "User does not exists";
-                    return RedirectToAction("Index", "AdminUsers");
-                }
+                user.Password = null;
                 return View(user);
             }
         }
 
         [HttpPost]
-        [AdminSec(Permission.MANAGEOTHERUSERS)]
         public ActionResult EditUser(Models.User user)
         {
             using (var db = new Models.MySQLContext())
             {
-                db.Users.AddOrUpdate(user);
+                var dbUser = db.Users.FirstOrDefault(x => x.Id == user.Id);
+
+                dbUser.Nickname = user.Nickname;
+                dbUser.FullName = user.FullName;
+                if (!user.Password.IsNullOrWhiteSpace())
+                {
+                    string RSAPair = PasswordFactory.CreateRSAPrivateKey();
+                    dbUser.PrivateKey = PasswordFactory.EncryptAES(RSAPair, user.Password);
+                    dbUser.Password = PasswordFactory.HashPasswordPbkdf2(user.Password);
+                    dbUser.PublicKey = PasswordFactory.GetPublicFromRSAKeyPair(RSAPair);
+                }
+
+                db.Entry(dbUser).State = EntityState.Modified;
                 db.SaveChanges();
             }
 
@@ -93,33 +99,21 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        [AdminSec(Permission.MANAGEOTHERUSERS)]
         public ActionResult DeleteUser(int id)
         {
             using (var db = new Models.MySQLContext())
             {
                 var dbUser = db.Users.FirstOrDefault(x => x.Id == id);
-                if (dbUser == null)
-                {
-                    OperationResultMessage = "User does not exists";
-                    return RedirectToAction("Index", "AdminUsers");
-                }
                 return View(dbUser);
             }
         }
 
         [HttpPost]
-        [AdminSec(Permission.MANAGEOTHERUSERS)]
         public ActionResult DeleteUser(Models.User user)
         {
             using (var db = new Models.MySQLContext())
             {
                 var dbUser = db.Users.FirstOrDefault(x => x.Id == user.Id);
-                if (dbUser == null)
-                {
-                    OperationResultMessage = "User does not exists";
-                    return RedirectToAction("Index", "AdminUsers");
-                }
 
                 db.Users.Remove(dbUser);
                 db.SaveChanges();

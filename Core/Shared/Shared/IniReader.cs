@@ -59,10 +59,10 @@ namespace Shared
                 }
                 else
                     builder.Append(keyVal.Key).Append(':').Append(keyVal.Value);
-                builder.Append(Util.Newline);
+                builder.Append(Environment.NewLine);
             }
             if(!foundMatch)
-                builder.Append(key).Append(':').Append(value).Append(Util.Newline);
+                builder.Append(key).Append(':').Append(value).Append(Environment.NewLine);
             File.WriteAllText(filePath, builder.ToString());
         }
 

@@ -61,7 +61,7 @@ namespace Daemon
                     catch (Exception e)
                     {
                         ReadingFailed(e, buff);
-                        logger.Log($"NamedPipe - Chyba při čtění z pipe{Util.Newline}{e}-{e.Message}{Util.Newline}{e.StackTrace}", LogType.ERROR);
+                        logger.Log($"NamedPipe - Chyba při čtění z pipe{Environment.NewLine}{e}-{e.Message}{Environment.NewLine}{e.StackTrace}", LogType.ERROR);
                     }
 
                 }

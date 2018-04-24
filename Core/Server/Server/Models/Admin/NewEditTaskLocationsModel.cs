@@ -52,17 +52,22 @@ namespace Server.Models.Admin
 
                     tLoc.IdDestination = IdDestination;
                     tLoc.IdSource = IdSource;
+                    tLoc.Task.LastChanged = DateTime.Now;
 
                     db.Entry(tLoc).State = EntityState.Modified;
+                    db.Entry(tLoc.Task).State = EntityState.Modified;
                 }
                 else
                 {
-                    db.TaskLocations.Add(new TaskLocation()
+                    var taskLoc = db.TaskLocations.Add(new TaskLocation()
                     {
                         IdTask = IdTask,
                         IdSource = IdSource,
                         IdDestination = IdDestination
                     });
+                    taskLoc.Task.LastChanged = DateTime.Now;
+
+                    db.Entry(taskLoc.Task).State = EntityState.Modified;
                 }
 
                 db.SaveChanges();

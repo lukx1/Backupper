@@ -98,7 +98,7 @@ namespace Daemon
                     Exception ex2 = ex;
                     while(ex2 != null)
                     {
-                        logger.Log($"Exception {ex2}-{ex2.Message}{Util.Newline}Stack Trace{ex2.StackTrace}",LogType.ERROR);
+                        logger.Log($"Exception {ex2}-{ex2.Message}{Environment.NewLine}Stack Trace{ex2.StackTrace}",LogType.ERROR);
                         ex2 = ex2.InnerException;
                     }
                     Task.Run(async () => await logger.ServerLogAsync(new GeneralTaskFailedLog(task.id, ex, time)));
@@ -203,7 +203,7 @@ namespace Daemon
                 {
                     if(new LoginSettings().TimerDebugOnly)
                         ReshapeToTestingTime(time);
-                    logger.Log($"Vytvořen timer pro task #{task.id},time #{time.id}{Util.Newline}Čas start:{time.startTime}, interval:{time.interval}s,opakovat:{time.repeat}, konec:{(time.endTime == null ? "Nikdy":time.endTime.ToString())}", LogType.DEBUG);
+                    logger.Log($"Vytvořen timer pro task #{task.id},time #{time.id}{Environment.NewLine}Čas start:{time.startTime}, interval:{time.interval}s,opakovat:{time.repeat}, konec:{(time.endTime == null ? "Nikdy":time.endTime.ToString())}", LogType.DEBUG);
                     tBackups.Add(CreateTimedBackup(task, time));
                 }
             }
@@ -227,10 +227,10 @@ namespace Daemon
         private void DebugMethod(IBackup backup)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(backup.ID).Append(" :").Append(Util.Newline);
+            builder.Append(backup.ID).Append(" :").Append(Environment.NewLine);
             foreach (var loc in backup.TaskLocations)
             {
-                builder.Append($"{loc.source} -> {loc.destination} (ZIP={backup.TaskDetails.ZipAlgorithm != null}){Util.Newline}");
+                builder.Append($"{loc.source} -> {loc.destination} (ZIP={backup.TaskDetails.ZipAlgorithm != null}){Environment.NewLine}");
             }
             logger.Log(builder.ToString(),LogType.DEBUG);
         }

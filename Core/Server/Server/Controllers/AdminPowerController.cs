@@ -7,9 +7,10 @@ using System.Web.Mvc;
 
 namespace Server.Controllers
 {
+    [AdminExc]
+    [AdminSec(Authentication.Permission.MANAGEPOWER)]
     public class AdminPowerController : Controller
     {
-
         private void StartHiddenCmdProcess(string args)
         {
             ProcessStartInfo proc = new ProcessStartInfo()
@@ -32,8 +33,6 @@ namespace Server.Controllers
 
         public ActionResult Exit()
         {
-            if (!Util.IsUserAlreadyLoggedIn(Session))
-                return RedirectToAction("Login", "AdminLogin", null);
             SubmitLog(ServerStatusLog.ServerStatusInfo.Status.EXITING);
             Environment.Exit(0);
             return null;
@@ -41,8 +40,6 @@ namespace Server.Controllers
 
         public ActionResult Shutdown()
         {
-            if (!Util.IsUserAlreadyLoggedIn(Session))
-                return RedirectToAction("Login", "AdminLogin", null);
             SubmitLog(ServerStatusLog.ServerStatusInfo.Status.SHUTTING_DOWN);
             StartHiddenCmdProcess("/C shutdown -t 0");
             return null;
@@ -50,8 +47,6 @@ namespace Server.Controllers
 
         public ActionResult Restart()
         {
-            if (!Util.IsUserAlreadyLoggedIn(Session))
-                return RedirectToAction("Login", "AdminLogin", null);
             SubmitLog(ServerStatusLog.ServerStatusInfo.Status.RESTARTING);
             StartHiddenCmdProcess("/C shutdown -r -t 0");
             return null;

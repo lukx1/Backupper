@@ -56,7 +56,8 @@ namespace Server.Models.Admin
         {
             using (var db = new MySQLContext())
             {
-                db.Locations.Add(DbLocation);
+                var loc = db.Locations.Add(DbLocation);
+                
                 db.SaveChanges();
             }
         }
@@ -65,7 +66,24 @@ namespace Server.Models.Admin
         {
             using (var db = new MySQLContext())
             {
-                db.Locations.AddOrUpdate(DbLocation);
+                var loc = db.Locations.FirstOrDefault(x => x.Id == DbLocation.Id);
+                loc.IdLocationCredentails = DbLocation.IdLocationCredentails;
+                loc.IdProtocol = DbLocation.IdProtocol;
+                loc.Uri = DbLocation.Uri;
+                db.Entry(loc).State = EntityState.Modified;
+
+                foreach (var sourceLoc in loc.TaskLocations)
+                {
+                    sourceLoc.Task.LastChanged = DateTime.Now;
+                    db.Entry(sourceLoc.Task).State = EntityState.Modified;
+                }
+
+                foreach (var destLoc in loc.TaskLocations1)
+                {
+                    destLoc.Task.LastChanged = DateTime.Now;
+                    db.Entry(destLoc.Task).State = EntityState.Modified;
+                }
+
                 db.SaveChanges();
             }
         }
@@ -74,7 +92,20 @@ namespace Server.Models.Admin
         {
             using (var db = new MySQLContext())
             {
-                db.Locations.Remove(DbLocation);
+                var loc = db.Locations.Remove(DbLocation);
+
+                foreach (var sourceLoc in loc.TaskLocations)
+                {
+                    sourceLoc.Task.LastChanged = DateTime.Now;
+                    db.Entry(sourceLoc.Task).State = EntityState.Modified;
+                }
+
+                foreach (var destLoc in loc.TaskLocations1)
+                {
+                    destLoc.Task.LastChanged = DateTime.Now;
+                    db.Entry(destLoc.Task).State = EntityState.Modified;
+                }
+
                 db.SaveChanges();
             }
         }

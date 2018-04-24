@@ -12,87 +12,101 @@ using Shared;
 
 namespace Server.Controllers
 {
-	[AdminExc]
-	public class AdminTimesController : AdminBaseController
-	{
+    [AdminExc]
+    [AdminSec(Authentication.Permission.MANAGETIMES)]
+    public class AdminTimesController : AdminBaseController
+    {
         [HttpGet]
-        [AdminSec]
-		public ActionResult Index()
-		{
-			using (var db = new Models.MySQLContext())
-				return View(db.Times.ToList());
-		}
+        public ActionResult Index()
+        {
+            using (var db = new Models.MySQLContext())
+                return View(db.Times.ToList());
+        }
 
-		[HttpGet]
-		[AdminSec]
-		public ActionResult NewTime()
-		{
-			return View(new Models.Time());
-		}
+        [HttpGet]
+        public ActionResult NewTime()
+        {
+            return View(new Models.Time());
+        }
 
-		[HttpPost]
-		[AdminSec]
-		public ActionResult NewTime(Models.Time time)
-		{
-			using (var db = new Models.MySQLContext())
-			{
-				db.Times.Add(time);
-				db.SaveChanges();
-			}
+        [HttpPost]
+        public ActionResult NewTime(Models.Time time)
+        {
+            using (var db = new Models.MySQLContext())
+            {
+                db.Times.Add(time);
+                db.SaveChanges();
+            }
 
-			OperationResultMessage = "New time was successfully created";
-			return RedirectToAction("Index", "AdminTimes");
-		}
+            OperationResultMessage = "New time was successfully created";
+            return RedirectToAction("Index", "AdminTimes");
+        }
 
-		[HttpGet]
-		[AdminSec]
-		public ActionResult EditTime(int id)
-		{
-			using (var db = new Models.MySQLContext())
-			{
-				var time = db.Times.FirstOrDefault(x => x.Id == id);
-				return View(time);
-			}
-		}
+        [HttpGet]
+        public ActionResult EditTime(int id)
+        {
+            using (var db = new Models.MySQLContext())
+            {
+                var time = db.Times.FirstOrDefault(x => x.Id == id);
+                return View(time);
+            }
+        }
 
-		[HttpPost]
-		[AdminSec]
-		public ActionResult EditTime(Models.Time time)
-		{
-			using (var db = new Models.MySQLContext())
-			{
-				db.Times.AddOrUpdate(time);
-				db.SaveChanges();
-			}
+        [HttpPost]
+        public ActionResult EditTime(Models.Time time)
+        {
+            using (var db = new Models.MySQLContext())
+            {
+                var dbTime = db.Times.FirstOrDefault(x => x.Id == time.Id);
+                dbTime.StartTime = time.StartTime;
+                dbTime.EndTime = time.EndTime;
+                dbTime.Interval = time.Interval;
+                dbTime.Name = time.Name;
+                dbTime.Repeat = time.Repeat;
+                db.Entry(dbTime).State = EntityState.Modified;
 
-			OperationResultMessage = "Time was successfully updated";
-			return RedirectToAction("Index", "AdminTimes");
-		}
+                foreach (var taskTime in dbTime.TaskTimes)
+                {
+                    taskTime.Task.LastChanged = DateTime.Now;
+                    db.Entry(taskTime.Task).State = EntityState.Modified;
+                }
 
-		[HttpGet]
-		[AdminSec]
-		public ActionResult DeleteTime(int id)
-		{
-			using (var db = new Models.MySQLContext())
-			{
-				var time = db.Times.FirstOrDefault(x => x.Id == id);
-				return View(time);
-			}
-		}
+                db.SaveChanges();
+            }
 
-		[HttpPost]
-		[AdminSec]
-		public ActionResult DeleteTime(Models.Time time)
-		{
-			using (var db = new Models.MySQLContext())
-			{
-				var dbTime = db.Times.FirstOrDefault(x => x.Id == time.Id);
-				db.Times.Remove(dbTime);
-				db.SaveChanges();
+            OperationResultMessage = "Time was successfully updated";
+            return RedirectToAction("Index", "AdminTimes");
+        }
 
-				OperationResultMessage = "Time was successfully deleted";
-				return RedirectToAction("Index", "AdminUsers");
-			}
-		}
-	}
+        [HttpGet]
+        public ActionResult DeleteTime(int id)
+        {
+            using (var db = new Models.MySQLContext())
+            {
+                var time = db.Times.FirstOrDefault(x => x.Id == id);
+                return View(time);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult DeleteTime(Models.Time time)
+        {
+            using (var db = new Models.MySQLContext())
+            {
+                var dbTime = db.Times.FirstOrDefault(x => x.Id == time.Id);
+
+                foreach (var taskTime in dbTime.TaskTimes)
+                {
+                    taskTime.Task.LastChanged = DateTime.Now;
+                    db.Entry(taskTime.Task).State = EntityState.Modified;
+                }
+
+                db.Times.Remove(dbTime);
+                db.SaveChanges();
+            }
+
+            OperationResultMessage = "Time was successfully deleted";
+            return RedirectToAction("Index", "AdminUsers");
+        }
+    }
 }
