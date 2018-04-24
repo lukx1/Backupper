@@ -65,7 +65,7 @@ namespace Server.Controllers
             var ctr = (AdminBaseController)filterContext.Controller;
             ctr.ViewBag.IsUserLoggedIn = false;
 
-            ServerLogger.Information("Authentication for: " + filterContext.ActionDescriptor.ActionName);
+            ServerLogger.Information("Authentication for: " + filterContext.ActionDescriptor.ControllerDescriptor.ControllerName + "/" + filterContext.ActionDescriptor.ActionName);
 
             if (!Util.IsUserAlreadyLoggedIn(ctr.Session))
             {
@@ -91,7 +91,7 @@ namespace Server.Controllers
 
         public void OnAuthorization(AuthorizationContext filterContext)
         {
-            ServerLogger.Information("Authorization for: " + filterContext.ActionDescriptor.ActionName);
+            ServerLogger.Information("Authotization for: " + filterContext.ActionDescriptor.ControllerDescriptor.ControllerName + "/" + filterContext.ActionDescriptor.ActionName);
 
             var ctr = (AdminBaseController)filterContext.Controller;
 
@@ -122,13 +122,20 @@ namespace Server.Controllers
                     new RouteValueDictionary(
                         new
                         {
-                            controller = "AdminLogin",
-                            action = "Login"
+                            controller = "Admin",
+                            action = "Index"
                         }
                     )
                 );
 
-                ctr.ErrorMessage = "User does not have necessary permission";
+                ctr.OperationResultMessage = "User does not have necessary permission";
+#if DEBUG
+                ctr.OperationResultMessage += @"| Missing permissions are: ";
+                foreach(var i in _requiredPermissions.Where(x => !ctr.CurrentUserPermissions.Contains(x)))
+                {
+                    ctr.OperationResultMessage += @", " + i.ToString();
+                }
+#endif
             }
         }
     }

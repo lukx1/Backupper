@@ -1,0 +1,31 @@
+﻿@model IEnumerable<global::Server.Models>
+
+@{
+	ViewBag.Title = "Unaccepted Daemons";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Daemons</h2>
+
+<table style="width:100%">
+	<tr>
+		<th>ID</th>
+		<th>User name</th>
+		<th>OS</th>
+		<th>Mac</th>
+		<th>Date Added</th>
+	</tr>
+	@foreach (var item in Model)
+	{
+		<tr>
+			<td>@item.Id</td>
+			<td>@item.User.Nickname</td>
+			<td>@item.DaemonInfo.Os</td>
+			<td>@item.DaemonInfo.Mac</td>
+			<td>@item.DaemonInfo.DateAdded</td>
+			<td><a href="/AdminTasks/Tasks?id=@(item.Id)">Show Tasks</a></td>
+			<td><a href="/AdminDaemons/DaemonGroups?id=@(item.Id)">Groups</a></td>
+		</tr>
+	}
+</table>
+

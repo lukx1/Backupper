@@ -50,6 +50,22 @@
 				@Html.DropDownListFor(x => x.IdBackupTypes, (IEnumerable<SelectListItem>)ViewBag.BackupTypes)
 			</td>
 		</tr>
+		<tr>
+			<td>
+				@Html.LabelFor(x => x.ActionBefore)
+			</td>
+			<td>
+				@Html.TextAreaFor(x => x.ActionBefore)
+			</td>
+		</tr>
+		<tr>
+			<td>
+				@Html.LabelFor(x => x.ActionAfter)
+			</td>
+			<td>
+				@Html.TextAreaFor(x => x.ActionAfter)
+			</td>
+		</tr>
 	</table>
 
 	<input type="submit" value="Confirm" />

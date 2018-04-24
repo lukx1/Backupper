@@ -1,23 +1,7 @@
-﻿<ul class="navbar-nav flex-row mb-2">
-	<li class="nav-item">
-		@Html.ActionLink("Daemons", "Index", "AdminDaemons", null, new { @class = "nav-link" })
-	</li>
-	<li class="nav-item">
-		@Html.ActionLink("Users", "Index", "AdminUsers", null, new { @class = "nav-link" })
-	</li>
-	<li class="nav-item">
-		@Html.ActionLink("Groups", "Index", "AdminGroups", null, new { @class = "nav-link" })
-	</li>
-	<li class="nav-item">
-		@Html.ActionLink("Locations", "Index", "AdminLocations", null, new { @class = "nav-link" })
-	</li>
-	<li class="nav-item">
-		@Html.ActionLink("Times", "Index", "AdminTimes", null, new { @class = "nav-link" })
-	</li>
-	<li class="nav-item">
-		@Html.ActionLink("Credentials", "Index", "AdminLocationCredentials", null, new { @class = "nav-link" })
-	</li>
-	<li class="nav-item">
-		@Html.ActionLink("Log Out", "Logout", "AdminLogin", null, new { @class = "nav-link", style = "color:red;" })
-	</li>
-</ul>
+﻿@Html.ActionLink("Daemons", "Index", "AdminDaemons", null, new { @class = "brr-nav-link brr-nav-admin-row" })
+@Html.ActionLink("Users", "Index", "AdminUsers", null, new { @class = "brr-nav-link brr-nav-admin-row" })
+@Html.ActionLink("Groups", "Index", "AdminGroups", null, new { @class = "brr-nav-link brr-nav-admin-row" })
+@Html.ActionLink("Locations", "Index", "AdminLocations", null, new { @class = "brr-nav-link brr-nav-admin-row" })
+@Html.ActionLink("Times", "Index", "AdminTimes", null, new { @class = "brr-nav-link brr-nav-admin-row" })
+@Html.ActionLink("Credentials", "Index", "AdminLocationCredentials", null, new { @class = "brr-nav-link brr-nav-admin-row" })
+@Html.ActionLink("Log Out", "Logout", "AdminLogin", null, new { @class = "brr-grid-logout" })

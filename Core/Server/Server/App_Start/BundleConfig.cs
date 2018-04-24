@@ -20,6 +20,7 @@ namespace Server
                       "~/Scripts/bootstrap.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
+                      "~/Content/backupper.css",
                       "~/Content/bootstrap.css"));
         }
     }

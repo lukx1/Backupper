@@ -1,0 +1,45 @@
+﻿.brr-nav {
+	background-color: dimgrey;
+}
+
+.brr-nav-link {
+	color: lightgray;
+}
+
+.brr-nav-link:hover {
+	color: lightgray;
+}
+
+.brr-grid {
+	display: grid;
+	background-color: dimgray;
+	grid-template-columns: repeat(6, 1fr);
+}
+
+.brr-grid-logout
+{
+	font-weight: bolder;
+	grid-column: 6;
+	grid-row: 1;
+	color: red;
+}
+
+.brr-grid-logout:hover {
+	color: red;
+}
+
+.brr-nav-general-row {
+	grid-row: 1;
+}
+
+.brr-nav-admin-row {
+	grid-row: 2;
+}
+
+.brr-footer {
+    background-color: dimgray;
+    grid-template-columns: repeat(6, 1fr);
+    display: grid;
+    font-size: 80%;
+    color: #6c757d;
+}

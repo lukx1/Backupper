@@ -3,30 +3,41 @@
 	ViewBag.Title = "Login";
 }
 
+<style>
+    label {
+        font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        font-weight:bold;
+    }
+</style>
+
 @using (Html.BeginForm("Login", "AdminLogin", FormMethod.Post))
 {
 	<table>
 		<tr>
-			@Html.LabelFor(model => model.Nickname)
-			@Html.EditorFor(model => model.Nickname)
+            <td>
+			    @Html.LabelFor(model => model.Nickname)
+            </td>
+            <td>
+			    @Html.EditorFor(model => model.Nickname)
+            </td>
 		</tr>
 		<tr>
-			<td>@Html.ValidationMessageFor(model => model.Nickname)</td>
+			<td>
+                @Html.LabelFor(model => model.Password)
+            </td>
+			<td>
+                @Html.EditorFor(model => model.Password)
+            </td>
 		</tr>
 
-		<tr>
-			<td>@Html.LabelFor(model => model.Password)</td>
-			<td>@Html.EditorFor(model => model.Password)</td>
-		</tr>
 		<tr>
 			<td>@Html.ValidationMessageFor(model => model.Password)</td>
 		</tr>
-
-		<tr>
-			<td>
-				<input type="submit" value="Login" />
-				<input type="reset" value="Clear" />
-			</td>
-		</tr>
+        <tr >
+            <td>@Html.ValidationMessageFor(model => model.Nickname)</td>
+        </tr>
 	</table>
+
+    <input type="submit" class="btn btn-dark" value="Login" />
+    <input type="reset" class="btn btn-dark" value="Clear" />
 }

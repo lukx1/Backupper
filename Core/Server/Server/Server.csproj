@@ -286,6 +286,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
+    <Content Include="Content\backupper.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
@@ -396,6 +397,8 @@
     <Content Include="Views\AdminLocations\ShowOrAssignCredential.cshtml" />
     <Content Include="Views\AdminEmail\Index.cshtml" />
     <Content Include="Views\Shared\_AdminNavBarPart.cshtml" />
+    <Content Include="Views\Shared\_AdminFootBarPart.cshtml" />
+    <Content Include="Views\AdminDaemons\UnacceptedDaemons.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -1,46 +1,40 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    @Styles.Render("~/Content/css")
-    <title>@ViewBag.Title</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	@Styles.Render("~/Content/css")
+	<title>@ViewBag.Title</title>
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
-	<div class="container">
-		<div class="flex-column ml-lg-0 ml-3">
-			<ul class="navbar-nav">
-				<li class="nav-item">
-					@Html.ActionLink("Home", "Index", "Home", null, new {@class = "nav-link"})
-				</li>
-				<li class="nav-item">
-					@Html.ActionLink("API", "Index", "Help", null, new {@class = "nav-link"})
-				</li>
-				<li class="nav-item">
-					@Html.ActionLink("Admin", "Index", "Admin", null, new {@class = "nav-link"})
-				</li>
-			</ul>
+	<nav class="container-fluid brr-grid">
+		@Html.ActionLink("Home", "Index", "Home", null, new { @class = "brr-nav-link brr-nav-general-row" })
+		@Html.ActionLink("API", "Index", "Help", null, new { @class = "brr-nav-link brr-nav-general-row" })
+		@Html.ActionLink("Admin", "Index", "Admin", null, new { @class = "brr-nav-link brr-nav-general-row" })
+		@if (ViewBag.IsUserLoggedIn ?? false)
+		{
+			@Html.Partial("~/Views/Shared/_AdminNavBarPart.cshtml")
+		}
+	</nav>
 
-			@if (ViewBag.IsUserLoggedIn ?? false)
-			{
-				@Html.Partial("~/Views/Shared/_AdminNavBarPart.cshtml")
-			}
-		</div>
-	</div>
-</nav>
-	<div class="container">
-	    @RenderBody()
-		
-		<footer>
-			<p>&copy; @DateTime.Now.Year - Backupper</p>
-		</footer>
+    <br />
+
+	<div class="container-fluid">
+		@RenderBody()
+
+        <footer class="brr-footer">
+            <p style="grid-row: 1; grid-column: 1;" class="d-inline">&copy; @DateTime.Now.Year - Backupper</p>
+            @if (ViewBag.IsUserLoggedIn ?? false)
+            {
+                @Html.Partial("~/Views/Shared/_AdminFootBarPart.cshtml")
+            }
+        </footer>
 	</div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jquery_validate")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection(name: "scripts", required: false)
+	@Scripts.Render("~/bundles/jquery")
+	@Scripts.Render("~/bundles/jquery_validate")
+	@Scripts.Render("~/bundles/bootstrap")
+	@RenderSection(name: "scripts", required: false)
 </body>
 </html>
