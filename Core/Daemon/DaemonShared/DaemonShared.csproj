@@ -50,7 +50,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Pipes\Codes.cs" />
-    <Compile Include="Pipes\CompressString.cs" />
     <Compile Include="Pipes\PipeCompressed.cs" />
     <Compile Include="Pipes\PipeDialogResult.cs" />
     <Compile Include="Pipes\PipeLoginAttempt.cs" />

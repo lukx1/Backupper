@@ -26,9 +26,9 @@ namespace Daemon
 
         private static void DumpErr(Exception e)
         {
-            logger.Log($"Nečekaná chyba{Util.Newline}" +
-                    $"Chyba :{e.Message}{Util.Newline}" +
-                    $"ST    :{e.StackTrace}{Util.Newline}"
+            logger.Log($"Nečekaná chyba{Environment.NewLine}" +
+                    $"Chyba :{e.Message}{Environment.NewLine}" +
+                    $"ST    :{e.StackTrace}{Environment.NewLine}"
                     , LogType.EMERGENCY);
 
             if (e.InnerException != null)

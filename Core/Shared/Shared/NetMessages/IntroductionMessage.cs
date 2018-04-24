@@ -29,8 +29,15 @@ namespace Shared.NetMessages
         /// </summary>
         public string preSharedKey;
 
+        public string PCUuid;
+
         /// <summary>
-        /// Unikátní public key vytvořený daemonem. Server nidky neposílá
+        /// Nutno pouze pro 1CI
+        /// </summary>
+        public string User;
+
+        /// <summary>
+        /// Unikátní public key vytvořený daemonem. Server nidky neposílá - UUID
         /// </summary>
         public char[] publicKey;
 

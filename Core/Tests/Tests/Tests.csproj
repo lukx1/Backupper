@@ -58,6 +58,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PcInfoTest.cs" />
     <Compile Include="TaskTest.cs" />
+    <Compile Include="ToListenServer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
