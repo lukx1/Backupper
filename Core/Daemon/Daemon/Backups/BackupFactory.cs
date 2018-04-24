@@ -15,9 +15,9 @@ namespace Daemon.Backups
         public bool IsZip;
         public int ID;*/
 
-        public static IBackup CreateBackup(IEnumerable<DbTaskLocation> taskLocation, DbBackupType backupType, DbTaskDetails details, int id)
+        public static IBackup CreateBackup(IEnumerable<DbTaskLocation> taskLocation, DbBackupType backupType, DbTaskDetails details, int id, string actionBefore, string actionAfter)
         {
-            return new SmartBackup() {TaskLocations =taskLocation,BackupType=backupType,TaskDetails = details,ID = id };
+            return new SmartBackup() {TaskLocations = taskLocation,BackupType=backupType,TaskDetails = details,ID = id,ActionAfter = actionAfter, ActionBefore = actionBefore };
         }
 
         /*

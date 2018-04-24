@@ -130,7 +130,7 @@ namespace Daemon
                 IdTask = task.id,
             };
             
-            timedBackup.Backup = CreateBackupInstance(task.taskLocations,task.backupType,task.details,task.id*time.id);
+            timedBackup.Backup = CreateBackupInstance(task.taskLocations,task.backupType,task.details,task.ActionBefore,task.ActionAfter,task.id*time.id);
             var dueTime = CalculateDueTime(time.startTime, time.interval);
             if (dueTime.Milliseconds != 0)
                 logger.Log($"Záloha proběhne za {dueTime}",LogType.DEBUG);
@@ -215,9 +215,9 @@ namespace Daemon
         /// </summary>
         /// <param name="taskLocation">Jak zálohovat</param>
         /// <returns>IBackup</returns>
-        private IBackup CreateBackupInstance(IEnumerable<DbTaskLocation> taskLocations,DbBackupType backupType, DbTaskDetails taskDetails, int id = -1)
+        private IBackup CreateBackupInstance(IEnumerable<DbTaskLocation> taskLocations,DbBackupType backupType, DbTaskDetails taskDetails, string actionBefore,string actionAfter, int id = -1)
         {
-            return BackupFactory.CreateBackup(taskLocations, backupType, taskDetails,id);
+            return BackupFactory.CreateBackup(taskLocations, backupType, taskDetails,id,actionBefore,actionAfter);
         }
         
         /// <summary>
