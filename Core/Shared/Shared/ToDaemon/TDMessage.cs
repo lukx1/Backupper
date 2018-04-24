@@ -39,7 +39,7 @@ namespace Shared.ToDaemon
 
         public static TDMessage FromObject(TDMessage.Message o)
         {
-            var s = JsonConvert.SerializeObject(o.Content);
+            var s = o.Content;
             TDMessage message = new TDMessage();
             var bytes = Encoding.UTF8.GetBytes(s);
             message.Contents = new byte[4] {

@@ -18,7 +18,12 @@ namespace Shared
             byte[] buffer = new byte[4];
             if (stream.Read(buffer, 0, 4) != 4)
                 throw new InvalidOperationException("Nebylo prijato dost bytu");
-            return BitConverter.ToInt32(buffer, 0);
+            return BytesToInt(buffer);
+        }
+
+        private static int BytesToInt(byte[] bytes)
+        {
+            return (bytes[0] << 24) + (bytes[1] << 16) + (bytes[2] << 8) + (bytes[3] << 0);
         }
 
         private static TDMessageCode GetCode(NetworkStream stream)
@@ -26,7 +31,7 @@ namespace Shared
             byte[] buffer = new byte[4];
             if (stream.Read(buffer, 0, 4) != 4)
                 throw new InvalidOperationException("Nebylo prijato dost bytu");
-            return (TDMessageCode)BitConverter.ToInt32(buffer, 0);
+            return (TDMessageCode)BytesToInt(buffer);
         }
 
         public byte[] Decode(NetworkStream stream)

@@ -174,6 +174,7 @@ namespace Daemon
             {
                 service.OnPubStart();
                 Console.WriteLine("Press any key to stop");
+                //ToServerListener.StartServer();
                 StartDS();
                 Start();
                 Console.Read();

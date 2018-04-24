@@ -10,6 +10,6 @@ namespace Shared.NetMessages.FromDaemon
     public class TaskUpdateResponse : IMarkedNetMessage, INetError
     {
         public List<ErrorMessage> ErrorMessages { get; set; }
-        public TDMessageCode Code => TDMessageCode.TASK_UPDATE;
+        public TDMessageCode Code => TDMessageCode.TaskUpdate;
     }
 }
