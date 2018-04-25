@@ -74,7 +74,6 @@ namespace Daemon.Communication
             pcInfo.CreateDxDiag();
             pcInfo.ParseDxDiag();
 
-
             IntroductionMessage introductionMessage = new IntroductionMessage()
             {
 
