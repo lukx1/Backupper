@@ -211,7 +211,7 @@ namespace Daemon.Communication
                 await DecodePK(obj.P);
                 await respTask;
             }
-            catch (INetException<LoginResponse> ex)
+            catch (INetException<LoginResponse>)
             {
                 logger.Log("NamedPipe - pokus o přihlášení uživatele se nezdařil", LogType.WARNING);
                 var log = new GeneralDaemonError() { LogType = LogType.WARNING };

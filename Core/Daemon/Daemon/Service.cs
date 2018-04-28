@@ -13,15 +13,24 @@ namespace Daemon
     public partial class Service : ServiceBase
     {
         public Service()
-        {
+        { 
             InitializeComponent();
+            
         }
 
         public void OnPubStart(string[] args = null) => OnStart(args);
         public void OnPubStop() => OnStop();
 
+        internal void TestStartupAndStop(string[] args)
+        {
+            this.OnStart(args);
+            Console.ReadLine();
+            this.OnStop();
+        }
+
         protected override void OnStart(string[] args)
         {
+            new Core();
         }
 
         protected override void OnStop()
