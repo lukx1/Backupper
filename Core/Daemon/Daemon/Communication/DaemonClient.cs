@@ -151,12 +151,12 @@ namespace Daemon.Communication
             int tryCount = 0;
             while (!await AttemptLogin(authenticator, tryCount)) // Pokouší se příhlásit dokut se to nepovede
             {
-                if (++tryCount > settings.LoginMaxRetryCount - 1)
+                if ((++tryCount > settings.LoginMaxRetryCount - 1) && settings.LoginMaxRetryCount != -1)
                 {
                     logger.Log($"Byl dosažen maximální počet pokusů o připojení ({settings.LoginMaxRetryCount}){Environment.NewLine}Nelze pokračovat...", LogType.CRITICAL);
                     throw new LocalException($"Nelze kontaktovat server {(settings.SSLUse ? settings.SSLServer : settings.Server)}");
                 }
-                logger.Log("Přihlášení se nepovedlo, bude se opakovat za " + TimeSpan.FromMilliseconds(settings.LoginFailureWaitPeriodMs), LogType.WARNING);
+                logger.Log("Přihlášení se nepovedlo, bude se opakovat za " + TimeSpan.FromMilliseconds(settings.LoginFailureWaitPeriodMs+(60000*tryCount)), LogType.WARNING);
                 Thread.Sleep(settings.LoginFailureWaitPeriodMs);
             }
             return true;

@@ -30,7 +30,7 @@ namespace Daemon
 
         protected override void OnStart(string[] args)
         {
-            new Core();
+            Task.Run(() => { Core core = new Core(); });
         }
 
         protected override void OnStop()

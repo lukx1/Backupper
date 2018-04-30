@@ -7,7 +7,7 @@
     <ProjectGuid>{8A54028C-A19B-49E2-AE8A-98D4010F8370}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Daemon</RootNamespace>
-    <AssemblyName>Daemon</AssemblyName>
+    <AssemblyName>Backupper</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

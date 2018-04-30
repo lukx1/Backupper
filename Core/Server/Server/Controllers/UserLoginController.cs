@@ -21,11 +21,12 @@ namespace Server.Controllers
         {
             using(MySQLContext sql = new MySQLContext())
             {
-                var hashedPass = (from users in sql.Users
+                var res = (from users in sql.Users
                                   where users.Nickname == taskMessage.Username
-                                  select users.Password).FirstOrDefault();
-                if (PasswordFactory.ComparePasswordsPbkdf2(taskMessage.Password, hashedPass))
-                    return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.OK, new UserLoginResponse() { OK = true });
+                                  select new { users.Password, users.PrivateKey}).FirstOrDefault();
+
+                if (res != null && PasswordFactory.ComparePasswordsPbkdf2(taskMessage.Password ?? "", res.Password ?? ""))
+                    return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.OK, new UserLoginResponse() { OK = true,PrivateKeyEncrypted = res.PrivateKey });
                 else
                     return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.Forbidden, new UserLoginResponse() { OK = false });
             }
