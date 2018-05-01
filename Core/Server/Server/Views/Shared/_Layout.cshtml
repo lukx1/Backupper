@@ -24,7 +24,7 @@
 		@RenderBody()
 
         <footer class="brr-footer">
-            <p style="grid-row: 1; grid-column: 1;" class="d-inline">&copy; @DateTime.Now.Year - Backupper</p>
+            <p style="grid-row: 1; grid-column: 1;" class="d-inline brr-nav-link">&copy; @DateTime.Now.Year - Backupper</p>
             @if (ViewBag.IsUserLoggedIn ?? false)
             {
                 @Html.Partial("~/Views/Shared/_AdminFootBarPart.cshtml")

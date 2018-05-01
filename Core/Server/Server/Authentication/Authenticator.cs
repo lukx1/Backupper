@@ -17,8 +17,8 @@ namespace Server.Authentication
     public class Authenticator
     {
 
-        public static readonly ErrorMessage BAD_SESSION = new ErrorMessage() { id = 403,message = "Session není platný" };
-        public static readonly ErrorMessage EXPIRED_SESSION = new ErrorMessage() { id = 403, message = "Session již vypršel" };
+        public static readonly ErrorMessage BAD_SESSION = new ErrorMessage() { id = (int)System.Net.HttpStatusCode.Forbidden, message = "Session není platný" };
+        public static readonly ErrorMessage EXPIRED_SESSION = new ErrorMessage() { id = (int)System.Net.HttpStatusCode.Forbidden, message = "Session již vypršel" };
 
         private MySQLContext mysql;
 

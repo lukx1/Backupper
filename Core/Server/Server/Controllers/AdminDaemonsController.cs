@@ -12,7 +12,73 @@ namespace Server.Controllers
     [AdminSec(Permission.MANAGEOTHERDAEMONS, Permission.MANAGESELFDAEMONS)]
     public class AdminDaemonsController : AdminBaseController
     {
-		[HttpGet]
+        [HttpGet]
+        public ActionResult UnacceptedDaemons()
+        {
+            using (var db = new Models.MySQLContext())
+            {
+                var daemons = db.WaitingForOneClicks
+                    .AsQueryable()
+                    .Include(x => x.DaemonInfo)
+                    .Where(x => x.Confirmed == false)
+                    .ToArray();
+                return View(daemons);
+            }
+        }
+
+        [HttpPost]
+        public JsonResult AcceptDaemon(int id)
+        {
+            JsonResult result = new JsonResult();
+
+            using (var db = new Models.MySQLContext())
+            {
+                var wfoc = db.WaitingForOneClicks
+                    .FirstOrDefault(x => x.Id == id);
+                if(wfoc != null)
+                {
+                    wfoc.Confirmed = true;
+                    db.SaveChanges();
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                    result.Data = new { success = true };
+                }
+                else
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
+                    result.Data = new { success = false };
+                }
+            }
+
+            return result;
+        }
+
+        [HttpPost]
+        public JsonResult DeclineDaemon(int id)
+        {
+            JsonResult result = new JsonResult();
+
+            using (var db = new Models.MySQLContext())
+            {
+                var wfoc = db.WaitingForOneClicks
+                    .FirstOrDefault(x => x.Id == id);
+                if (wfoc != null)
+                {
+                    db.WaitingForOneClicks.Remove(wfoc);
+                    db.SaveChanges();
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
+                    result.Data = new { success = true };
+                }
+                else
+                {
+                    Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
+                    result.Data = new { success = false };
+                }
+            }
+
+            return Json(result);
+        }
+
+        [HttpGet]
         public ActionResult Index()
         {
 			using (var db = new Models.MySQLContext())

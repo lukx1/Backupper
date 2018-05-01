@@ -1,31 +1,67 @@
-﻿@model IEnumerable<global::Server.Models>
+﻿@model IEnumerable<global::Server.Models.WaitingForOneClick>
 
 @{
 	ViewBag.Title = "Unaccepted Daemons";
 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
-<h2>Daemons</h2>
-
 <table style="width:100%">
 	<tr>
-		<th>ID</th>
-		<th>User name</th>
+		<th>Date of Reception</th>
 		<th>OS</th>
 		<th>Mac</th>
 		<th>Date Added</th>
 	</tr>
 	@foreach (var item in Model)
 	{
-		<tr>
-			<td>@item.Id</td>
-			<td>@item.User.Nickname</td>
-			<td>@item.DaemonInfo.Os</td>
-			<td>@item.DaemonInfo.Mac</td>
-			<td>@item.DaemonInfo.DateAdded</td>
-			<td><a href="/AdminTasks/Tasks?id=@(item.Id)">Show Tasks</a></td>
-			<td><a href="/AdminDaemons/DaemonGroups?id=@(item.Id)">Groups</a></td>
-		</tr>
+	<tr>
+		<td>@item.DateReceived</td>
+		<td>@item.DaemonInfo.Os</td>
+		<td>@item.DaemonInfo.Mac</td>
+		<td>@item.DaemonInfo.DateAdded</td>
+		<td><input onclick="accept(@item.Id)" type="button" value="Accept"/></td>
+		<td><input onclick="decline(@item.Id)" type="button" value="Decline"/></td>
+	</tr>
 	}
 </table>
+<script>
+	function accept(id) {
+		$.ajax({
+			url: '/AdminDaemons/AcceptDaemon',
+			method: 'POST',
+			dataType: 'json',
+            data: { 'id': id },
+            statusCode: {
+                404: function () {
+                    $("#brr-el-error").removeClass("invisible").value = "Record wasn't found on the server";
+                },
+                200: function () {
+                    $("#brr-el-info").removeClass("invisible").value = "Daemon was accepted";
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $("#brr-el-error").removeClass("invisible").value = "Unspecified error has occurred while processing your request";
+            }
+		});
+	}
+
+	function decline(id) {
+		$.ajax({
+			url: '/AdminDaemons/DeclineDaemon',
+			method: 'POST',
+			dataType: 'json',
+            data: { 'id': id },
+            statusCode: {
+                404: function () {
+                    $("#brr-el-error").removeClass("invisible").value = "Record wasn't found on the server";
+                },
+                200: function () {
+                    $("#brr-el-info").removeClass("invisible").value = "Daemon was declined";
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                $("#brr-el-error").removeClass("invisible").value = "Unspecified error has occurred while processing your request";
+            }
+        });
+	}
+</script>
 

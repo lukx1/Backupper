@@ -1,14 +1,33 @@
 ﻿@using global::Server.Objects
 
 @{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @if (TempData[MagicStrings.OPERATION_RESULT_MESSAGE] != null)
 {
-    <div class="alert alert-info">
-        @TempData[MagicStrings.OPERATION_RESULT_MESSAGE]
-    </div>
+	<div id="brr-el-info" class="alert alert-info">
+		@TempData[MagicStrings.OPERATION_RESULT_MESSAGE]
+	</div>
+}
+else
+{
+	<div id="brr-el-info" class="alert alert-info invisible">
+
+	</div>
+}
+
+@if (TempData[MagicStrings.ERROR_MESSAGE] != null)
+{
+	<div id="brr-el-warning" class="alert alert-warning">
+		@TempData[MagicStrings.ERROR_MESSAGE]
+	</div>
+}
+else
+{
+	<div id="brr-el-warning" class="alert alert-warning invisible">
+
+	</div>
 }
 
 @RenderBody()

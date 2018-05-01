@@ -8,6 +8,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Server.ScheduledTasks;
 
 namespace Server
 {
@@ -23,6 +24,7 @@ namespace Server
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             HostingEnvironment.RegisterObject(new HostringEnvironmentRegisteredShutdownObject());
             log4net.Config.XmlConfigurator.Configure();
+            JobScheduler.Start();
         }
 
         protected void Application_Error(object sender, EventArgs e)
