@@ -20,12 +20,7 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-<<<<<<< HEAD
-    <IISExpressSSLPort>
-    </IISExpressSSLPort>
-=======
     <IISExpressSSLPort>44382</IISExpressSSLPort>
->>>>>>> 0d438ee8ac55d52c7542ad110d9b40248d8a4b3e
     <IISExpressAnonymousAuthentication>
     </IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>
