@@ -98,8 +98,10 @@ namespace Daemon.Communication
                     settings.Save();
                     return true;
                 }
-                else//TODO: tohle
-                    return false;
+                else
+                {
+                    throw new LocalException("Neočekávaná chyba\r\nDaemon se přihlásil ale obdržil prázdný session\r\nNelze pokračovat");
+                }
             }
             catch (HttpRequestException e)
             {
@@ -119,7 +121,7 @@ namespace Daemon.Communication
         /// Pokud je nutno tak se introducne a načte existující tasky
         /// </summary>
         /// <returns></returns>
-        private async Task<bool> Startup() //TODO : returnovat log + standardizace logu interface
+        private async Task<bool> Startup()
         {
             authenticator = new Authenticator(messenger);
             if (settings.Uuid == null || settings.Uuid == Guid.Empty)// Daemon nema Uuid -> musi se introducnout
@@ -260,7 +262,12 @@ namespace Daemon.Communication
                 }
                 catch(Exception e)
                 {
-                    logger.Log(e.StackTrace,LogType.ERROR);//TODO : dodelat
+
+                    logger.Log(e.StackTrace,LogType.ERROR);
+                    GeneralDaemonError log = new GeneralDaemonError() {LogType = LogType.ERROR };
+                    log.Content.DaemonUuid = settings.Uuid;
+                    log.Content.Message = "Chyba při pokusu o znovunačtení tasků\r\n"+e.ToString();
+                    var faf = logger.ServerLogAsync(log);
                 }
                 Thread.Sleep(settings.TaskRefreshPeriodMs);
             }

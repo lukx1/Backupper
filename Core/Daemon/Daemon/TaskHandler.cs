@@ -89,7 +89,12 @@ namespace Daemon
                 logger.Log($"Nyní probíhá zálohování {timedBackup.Backup.ID}", LogType.INFORMATION);
                 try
                 {
+                    var log = new DaemonTaskSuccessLog() { LogType = LogType.INFORMATION };
+                    log.Content.TimeStarted = DateTime.Now;
                     timedBackup.Backup.StartBackup();
+                    log.Content.TaskID = task.id;
+                    log.Content.TimeFinished = DateTime.Now;
+                    Task.Run(async () => { await logger.ServerLogAsync(log); });
                     logger.Log($"Zálohování {timedBackup.Backup.ID} dokončeno", LogType.INFORMATION);
                 }
                 catch (Exception ex)
@@ -123,7 +128,7 @@ namespace Daemon
         /// <param name="time">Kdy má proběhnout</param>
         /// <param name="idTask">Jakému tasku patří</param>
         /// <returns></returns>
-        private TimedBackup CreateTimedBackup(DbTask task,DbTime time) //TODO: Reformatovat
+        private TimedBackup CreateTimedBackup(DbTask task,DbTime time)
         {
             TimedBackup timedBackup = new TimedBackup // Nastaví zálkatdní hodnoty
             {
@@ -209,7 +214,6 @@ namespace Daemon
             }
         }
 
-        //TODO : Finish
         /// <summary>
         /// Vyvoří IBackup z informací v tasklocationu
         /// </summary>

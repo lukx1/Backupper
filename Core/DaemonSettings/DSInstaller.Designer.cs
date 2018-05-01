@@ -33,6 +33,7 @@
             // 
             this.AfterInstall += new System.Configuration.Install.InstallEventHandler(this.DSInstaller_AfterInstall);
             this.AfterUninstall += new System.Configuration.Install.InstallEventHandler(this.DSInstaller_AfterUninstall);
+            this.BeforeInstall += new System.Configuration.Install.InstallEventHandler(this.DSInstaller_BeforeInstall);
 
         }
 

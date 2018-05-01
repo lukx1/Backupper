@@ -11,7 +11,6 @@ namespace Server.Authentication
 {
     public class DaemonLoginer
     {
-        //TODO: Udelat soucasti authenticatoru
         private MySQLContext mysql;
         /// <summary>
         /// Login extension period in minutes

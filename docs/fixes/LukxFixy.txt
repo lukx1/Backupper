@@ -1,0 +1,21 @@
+﻿--Známé bugy---
+
+BUG - oprevena chyba kdy mohlo běžet vícero DS procesů zároveň
+BUG - opravena chyba kdy DS vymaxovalo CPU
+BUG - opravena chyba kdy se DS pokusilo exitnout aplikaci ale nikdy nebylo úspěšné
+
+--TODO Daemon--
+
+FIX - Messenger už neposkytne status kód jelikož nebyl spolehlivý v async. kontextu
+FIX - Když se daemon přihlásí úspěšně ale obdrží prázné session guid tak je vytvořena lokální chyba a aplikace zastavena
+FIX - Odstraněno bezvíznamné TODO v LoginTicker
+FIX - CreateTimedBackup bylo rozděleno do vícero sub-metod
+FIX - LogCrash už vytváří lokální popup pokud DS běží
+FIX - Logy byli standardizovány pomocí SLOG
+FIX - CreateBackupInstance bylo již dokončeno Rambem
+FIX - Event? ne
+FIX - Pokud je hozen exception při pokusu o znovunačtení tasků tak je na server odeslán log o této události
+
+--TODO Server--
+
+FIX - Části DaemonLogineru byla předány do Authenticatoru

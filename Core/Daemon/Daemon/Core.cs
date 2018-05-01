@@ -61,7 +61,7 @@ namespace Daemon
         }
 
         private static void LogCrash(Exception e)
-        {//TODO: popup
+        {
             DumpErr(e);
             if (e is LocalException)
             {

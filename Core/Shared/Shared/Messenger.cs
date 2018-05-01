@@ -21,10 +21,6 @@ namespace Shared
     public class Messenger
     {
         private HttpClient client;
-        /// <summary>
-        /// Nepoužívat pokud klient je používán asynchroně
-        /// </summary>
-        public HttpStatusCode StatusCode { get; private set; } //TODO: Tohle nemuze byt pouzito v async funkcich
 
         /// <summary>
         /// Vytvoří instanci a uloží si kontaktní server

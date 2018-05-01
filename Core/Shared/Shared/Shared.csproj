@@ -59,6 +59,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LogObjects\DaemonStartupLog.cs" />
+    <Compile Include="LogObjects\DaemonTaskSuccessLog.cs" />
     <Compile Include="NetMessages\FromDaemon\TaskUpdateMessage.cs" />
     <Compile Include="NetMessages\FromDaemon\TaskUpdateResponse.cs" />
     <Compile Include="NetMessages\IMarkedNetMessage.cs" />

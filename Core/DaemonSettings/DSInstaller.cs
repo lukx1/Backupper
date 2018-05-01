@@ -33,5 +33,18 @@ namespace DaemonSettings
             ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
             rk.DeleteValue("BackupperDS", false);
         }
+
+        private void DSInstaller_BeforeInstall(object sender, InstallEventArgs e)
+        {
+            Process[] pnames = Process.GetProcessesByName("DaemonSettings.exe");
+            foreach (var proc in pnames)
+            {
+                try
+                {
+                    proc.Kill();
+                }
+                catch (Exception) { }
+            }
+        }
     }
 }
