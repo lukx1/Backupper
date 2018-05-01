@@ -20,6 +20,7 @@ namespace Shared
         public static readonly LogContentType DAEMON_GENERAL_SERVER_RESPONSE = new LogContentType("5BB6A5E2-0266-48E9-8E7A-E1B55455613E");
         public static readonly LogContentType DAEMON_GENERAL_ERROR = new LogContentType("A1374316-A7EC-43E0-B2C7-187FCEAF5D41");
         public static readonly LogContentType DAEMON_NEEDS_PASSWORD = new LogContentType("C120E029-5D7E-4FBD-B76D-8B7052B311A8");
+        public static readonly LogContentType DAEMON_TASK_SUCCESS = new LogContentType("38703A69-DE30-401F-86FA-0D63EC3BCB95");
 
         public Guid Uuid { get; private set; }
 

@@ -89,7 +89,12 @@ namespace Daemon
                 logger.Log($"Nyní probíhá zálohování {timedBackup.Backup.ID}", LogType.INFORMATION);
                 try
                 {
+                    var log = new DaemonTaskSuccessLog() { LogType = LogType.INFORMATION };
+                    log.Content.TimeStarted = DateTime.Now;
                     timedBackup.Backup.StartBackup();
+                    log.Content.TaskID = task.id;
+                    log.Content.TimeFinished = DateTime.Now;
+                    Task.Run(async () => { await logger.ServerLogAsync(log); });
                     logger.Log($"Zálohování {timedBackup.Backup.ID} dokončeno", LogType.INFORMATION);
                 }
                 catch (Exception ex)
@@ -123,14 +128,14 @@ namespace Daemon
         /// <param name="time">Kdy má proběhnout</param>
         /// <param name="idTask">Jakému tasku patří</param>
         /// <returns></returns>
-        private TimedBackup CreateTimedBackup(DbTask task,DbTime time) //TODO: Reformatovat
+        private TimedBackup CreateTimedBackup(DbTask task,DbTime time)
         {
             TimedBackup timedBackup = new TimedBackup // Nastaví zálkatdní hodnoty
             {
                 IdTask = task.id,
             };
             
-            timedBackup.Backup = CreateBackupInstance(task.taskLocations,task.backupType,task.details,task.id*time.id);
+            timedBackup.Backup = CreateBackupInstance(task.taskLocations,task.backupType,task.details,task.ActionBefore,task.ActionAfter,task.id*time.id);
             var dueTime = CalculateDueTime(time.startTime, time.interval);
             if (dueTime.Milliseconds != 0)
                 logger.Log($"Záloha proběhne za {dueTime}",LogType.DEBUG);
@@ -209,15 +214,14 @@ namespace Daemon
             }
         }
 
-        //TODO : Finish
         /// <summary>
         /// Vyvoří IBackup z informací v tasklocationu
         /// </summary>
         /// <param name="taskLocation">Jak zálohovat</param>
         /// <returns>IBackup</returns>
-        private IBackup CreateBackupInstance(IEnumerable<DbTaskLocation> taskLocations,DbBackupType backupType, DbTaskDetails taskDetails, int id = -1)
+        private IBackup CreateBackupInstance(IEnumerable<DbTaskLocation> taskLocations,DbBackupType backupType, DbTaskDetails taskDetails, string actionBefore,string actionAfter, int id = -1)
         {
-            return BackupFactory.CreateBackup(taskLocations, backupType, taskDetails,id);
+            return BackupFactory.CreateBackup(taskLocations, backupType, taskDetails,id,actionBefore,actionAfter);
         }
         
         /// <summary>

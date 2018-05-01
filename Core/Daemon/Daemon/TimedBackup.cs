@@ -13,7 +13,7 @@ namespace Daemon
     /// Provádí zálohu v daný čas
     /// </summary>
     public class TimedBackup : IDisposable
-    {//TODO : event?
+    {
 
         /// <summary>
         /// Pro identifikace zdroje

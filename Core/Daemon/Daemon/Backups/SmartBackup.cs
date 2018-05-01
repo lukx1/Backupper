@@ -16,6 +16,9 @@ namespace Daemon.Backups
         public IEnumerable<DbTaskLocation> TaskLocations { get; set; }
         public int ID { get; set; }
 
+        public string ActionBefore { get; set; }
+        public string ActionAfter { get; set; }
+
         private Logging.ILogger logger = Logging.LoggerFactory.CreateAppropriate();
 
         public SmartBackup()
@@ -25,6 +28,8 @@ namespace Daemon.Backups
 
         public void StartBackup()
         {
+            CMDAction(ActionBefore);
+            
             foreach (DbTaskLocation item in TaskLocations)
             {
                 SmartBackupInfo info = new SmartBackupInfo();
@@ -54,8 +59,19 @@ namespace Daemon.Backups
                     BackupNormal(info, item);
                 }
             }
+            CMDAction(ActionAfter);
         }
 
+        public void CMDAction(string script)
+        {
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            System.Diagnostics.ProcessStartInfo startInfo = new System.Diagnostics.ProcessStartInfo();
+            startInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+            startInfo.FileName = "cmd.exe";
+            startInfo.Arguments = "/C " + script;
+            process.StartInfo = startInfo;
+            process.Start();
+        }
 
         /// <summary>
         /// Zálohuje soubory na disk či síťový disk
@@ -66,10 +82,10 @@ namespace Daemon.Backups
         {
             SmartBackupInfo trulyBackupedInfo = backupInfo;
 
-            if (TaskDetails.ZipAlgorithm == "gz")
+            if (TaskDetails.ZipAlgorithm == "zip")
             {
                 trulyBackupedInfo = new SmartBackupInfo();
-                trulyBackupedInfo.CreateFullBackupInfo(new Compressions.ZipCompressor(TaskDetails, backupInfo).Compress());
+                trulyBackupedInfo = new Compressions.Compressor(backupInfo, TaskDetails).Compress(Path.GetTempPath() + @"\" + DateTime.Now.ToFileTimeUtc() + ".zip",System.IO.Compression.CompressionLevel.Optimal);
             }
 
             bool successful = true;

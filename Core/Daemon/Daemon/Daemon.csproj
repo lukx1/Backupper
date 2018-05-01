@@ -7,7 +7,7 @@
     <ProjectGuid>{8A54028C-A19B-49E2-AE8A-98D4010F8370}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>Daemon</RootNamespace>
-    <AssemblyName>Daemon</AssemblyName>
+    <AssemblyName>Backupper</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -22,9 +22,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <PublisherName>Backupper</PublisherName>
+    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationVersion>0.1.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -48,6 +50,28 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>173388B23CA68102912D3AF9F2345F7D51180536</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>Daemon_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'OOSDebug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\OOSDebug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;OOS</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -95,8 +119,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backups\BackupFactory.cs" />
-    <Compile Include="Backups\Compressions\ICompression.cs" />
-    <Compile Include="Backups\Compressions\ZipCompressor.cs" />
+    <Compile Include="Backups\Compressions\Compressor.cs" />
     <Compile Include="Backups\IBackup.cs" />
     <Compile Include="Backups\SmartBackup.cs" />
     <Compile Include="Backups\SmartBackupInfo.cs" />
@@ -108,6 +131,7 @@
     <Compile Include="Communication\SftpClient.cs" />
     <Compile Include="Communication\SqlCommunicator.cs" />
     <Compile Include="Controllers\TaskUpdateController.cs" />
+    <Compile Include="Core.cs" />
     <Compile Include="Data\TaskKeeper.cs" />
     <Compile Include="DoNotStoreThisException.cs" />
     <Compile Include="ListenController.cs" />
@@ -117,6 +141,12 @@
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\LoggerFactory.cs" />
     <Compile Include="Communication\PipeComs.cs" />
+    <Compile Include="ProjectInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ProjectInstaller.Designer.cs">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -152,6 +182,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Daemon_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Resources">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -173,6 +204,11 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="ProjectInstaller.resx">
+      <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -66,7 +66,7 @@ namespace Daemon
                 wakeUpAt = DateTime.Now.AddMilliseconds(sleepTimeMs);
                 Thread.Sleep(sleepTimeMs);
                 await logginer.AttemptLogin();
-                if (settings.LoggingLevel >= (int)LogType.DEBUG)//TODO: tohle
+                if (settings.LoggingLevel >= (int)LogType.DEBUG)
                     Console.WriteLine($"{DateTime.Now} Login refreshnut");
             }
         }

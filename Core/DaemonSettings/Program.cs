@@ -2,9 +2,11 @@
 using DaemonShared.Pipes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -127,6 +129,8 @@ namespace DaemonSettings
                         {
                             PipeSecurity ps = new PipeSecurity();
                             ps.AddAccessRule(new PipeAccessRule(ServiceIdentity, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow));
+                            /*ps.AddAccessRule(new PipeAccessRule("Everyone",
+                    PipeAccessRights.ReadWrite, AccessControlType.Allow));*/
                             serverStream.SetAccessControl(ps);
                             pipeSecurity = ps;
                         }
@@ -149,7 +153,8 @@ namespace DaemonSettings
                 }
                 catch (Exception e)
                 {
-                    Application.Exit();
+                    MessageBox.Show("Nečekaná chyba\r\n" + e.ToString());
+                    Environment.Exit(-1);
                     return;
                 }
 
@@ -164,6 +169,10 @@ namespace DaemonSettings
         /// 
         static void Main()
         {
+            Process[] pname = Process.GetProcessesByName("DaemonSettings.exe");
+            if (pname.Length != 0)
+                return;
+            NotifyWaiter(SendMessage);
             while (true)
             {
                 var thread = PipeThread();

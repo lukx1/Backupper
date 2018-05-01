@@ -70,10 +70,11 @@ namespace Daemon.Communication
                 .Select(nic => nic.GetPhysicalAddress().ToString())
                 .FirstOrDefault();
 
+            logger.Log("Tvoření dxDiagu", LogType.DEBUG);
             var pcInfo = new PcInfo();
             pcInfo.CreateDxDiag();
             pcInfo.ParseDxDiag();
-
+            logger.Log("Dxdiag vytvoren", LogType.DEBUG);
 
             IntroductionMessage introductionMessage = new IntroductionMessage()
             {
@@ -119,7 +120,7 @@ namespace Daemon.Communication
                         settings.Save();
                         return true;
                     }
-                    catch (INetException<OneClickResponse> e)
+                    catch (INetException<OneClickResponse>)
                     {
                         logger.Log("Daemon nebyl jeste pomoci OCI overen", LogType.DEBUG);
                     }

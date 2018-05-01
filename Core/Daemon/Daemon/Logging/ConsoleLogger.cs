@@ -4,6 +4,7 @@ using Shared;
 using Shared.NetMessages.LogMessages;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Daemon.Logging
 
         private ConsoleLogger(Messenger messenger)
         {
-            logCommunicator = new LogCommunicator(messenger);
+            logCommunicator = new LogCommunicator(messenger); 
         }
 
         private void SetColor(LogType logType)
@@ -57,13 +58,45 @@ namespace Daemon.Logging
             }
         }
 
+        private EventLogEntryType Translate(LogType type)
+        {
+            switch (type)
+            {
+                case LogType.EMERGENCY:
+                case LogType.ALERT:
+                case LogType.CRITICAL:
+                case LogType.ERROR:
+                    return EventLogEntryType.Error;
+                case LogType.WARNING:
+                case LogType.NOTIFICATION:
+                    return EventLogEntryType.Warning;
+                case LogType.INFORMATION:
+                    return EventLogEntryType.Information;
+                case LogType.DEBUG:
+                    return EventLogEntryType.Information;
+                default:
+                    return EventLogEntryType.Error;
+            }
+        }
+
         public void Log(string message, LogType logType)
         {
             if ((int)logType > settings.LoggingLevel)
                 return;
-            SetColor(logType);
-            Console.WriteLine($"{DateTime.Now} - {logType.ToString()} - {message}");
-            Console.ResetColor();
+            if (!Environment.UserInteractive)
+            {
+                using (EventLog eventLog = new EventLog("Backupper"))
+                {
+                    eventLog.Source = "Backupper";
+                    eventLog.WriteEntry("Log message example", Translate(logType));
+                }
+            }
+            else
+            {
+                SetColor(logType);
+                Console.WriteLine($"{DateTime.Now} - {logType.ToString()} - {message}");
+                Console.ResetColor();
+            }
         }
 
         public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> ServerLogAsync<T>(params SLog<T>[] logs) where T : class

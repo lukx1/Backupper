@@ -5,7 +5,7 @@
     <ProjectGuid>{35E2C16B-863C-4A69-B77A-326587D86777}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <NoStandardLibraries>false</NoStandardLibraries>
-    <AssemblyName>WindowsApplication</AssemblyName>
+    <AssemblyName>DaemonSettings</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -37,10 +37,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -51,6 +53,12 @@
     </Compile>
     <Compile Include="AlreadyRunning.Designer.cs">
       <DependentUpon>AlreadyRunning.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DSInstaller.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DSInstaller.Designer.cs">
+      <DependentUpon>DSInstaller.cs</DependentUpon>
     </Compile>
     <Compile Include="Home.cs">
       <SubType>Form</SubType>
@@ -63,11 +71,13 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs" />
-    <Compile Include="Properties\Settings.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="AlreadyRunning.resx">
       <DependentUpon>AlreadyRunning.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DSInstaller.resx">
+      <DependentUpon>DSInstaller.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Home.resx">
       <DependentUpon>Home.cs</DependentUpon>
@@ -76,7 +86,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Properties\Settings.settings" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\MainIcon.ico" />

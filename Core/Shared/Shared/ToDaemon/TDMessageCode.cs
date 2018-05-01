@@ -8,6 +8,6 @@ namespace Shared.ToDaemon
 {
     public enum TDMessageCode
     {
-        TASK_UPDATE
+        TaskUpdate
     }
 }

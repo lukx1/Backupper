@@ -98,8 +98,10 @@ namespace Daemon.Communication
                     settings.Save();
                     return true;
                 }
-                else//TODO: tohle
-                    return false;
+                else
+                {
+                    throw new LocalException("Neočekávaná chyba\r\nDaemon se přihlásil ale obdržil prázdný session\r\nNelze pokračovat");
+                }
             }
             catch (HttpRequestException e)
             {
@@ -119,7 +121,7 @@ namespace Daemon.Communication
         /// Pokud je nutno tak se introducne a načte existující tasky
         /// </summary>
         /// <returns></returns>
-        private async Task<bool> Startup() //TODO : returnovat log + standardizace logu interface
+        private async Task<bool> Startup()
         {
             authenticator = new Authenticator(messenger);
             if (settings.Uuid == null || settings.Uuid == Guid.Empty)// Daemon nema Uuid -> musi se introducnout
@@ -151,12 +153,12 @@ namespace Daemon.Communication
             int tryCount = 0;
             while (!await AttemptLogin(authenticator, tryCount)) // Pokouší se příhlásit dokut se to nepovede
             {
-                if (++tryCount > settings.LoginMaxRetryCount - 1)
+                if ((++tryCount > settings.LoginMaxRetryCount - 1) && settings.LoginMaxRetryCount != -1)
                 {
                     logger.Log($"Byl dosažen maximální počet pokusů o připojení ({settings.LoginMaxRetryCount}){Environment.NewLine}Nelze pokračovat...", LogType.CRITICAL);
                     throw new LocalException($"Nelze kontaktovat server {(settings.SSLUse ? settings.SSLServer : settings.Server)}");
                 }
-                logger.Log("Přihlášení se nepovedlo, bude se opakovat za " + TimeSpan.FromMilliseconds(settings.LoginFailureWaitPeriodMs), LogType.WARNING);
+                logger.Log("Přihlášení se nepovedlo, bude se opakovat za " + TimeSpan.FromMilliseconds(settings.LoginFailureWaitPeriodMs+(60000*tryCount)), LogType.WARNING);
                 Thread.Sleep(settings.LoginFailureWaitPeriodMs);
             }
             return true;
@@ -211,7 +213,7 @@ namespace Daemon.Communication
                 await DecodePK(obj.P);
                 await respTask;
             }
-            catch (INetException<LoginResponse> ex)
+            catch (INetException<LoginResponse>)
             {
                 logger.Log("NamedPipe - pokus o přihlášení uživatele se nezdařil", LogType.WARNING);
                 var log = new GeneralDaemonError() { LogType = LogType.WARNING };
@@ -260,7 +262,12 @@ namespace Daemon.Communication
                 }
                 catch(Exception e)
                 {
-                    logger.Log(e.StackTrace,LogType.ERROR);//TODO : dodelat
+
+                    logger.Log(e.StackTrace,LogType.ERROR);
+                    GeneralDaemonError log = new GeneralDaemonError() {LogType = LogType.ERROR };
+                    log.Content.DaemonUuid = settings.Uuid;
+                    log.Content.Message = "Chyba při pokusu o znovunačtení tasků\r\n"+e.ToString();
+                    var faf = logger.ServerLogAsync(log);
                 }
                 Thread.Sleep(settings.TaskRefreshPeriodMs);
             }

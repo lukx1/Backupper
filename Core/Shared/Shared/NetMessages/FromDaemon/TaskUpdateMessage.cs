@@ -8,5 +8,6 @@ namespace Shared.NetMessages.FromDaemon
 {
     public class TaskUpdateMessage : INetMessage
     {
+        public bool Update { get; set; } = true;
     }
 }

@@ -20,8 +20,12 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
+<<<<<<< HEAD
     <IISExpressSSLPort>
     </IISExpressSSLPort>
+=======
+    <IISExpressSSLPort>44382</IISExpressSSLPort>
+>>>>>>> 0d438ee8ac55d52c7542ad110d9b40248d8a4b3e
     <IISExpressAnonymousAuthentication>
     </IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>
@@ -270,9 +274,9 @@
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserGroup.cs" />
     <Compile Include="Models\WaitingForOneClick.cs" />
-    <Compile Include="Objects\AdminException.cs" />
-    <Compile Include="Objects\AdminModelErrorException.cs" />
-    <Compile Include="Objects\AdminSecurityException.cs" />
+    <Compile Include="Objects\AdminExceptions\AdminException.cs" />
+    <Compile Include="Objects\AdminExceptions\AdminModelErrorException.cs" />
+    <Compile Include="Objects\AdminExceptions\AdminSecurityException.cs" />
     <Compile Include="Objects\MagicStrings.cs" />
     <Compile Include="Objects\LogHandler.cs" />
     <Compile Include="Objects\MailHandler.cs" />
