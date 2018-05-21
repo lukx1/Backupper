@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+VisualStudioVersion = 15.0.26730.8
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{0D611268-E2B6-43F7-8217-A8044E5FE826}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "..\Shared\Shared\Shared.csproj", "{F627124E-E950-4A06-BA35-BADE392C1074}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Server_IISEx_Setup", "Server_IISEx_Setup\Server_IISEx_Setup.vdproj", "{40CDDCD5-6845-4D84-8BBD-E28FC3D47D4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,8 @@ Global
 		{F627124E-E950-4A06-BA35-BADE392C1074}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F627124E-E950-4A06-BA35-BADE392C1074}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F627124E-E950-4A06-BA35-BADE392C1074}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40CDDCD5-6845-4D84-8BBD-E28FC3D47D4A}.Debug|Any CPU.ActiveCfg = Debug
+		{40CDDCD5-6845-4D84-8BBD-E28FC3D47D4A}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
