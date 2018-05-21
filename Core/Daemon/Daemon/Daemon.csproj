@@ -61,7 +61,7 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'OOSDebug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -182,7 +182,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Daemon_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Resources">
       <Generator>ResXFileCodeGenerator</Generator>
