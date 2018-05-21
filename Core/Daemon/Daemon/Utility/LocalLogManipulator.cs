@@ -8,10 +8,17 @@ using System.Threading.Tasks;
 
 namespace Daemon.Utility
 {
+    /// <summary>
+    /// Vytváří lokální logy o chybách
+    /// </summary>
     public class LocalLogManipulator
     {
         private readonly string StoreFolder = Path.Combine(Util.GetAppdataFolder(),"LocalLogs");
 
+        /// <summary>
+        /// Kontroluje jestli existuje LocalLogs v Daemonovi v Appdata
+        /// pokud ano, je vytvořen
+        /// </summary>
         public LocalLogManipulator()
         {
             Directory.CreateDirectory(StoreFolder);
@@ -25,6 +32,11 @@ namespace Daemon.Utility
             return path;
         }
 
+        /// <summary>
+        /// Uloží log lokálně
+        /// </summary>
+        /// <typeparam name="T">Druh logů</typeparam>
+        /// <param name="log">Log</param>
         public void Store<T>(SLog<T> log) where T: class
         {
             var json = JsonableUniversalLog.CreateFrom(log);
@@ -35,6 +47,11 @@ namespace Daemon.Utility
             File.WriteAllText(dest, json.ToJson(),Encoding.UTF8);
         }
 
+        /// <summary>
+        /// Přečte všechny lokálně uložené logy
+        /// </summary>
+        /// <param name="deleteAfterRead">Pokud vše ctěné má být smazáno</param>
+        /// <returns>Lokální logy nebo prázndou kolekci, když nejsou</returns>
         public IEnumerable<JsonableUniversalLog> ReadAllLogs(bool deleteAfterRead = true)
         {
             foreach (var dir in Directory.EnumerateDirectories(StoreFolder))
@@ -50,6 +67,12 @@ namespace Daemon.Utility
             }
         }
 
+        /// <summary>
+        /// Přečte specifické logy
+        /// </summary>
+        /// <param name="logType">Druh logu</param>
+        /// <param name="deleteAfterRead">Smazat po přečtení</param>
+        /// <returns>Lokální logy nebo prázndou kolekci, když nejsou</returns>
         public IEnumerable<JsonableUniversalLog> ReadLogs(LogContentType logType, bool deleteAfterRead = true)
         {
             var readDir = Path.Combine(StoreFolder, logType.Uuid.ToString());

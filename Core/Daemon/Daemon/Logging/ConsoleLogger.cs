@@ -11,7 +11,9 @@ using System.Threading.Tasks;
 
 namespace Daemon.Logging
 {
-
+    /// <summary>
+    /// Zálohovač do konzole, v Service dělá zálohy do Windows Eventů
+    /// </summary>
     public class ConsoleLogger : ILogger
     {
         private LoginSettings settings = new LoginSettings();
@@ -19,7 +21,10 @@ namespace Daemon.Logging
 
         private static ConsoleLogger logger;
 
-
+        /// <summary>
+        /// Vytvoří instanci a dovolí logování
+        /// </summary>
+        /// <param name="messenger">Pro odesílání na server</param>
         private ConsoleLogger(Messenger messenger)
         {
             logCommunicator = new LogCommunicator(messenger); 
@@ -79,6 +84,13 @@ namespace Daemon.Logging
             }
         }
 
+        /// <summary>
+        /// Vytvoří zálohu. Pokud je logType v settings 
+        /// méně důležitý než ten odeslaný, tak záloha nebude
+        /// vytvořena
+        /// </summary>
+        /// <param name="message">Zpráva</param>
+        /// <param name="logType">Závažnost</param>
         public void Log(string message, LogType logType)
         {
             if ((int)logType > settings.LoggingLevel)
@@ -99,6 +111,12 @@ namespace Daemon.Logging
             }
         }
 
+        /// <summary>
+        /// Asynchroně odešle log serveru
+        /// </summary>
+        /// <typeparam name="T">Druh logu</typeparam>
+        /// <param name="logs">Logy</param>
+        /// <returns>Odpověď serveru</returns>
         public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> ServerLogAsync<T>(params SLog<T>[] logs) where T : class
         {
             foreach (var log in logs)
@@ -108,11 +126,20 @@ namespace Daemon.Logging
             return await logCommunicator.SendLog(logs);
         }
 
+        /// <summary>
+        /// Vytvoří zdrojovou instanci, je nutno zavolat pouze jednou
+        /// </summary>
+        /// <param name="messenger"></param>
+        /// <returns></returns>
         public static ILogger CreateSourceInstance(Messenger messenger)
         {
                 return (logger = new ConsoleLogger(messenger));
         }
 
+        /// <summary>
+        /// Vytvoří obecnou instanci, musí být volána po CreateSourceInstance
+        /// </summary>
+        /// <returns></returns>
         public static ILogger CreateInstance()
         {
             if(logger == null)

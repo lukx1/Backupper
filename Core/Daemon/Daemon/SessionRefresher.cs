@@ -24,6 +24,10 @@ namespace Daemon
         private bool externRec = false;
         private ILogger logger = ConsoleLogger.CreateInstance();
 
+        /// <summary>
+        /// Vyvroří instanci a použije poskytnutý authenticator k refreshování/přihlášení
+        /// </summary>
+        /// <param name="logginer"></param>
         public SessionRefresher(Authenticator logginer)
         {
             this.logginer = logginer;
@@ -37,6 +41,9 @@ namespace Daemon
             ticker = Task.Run(() => LoginTicker());
         }
 
+        /// <summary>
+        /// Metoda, která dovolí externě oddálit znovunačtení
+        /// </summary>
         public void ExternalyRefreshed()
         {
             logger.Log("Externí refresh přijmut", LogType.DEBUG);
@@ -44,6 +51,11 @@ namespace Daemon
             externRec = true;
         }
 
+        /// <summary>
+        /// Pomocná mtoda pro výpočet času na spánek,
+        /// speciální verze pro extern. refresh která dovolí odpočet rozdílu
+        /// </summary>
+        /// <returns>Čas v ms</returns>
         private int CalculateSleepTimeMs()
         {
             if (externRec)

@@ -9,6 +9,7 @@ using Daemon.Logging;
 
 namespace Daemon.Controllers
 {
+    [Obsolete]
     public class TaskUpdateController : ListenController
     {
         private ILogger logger = LoggerFactory.CreateAppropriate();

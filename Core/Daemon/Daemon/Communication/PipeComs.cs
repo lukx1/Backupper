@@ -13,12 +13,20 @@ using System.Threading.Tasks;
 
 namespace Daemon
 {
+    /// <summary>
+    /// Komunikace pře pipy s DS
+    /// </summary>
     public class PipeComs : IDisposable
     {
         private ILogger logger = LoggerFactory.CreateAppropriate();
         private static Task ListenTask;
         public static bool IsListening { get; private set; } = true;
 
+        /// <summary>
+        /// Odešle zprávnu DS
+        /// </summary>
+        /// <param name="message">Zpráva</param>
+        /// <returns>Task</returns>
         public async Task SendMessageAsync(PipeMessage message)
         {
             using (NamedPipeClientStream client = new NamedPipeClientStream(".", PipeMessage.PIPE_NAME, PipeDirection.InOut, PipeOptions.WriteThrough, System.Security.Principal.TokenImpersonationLevel.Anonymous, HandleInheritability.None))
@@ -34,11 +42,16 @@ namespace Daemon
                 }
             }
         }
-
         public delegate void MessageReceivedDeleg(PipeMessage msg);
         public delegate void MessageReadingFailedDeleg(Exception e,byte[] bytes);
 
+        /// <summary>
+        /// Zpráva přijata
+        /// </summary>
         public static event MessageReceivedDeleg MessageReceived;
+        /// <summary>
+        /// Zpráva přijata, ale čtení jí selhalo
+        /// </summary>
         public static event MessageReadingFailedDeleg ReadingFailed;
 
         private Task PipeThread()
@@ -68,13 +81,16 @@ namespace Daemon
             });
         }
 
+        /// <summary>
+        /// Ukončí pipy a komunikaci s DS
+        /// </summary>
         public static void StopListening()
         {
             IsListening = false;
         }
 
         /// <summary>
-        /// Freezuje
+        /// Zapne komunikaci s DS. Freezuje thread
         /// </summary>
         public void StartListening()
         {
@@ -92,6 +108,12 @@ namespace Daemon
             }
         }
 
+        /// <summary>
+        /// Počká dokud nepřijde zpráva od DS a poté jí přečte.
+        /// Pokud již nějaká čeká tak je přečtena ihned.
+        /// Freezuje
+        /// </summary>
+        /// <returns>Zpráva</returns>
         public async Task<PipeMessage> ReadMessageAsync()
         {
             using (NamedPipeClientStream client = new NamedPipeClientStream(PipeMessage.PIPE_NAME))
@@ -103,6 +125,9 @@ namespace Daemon
             }
         }
 
+        /// <summary>
+        /// Zničí PipeComs a jeho thready
+        /// </summary>
         public void Dispose()
         {
             StopListening();

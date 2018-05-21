@@ -12,6 +12,10 @@ using System.Threading.Tasks;
 
 namespace Daemon
 {
+    /// <summary>
+    /// Nepoužívat
+    /// </summary>
+    [Obsolete]
     public static class ToServerListener
     {
 

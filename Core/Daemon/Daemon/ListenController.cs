@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Daemon
 {
+    [Obsolete]
     public abstract class ListenController
     {
         public abstract IMarkedNetMessage Receive(string json);
