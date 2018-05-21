@@ -18,7 +18,7 @@ Backupper umožňuje komplexní zálohy nejenom souborů, ale i databází. Umo�
   - Přiložená dokumentace vysvětlující rozhodnutí vývojářského týmu
   
 # Minimální systémové požadavky
-- Windows 7 nebo vyšší
+- Windows 7 Service Pack 1 / Windows Server 2008 R2 nebo vyšší
 - .NET Framework 4.6.1
 - 1 GHz procesor
 - 2 GB RAM
