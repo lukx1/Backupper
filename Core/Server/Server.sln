@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "..\Shared\Shared\
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Server_IISEx_Setup", "Server_IISEx_Setup\Server_IISEx_Setup.vdproj", "{40CDDCD5-6845-4D84-8BBD-E28FC3D47D4A}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "WebSetup", "WebSetup\WebSetup.vdproj", "{46C85CFC-24C5-4CF3-93D5-FBF49B0B6F1E}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Server_IISEx_Setup2", "Server_IISEx_Setup2\Server_IISEx_Setup2.vdproj", "{77643ED4-9113-4B89-A6DD-F69F70701C50}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +29,12 @@ Global
 		{F627124E-E950-4A06-BA35-BADE392C1074}.Release|Any CPU.Build.0 = Release|Any CPU
 		{40CDDCD5-6845-4D84-8BBD-E28FC3D47D4A}.Debug|Any CPU.ActiveCfg = Debug
 		{40CDDCD5-6845-4D84-8BBD-E28FC3D47D4A}.Release|Any CPU.ActiveCfg = Release
+		{46C85CFC-24C5-4CF3-93D5-FBF49B0B6F1E}.Debug|Any CPU.ActiveCfg = Debug
+		{46C85CFC-24C5-4CF3-93D5-FBF49B0B6F1E}.Debug|Any CPU.Build.0 = Debug
+		{46C85CFC-24C5-4CF3-93D5-FBF49B0B6F1E}.Release|Any CPU.ActiveCfg = Release
+		{46C85CFC-24C5-4CF3-93D5-FBF49B0B6F1E}.Release|Any CPU.Build.0 = Release
+		{77643ED4-9113-4B89-A6DD-F69F70701C50}.Debug|Any CPU.ActiveCfg = Debug
+		{77643ED4-9113-4B89-A6DD-F69F70701C50}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

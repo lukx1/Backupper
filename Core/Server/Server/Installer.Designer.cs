@@ -33,6 +33,7 @@
             // 
             this.AfterInstall += new System.Configuration.Install.InstallEventHandler(this.Installer_AfterInstall);
             this.AfterUninstall += new System.Configuration.Install.InstallEventHandler(this.Installer_AfterUninstall);
+            this.BeforeInstall += new System.Configuration.Install.InstallEventHandler(this.Installer_BeforeInstall);
 
         }
 

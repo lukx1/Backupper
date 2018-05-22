@@ -100,7 +100,7 @@ namespace Daemon.Logging
                 using (EventLog eventLog = new EventLog("Backupper"))
                 {
                     eventLog.Source = "Backupper";
-                    eventLog.WriteEntry("Log message example", Translate(logType));
+                    eventLog.WriteEntry($"{logType.ToString()} - {message}", Translate(logType));
                 }
             }
             else

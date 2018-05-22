@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.Properties;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,46 +33,35 @@ namespace Server
 
         private void Installer_AfterInstall(object sender, InstallEventArgs e)
         {
-            try
+            string dir = Path.GetDirectoryName(Context.Parameters["assemblyPath"]);
+            var logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DaemonSetup", "Install.log");
+            var settings = new SharedSettings();
+            Task.Run(() =>
             {
-                string dir = Directory.GetParent(Context.Parameters["assemblyPath"]).FullName;
-                string file = "iisexpress_x86_en-US.msi";
+
                 if (Environment.Is64BitOperatingSystem)
                 {
-                    file = "iisexpress_amd64_en-US.msi";
+                    var rPath = Path.Combine(Environment.ExpandEnvironmentVariables("%ProgramW6432%"), "IIS Express", "iisexpress.exe");
+                    settings.SIISexExe = rPath;
+                    File.AppendAllText(logFile, $"Started {rPath} /path:\"{ dir}\" /port:3393\r\n");
+                    Process.Start(rPath, $"/path:\"{dir}\" /port:3393");
+
                 }
                 else // 32 bit
-                {
-
-                    file = "iisexpress_x86_en-US.msi";
-                }
-                if (!File.Exists(getIISExpressFile()))
-                {
-                    var installer = Path.Combine(dir, "iisex", file);
-                    var proc = Process.Start(installer, "/quiet /promptrestart");
-                    proc.WaitForExit(10000);
-                }
-
-                Task.Run(() =>
-                {
-                    if (Environment.Is64BitOperatingSystem)
                     {
-                        Process.Start(Path.Combine(Environment.ExpandEnvironmentVariables("%ProgramW6432%"), "iisexpress.exe"), $"/path:\"{dir}\" /port:3393");
-                    }
-                    else // 32 bit
-                {
-                        Process.Start(Path.Combine(Environment.ExpandEnvironmentVariables("%ProgramFiles(x86)%"), "iisexpress.exe"), $"/path:\"{dir}\" /port:3393");
-                    }
-                });
-            }
-            catch(Exception ex)
-            {
-                File.WriteAllText(@"C:\AAA\crash.log", ex.ToString());
-            }
+                    var rPath = Path.Combine(Environment.ExpandEnvironmentVariables("%ProgramFiles(x86)%"), "IIS Express", "iisexpress.exe");
+                    settings.SIISexExe = rPath;
+                    File.AppendAllText(logFile, $"Started {rPath} /path:\"{ dir}\" /port:3393\r\n");
+                    Process.Start(rPath, $"/path:\"{dir}\" /port:3393");
+                }
+            });
+
+
         }
 
         private void Installer_AfterUninstall(object sender, InstallEventArgs e)
         {
+            var settings = new SharedSettings();
             try
             {
                 string dir = Path.GetDirectoryName(Context.Parameters["assemblyPath"]);
@@ -87,6 +77,36 @@ namespace Server
                 Process.Start(Path.Combine(dir, "iisex", file), "/quiet /promptrestart /x Product.msi");
             }
             catch (Exception) { }
+        }
+
+        private void Installer_BeforeInstall(object sender, InstallEventArgs e)
+        {
+            var logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DaemonSetup", "Install.log");
+            Directory.CreateDirectory(Path.GetDirectoryName(logFile));
+            File.AppendAllText(logFile, "IISEX:" + getIISExpressFile() + "\r\n");
+            var settings = new SharedSettings();
+            string dir = Directory.GetParent(Context.Parameters["assemblyPath"]).Parent.FullName;
+            settings.SInstallDirPath = dir;
+            string file = "iisexpress_x86_en-US.msi";
+            if (Environment.Is64BitOperatingSystem)
+            {
+                file = "iisexpress_amd64_en-US.msi";
+            }
+            else // 32 bit
+            {
+
+                file = "iisexpress_x86_en-US.msi";
+            }
+            if (!File.Exists(getIISExpressFile()))
+            {
+                var installer = Path.Combine(dir, "iisex", file);
+                File.AppendAllText(logFile, "Starting:" + installer);
+                var proc = Process.Start(installer);
+                File.AppendAllText(logFile, "Waiting for install\r\n");
+                proc.WaitForExit(-1);
+                File.AppendAllText(logFile, "Finished waiting\r\n");
+            }
+            settings.Save();
         }
     }
 }
