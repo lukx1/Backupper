@@ -19,17 +19,25 @@ namespace Daemon.Backups
         public string ActionBefore { get; set; }
         public string ActionAfter { get; set; }
 
+        private DetailedLog detailedLog { get; set; }
+
         private Logging.ILogger logger = Logging.LoggerFactory.CreateAppropriate();
 
         public SmartBackup()
         {
-            
+
         }
 
+        /// <summary>
+        /// Začne Backupovat
+        /// </summary>
         public void StartBackup()
         {
+            detailedLog = new DetailedLog(BackupType, TaskDetails, ID);
+
             CMDAction(ActionBefore);
-            
+            detailedLog.Add("Done Action Before >" + ActionBefore);
+
             foreach (DbTaskLocation item in TaskLocations)
             {
                 SmartBackupInfo info = new SmartBackupInfo();
@@ -45,6 +53,7 @@ namespace Daemon.Backups
                 {
                     info.UnionAllSimilarInfos();
                 }
+                detailedLog.Add("Done Creating BackupInfo Type=" + BackupType.LongName + " Path=" + info.location);
 
                 if (item.destination.protocol == DbProtocol.FTP)
                 {
@@ -58,10 +67,16 @@ namespace Daemon.Backups
                 {
                     BackupNormal(info, item);
                 }
+                detailedLog.Add("Done Backuping using " + item.destination.protocol);
             }
             CMDAction(ActionAfter);
+            detailedLog.Add("Done Action After >" + ActionAfter);
         }
 
+        /// <summary>
+        /// Spustí CMD Akci
+        /// </summary>
+        /// <param name="script"></param>
         public void CMDAction(string script)
         {
             System.Diagnostics.Process process = new System.Diagnostics.Process();
@@ -86,6 +101,7 @@ namespace Daemon.Backups
             {
                 trulyBackupedInfo = new SmartBackupInfo();
                 trulyBackupedInfo = new Compressions.Compressor(backupInfo, TaskDetails).Compress(Path.GetTempPath() + @"\" + DateTime.Now.ToFileTimeUtc() + ".zip",System.IO.Compression.CompressionLevel.Optimal);
+                detailedLog.Add("Done compressing file using zip");
             }
 
             bool successful = true;
@@ -104,6 +120,7 @@ namespace Daemon.Backups
                 string copyPath = DestinationPath + subPath + item.filename;
                 try
                 {
+                    detailedLog.Add("Backuped file " + item.destination + " to " + copyPath);
                     File.Copy(item.destination, copyPath);
                 }
                 catch (Exception)
@@ -118,6 +135,11 @@ namespace Daemon.Backups
                 backupInfo.WriteToFile(SmartBackupInfo.StorePath + $"{taskLocation.id}_{DateTime.Now.ToFileTimeUtc()}.bki");
         }
 
+        /// <summary>
+        /// Zálohuje pomocí FTP
+        /// </summary>
+        /// <param name="backupInfo"></param>
+        /// <param name="taskLocation"></param>
         private void BackupFTP(SmartBackupInfo backupInfo, DbTaskLocation taskLocation)
         {
             Communication.FtpClient client = new Communication.FtpClient(
@@ -141,6 +163,7 @@ namespace Daemon.Backups
                 string copyPath = DestinationPath + subPath + item.filename;
                 try
                 {
+                    detailedLog.Add("Backuped file " + item.destination + " to " + copyPath);
                     client.upload(item.destination, copyPath);
                 }
                 catch (Exception)
@@ -155,6 +178,11 @@ namespace Daemon.Backups
                 backupInfo.WriteToFile(SmartBackupInfo.StorePath + $"{taskLocation.id}_{DateTime.Now.ToFileTimeUtc()}.bki");
         }
 
+        /// <summary>
+        /// Zálohuje pomocí SFTP
+        /// </summary>
+        /// <param name="backupInfo"></param>
+        /// <param name="taskLocation"></param>
         private void BackupSFTP(SmartBackupInfo backupInfo, DbTaskLocation taskLocation)
         {
             Communication.SftpClient client = new Communication.SftpClient(
@@ -178,6 +206,7 @@ namespace Daemon.Backups
                 string copyPath = DestinationPath + subPath + item.filename;
                 try
                 {
+                    detailedLog.Add("Backuped file " + item.destination + " to " + copyPath);
                     client.Upload(item.destination, copyPath);
                 }
                 catch (Exception)

@@ -24,6 +24,11 @@ namespace Daemon.Communication
             Password = password;
         }
 
+        /// <summary>
+        /// Nahraje soubor pomocí SFTP
+        /// </summary>
+        /// <param name="sourceFile"></param>
+        /// <param name="destinationPath"></param>
         public void Upload(string sourceFile, string destinationPath)
         {
             using (Renci.SshNet.SftpClient client = new Renci.SshNet.SftpClient(Host,Username,Password))
@@ -53,6 +58,10 @@ namespace Daemon.Communication
             }
         }
 
+        /// <summary>
+        /// Vytvoří složku pomocí SFTP
+        /// </summary>
+        /// <param name="destination"></param>
         public void CreateDirectory(string destination)
         {
             using (Renci.SshNet.SftpClient client = new Renci.SshNet.SftpClient(Host, Username, Password))
