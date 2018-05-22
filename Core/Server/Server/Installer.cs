@@ -33,7 +33,10 @@ namespace Server
 
         private void Installer_AfterInstall(object sender, InstallEventArgs e)
         {
-            string dir = Path.GetDirectoryName(Context.Parameters["assemblyPath"]);
+            var settings = new Shared.Properties.SharedSettings();
+            settings.SInstallDirPath = Directory.GetParent(Context.Parameters["assemblyPath"]).Parent.FullName;
+            settings.Save();
+            /*string dir = Path.GetDirectoryName(Context.Parameters["assemblyPath"]);
             var logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DaemonSetup", "Install.log");
             var settings = new SharedSettings();
             Task.Run(() =>
@@ -56,12 +59,12 @@ namespace Server
                 }
             });
 
-
+            */
         }
 
         private void Installer_AfterUninstall(object sender, InstallEventArgs e)
         {
-            var settings = new SharedSettings();
+            /*var settings = new SharedSettings();
             try
             {
                 string dir = Path.GetDirectoryName(Context.Parameters["assemblyPath"]);
@@ -76,12 +79,12 @@ namespace Server
                 }
                 Process.Start(Path.Combine(dir, "iisex", file), "/quiet /promptrestart /x Product.msi");
             }
-            catch (Exception) { }
+            catch (Exception) { }*/
         }
 
         private void Installer_BeforeInstall(object sender, InstallEventArgs e)
         {
-            var logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DaemonSetup", "Install.log");
+            /*var logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DaemonSetup", "Install.log");
             Directory.CreateDirectory(Path.GetDirectoryName(logFile));
             File.AppendAllText(logFile, "IISEX:" + getIISExpressFile() + "\r\n");
             var settings = new SharedSettings();
@@ -106,7 +109,7 @@ namespace Server
                 proc.WaitForExit(-1);
                 File.AppendAllText(logFile, "Finished waiting\r\n");
             }
-            settings.Save();
+            settings.Save();*/
         }
     }
 }
