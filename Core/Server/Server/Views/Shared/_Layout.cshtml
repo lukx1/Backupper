@@ -12,10 +12,11 @@
 		@Html.ActionLink("Home", "Index", "Home", null, new { @class = "brr-nav-link brr-nav-general-row" })
 		@Html.ActionLink("API", "Index", "Help", null, new { @class = "brr-nav-link brr-nav-general-row" })
 		@Html.ActionLink("Admin", "Index", "Admin", null, new { @class = "brr-nav-link brr-nav-general-row" })
+		@Html.ActionLink("Public Info", "PublicInfo", "AdminInfo", null, new { @class = "brr-nav-link brr-nav-general-row" })
 		@if (ViewBag.IsUserLoggedIn ?? false)
-		{
-			@Html.Partial("~/Views/Shared/_AdminNavBarPart.cshtml")
-		}
+	{
+		@Html.Partial("~/Views/Shared/_AdminNavBarPart.cshtml")
+}
 	</nav>
 
     <br />

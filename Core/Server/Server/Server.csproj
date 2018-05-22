@@ -20,7 +20,8 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort>44382</IISExpressSSLPort>
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>
     </IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>
@@ -206,6 +207,7 @@
     <Compile Include="Controllers\AdminEmailController.cs" />
     <Compile Include="Controllers\AdminErrorController.cs" />
     <Compile Include="Controllers\AdminGroupsController.cs" />
+    <Compile Include="Controllers\AdminInfoController.cs" />
     <Compile Include="Controllers\AdminLocationCredentialsController.cs" />
     <Compile Include="Controllers\AdminLocationsController.cs" />
     <Compile Include="Controllers\AdminLoginController.cs" />
@@ -213,7 +215,6 @@
     <Compile Include="Controllers\AdminPresharedKeysController.cs" />
     <Compile Include="Controllers\AdminTasksController.cs" />
     <Compile Include="Controllers\AdminTimesController.cs" />
-    <Compile Include="Controllers\AdminUptimeController.cs" />
     <Compile Include="Controllers\AdminUsersController.cs" />
     <Compile Include="Controllers\ChangedTaskController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -240,6 +241,7 @@
     <Compile Include="Models\Admin\LocationModel.cs" />
     <Compile Include="Models\Admin\LoginModel.cs" />
     <Compile Include="Models\Admin\NewEditTaskLocationsModel.cs" />
+    <Compile Include="Models\Admin\PublicInfo.cs" />
     <Compile Include="Models\Admin\ShowOrAssignCredentialModel.cs" />
     <Compile Include="Models\Admin\TaskTimesModel.cs" />
     <Compile Include="Models\BackupType.cs" />
@@ -401,12 +403,12 @@
     <Content Include="Views\AdminTasks\NewTaskLocation.cshtml" />
     <Content Include="Views\AdminTasks\DeleteTaskLocation.cshtml" />
     <Content Include="Views\AdminTasks\EditTaskLocation.cshtml" />
-    <Content Include="Views\AdminUptime\Index.cshtml" />
     <Content Include="Views\AdminLocations\ShowOrAssignCredential.cshtml" />
     <Content Include="Views\AdminEmail\Index.cshtml" />
     <Content Include="Views\Shared\_AdminNavBarPart.cshtml" />
     <Content Include="Views\Shared\_AdminFootBarPart.cshtml" />
     <Content Include="Views\AdminDaemons\UnacceptedDaemons.cshtml" />
+    <Content Include="Views\AdminInfo\PublicInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

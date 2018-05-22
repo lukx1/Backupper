@@ -39,8 +39,6 @@ namespace Server.Objects
 
         public Uptime Calculate()
         {
-
-
             using (MySQLContext sql = new MySQLContext())
             {
                 Uptime uptime = new Uptime();

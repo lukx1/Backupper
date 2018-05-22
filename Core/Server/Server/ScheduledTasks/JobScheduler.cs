@@ -17,7 +17,15 @@ namespace Server.ScheduledTasks
             await scheduler.Start();
 
             IJobDetail job = JobBuilder.Create<EmailJob>().Build();
-
+#if DEBUG
+            ITrigger trigger = TriggerBuilder.Create()
+                .WithDailyTimeIntervalSchedule
+                (s =>
+                    s.WithIntervalInSeconds(5)
+                        .OnEveryDay()
+                )
+                .Build();
+#else
             ITrigger trigger = TriggerBuilder.Create()
                 .WithDailyTimeIntervalSchedule
                 (s =>
@@ -26,7 +34,7 @@ namespace Server.ScheduledTasks
                         .StartingDailyAt(new TimeOfDay(0, 0))
                 )
                 .Build();
-
+#endif
             await scheduler.ScheduleJob(job, trigger);
         }
     }

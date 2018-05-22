@@ -1,0 +1,45 @@
+﻿@model global::Server.Models.Admin.PublicInfo
+
+@{
+	ViewBag.Title = "Public Info";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<table>
+	<tr>
+		<td>User name:</td>
+		<td>@Html.DisplayFor(model => model.UserName)</td>
+	</tr>
+	<tr>
+		<td>Server name:</td>
+		<td>@Html.DisplayFor(model => model.ServerName)</td>
+	</tr>
+</table>
+<hr />
+<table>
+
+	<tr>
+		<td>Supports OCI:</td>
+		<td>@Html.DisplayFor(model => model.HasOCI)</td>
+	</tr>
+</table>
+<hr />
+<table>
+
+	<tr>
+		<td>Total uptime:</td>
+		<td>@Html.DisplayFor(model => model.Uptime.TimeOnline)</td>
+	</tr>
+	<tr>
+		<td>Total downtime:</td>
+		<td>@Html.DisplayFor(model => model.Uptime.TimeOffline)</td>
+	</tr>
+	<tr>
+		<td>Measurement start:</td>
+		<td>@Html.DisplayFor(model => model.Uptime.MeasurementStart)</td>
+	</tr>
+	<tr>
+		<td>Uptime percent:</td>
+		<td>@((double)((int)(Model.Uptime.UptimePercent * 1000)) / 10)%</td>
+	</tr>
+</table>
