@@ -14,12 +14,19 @@ using System.Threading.Tasks;
 
 namespace Daemon.Data
 {
+    /// <summary>
+    /// Tvoří lokální záznamy o taskách
+    /// </summary>
     public class TaskKeeper
     {
         private Messenger messenger;
         private readonly static string StoreDir = Path.Combine(Util.GetAppdataFolder(), "Tasks");
         private ILogger logger = LoggerFactory.CreateAppropriate();
 
+        /// <summary>
+        /// Instance taskKeeper s messengerem pro komunikaci se serverem
+        /// </summary>
+        /// <param name="messenger">Pro komunikaci</param>
         public TaskKeeper(Messenger messenger)
         {
             Directory.CreateDirectory(StoreDir);
@@ -29,7 +36,7 @@ namespace Daemon.Data
         /// <summary>
         /// Fetchuje tasky z db
         /// </summary>
-        /// <returns></returns>
+        /// <returns>List tasků nebo prázdný list</returns>
         private async Task<List<DbTask>> GetAllTaskFromDB(Guid SessionUuid)
         {
             var resp = await messenger.SendAsync<TaskResponse>(new TaskMessage() { sessionUuid = SessionUuid }, "task", HttpMethod.Post);
@@ -37,7 +44,12 @@ namespace Daemon.Data
             return tasks;
         }
 
-        private void KeepSingle(DbTask task, long now)
+        /// <summary>
+        /// Zapíše jeden lok. záznam o tasku
+        /// </summary>
+        /// <param name="task"></param>
+        /// <param name="now"></param>
+        private void KeepSingle(DbTask task)
         {
             using (StreamWriter writer = new StreamWriter(Path.Combine(StoreDir, $"Task{task.id}.tsk"), false, Encoding.UTF8))
             {
@@ -45,6 +57,10 @@ namespace Daemon.Data
             }
         }
 
+        /// <summary>
+        /// Vytvoří záznamový soubor o času poslední zálohy
+        /// </summary>
+        /// <param name="time">Čas poslední zálohy</param>
         private void WriteScheme(DateTime time)
         {
             using (StreamWriter writer = new StreamWriter(Path.Combine(StoreDir, $"Scheme.tsch"), false, Encoding.UTF8))
@@ -84,7 +100,7 @@ namespace Daemon.Data
         {
             foreach (var task in tasks)
             {
-                KeepSingle(task, DateTime.Now.Ticks);
+                KeepSingle(task);
             }
         }
 
@@ -133,6 +149,13 @@ namespace Daemon.Data
             return res.ServerResponse.Tasks;
         }
 
+        /// <summary>
+        /// Získá vhodné zálohy, jak ze serveru tak lokálně.
+        /// Fetchne ze serveru pokud je nutno
+        /// </summary>
+        /// <param name="sessionUuid">Pro oveření se k serveru</param>
+        /// <param name="CTACheck">Kontrola konzistence záznamů</param>
+        /// <returns></returns>
         public async Task<List<DbTask>> GetAppropriate(Guid sessionUuid, bool CTACheck = true)
         {
             DateTime time = ReadScheme();

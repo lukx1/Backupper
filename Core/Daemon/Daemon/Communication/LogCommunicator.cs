@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 
 namespace Daemon.Communication
 {
+    /// <summary>
+    /// Usnadňuje odesílání logu serveru
+    /// </summary>
     public class LogCommunicator
     {
 
@@ -20,12 +23,21 @@ namespace Daemon.Communication
             this.messenger = messenger;
         }
         
-
+        /// <summary>
+        /// Odešle logy serveru
+        /// </summary>
+        /// <param name="logs">Logy</param>
+        /// <returns>Odpověď serveru</returns>
         public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> SendLog(IEnumerable<JsonableUniversalLog> logs)
         {
             return await SendLog(logs.ToArray());
         }
 
+        /// <summary>
+        /// Odešle logy serveru
+        /// </summary>
+        /// <param name="logs">Logy</param>
+        /// <returns>Odpověď serveru</returns>
         public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> SendLog(params JsonableUniversalLog[] logs)
         {
             return await messenger.SendAsync<UniversalLogResponse>(
@@ -34,7 +46,11 @@ namespace Daemon.Communication
                 System.Net.Http.HttpMethod.Put
             );
         }
-
+        /// <summary>
+        /// Odešle logy serveru
+        /// </summary>
+        /// <param name="logs">Logy</param>
+        /// <returns>Odpověď serveru</returns>
         public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> SendLog<T>(params SLog<T>[] logs) where T : class
         {
             List<JsonableUniversalLog> jsonLogs = new List<JsonableUniversalLog>();

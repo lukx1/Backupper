@@ -32,6 +32,9 @@ namespace Daemon.Communication
         private ILogger logger;
         private Task TaskTickerTask;
 
+        /// <summary>
+        /// Zabije všechny běžící thready a tasky
+        /// </summary>
         public void Kill()
         {
             taskHandler.Dispose();
@@ -39,6 +42,9 @@ namespace Daemon.Communication
             TaskTickerTask.Dispose();
         }
 
+        /// <summary>
+        /// Vytvoří DC a založí messengera a logger
+        /// </summary>
         public DaemonClient()
         {
             
@@ -49,6 +55,10 @@ namespace Daemon.Communication
             logger = ConsoleLogger.CreateSourceInstance(messenger);
         }
 
+        /// <summary>
+        /// Zkontroluje pokud jsou lokákní zálohy a poté je odešlě serveru
+        /// </summary>
+        /// <returns>Odpověď serveru</returns>
         public async Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> CheckForLocalLogsAndSend()
         {
             try
@@ -226,6 +236,10 @@ namespace Daemon.Communication
             }
         }
 
+        /// <summary>
+        /// Zapne Daemona
+        /// </summary>
+        /// <returns></returns>
         public async Task Run()
         {
             logger.Log("Daemon byl spuštěn", LogType.DEBUG);
@@ -236,8 +250,6 @@ namespace Daemon.Communication
             /**Už musí být přihlášen**/
 
             var loadPrivTask = TryLoadPrivateKey();
-
-            
 
             Task<Shared.Messenger.ServerMessage<UniversalLogResponse>> logCheckTask = CheckForLocalLogsAndSend();//FaF
 

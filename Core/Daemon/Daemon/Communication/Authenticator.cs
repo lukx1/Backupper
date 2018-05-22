@@ -14,6 +14,9 @@ using System.Threading.Tasks;
 
 namespace Daemon.Communication
 {
+    /// <summary>
+    /// Přihlašování a introducování se do serveru
+    /// </summary>
     public class Authenticator
     {
         private Messenger messenger;
@@ -58,8 +61,9 @@ namespace Daemon.Communication
         }
 
         /// <summary>
-        /// Introduces Daemon to the server
+        /// Introducne daemona serveru
         /// </summary>
+        /// <returns>True pokud úspěšně, false jinak</returns>
         public async Task<bool> Introduce()
         {
             logger.Log("Začíná introducování", LogType.DEBUG);

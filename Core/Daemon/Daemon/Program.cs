@@ -23,6 +23,9 @@ namespace Daemon
     {
         
 
+        /// <summary>
+        /// Exception hook
+        /// </summary>
         private static void CatchAnyException()
         {
             if (!AppDomain.CurrentDomain.FriendlyName.EndsWith("vshost.exe"))
@@ -31,6 +34,11 @@ namespace Daemon
             }
         }
 
+        /// <summary>
+        /// Exception hook
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             try
@@ -39,6 +47,12 @@ namespace Daemon
             }
             catch (Exception) { }
         }
+
+        /// <summary>
+        /// Překlad logType na windows EventLogEntryType
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         private static EventLogEntryType Translate(LogType type)
         {
             switch (type)
@@ -66,6 +80,7 @@ namespace Daemon
         static void Main(string []args)
         {
 #if OOS
+            //Pro VS debugovani
             new Core();
             Thread.Sleep(-1);
 #else

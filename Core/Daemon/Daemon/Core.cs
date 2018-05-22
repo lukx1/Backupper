@@ -17,6 +17,9 @@ using System.IO;
 
 namespace Daemon
 {
+    /// <summary>
+    /// Základní třída
+    /// </summary>
     public class Core
     {
 
@@ -24,6 +27,10 @@ namespace Daemon
         private static DaemonClient DaemonClient;
         private static Task PipeListener;
 
+        /// <summary>
+        /// Dumpne chyby do konzole
+        /// </summary>
+        /// <param name="e"></param>
         private static void DumpErr(Exception e)
         {
             logger.Log($"Nečekaná chyba{Environment.NewLine}" +
@@ -60,6 +67,10 @@ namespace Daemon
             return true;
         }
 
+        /// <summary>
+        /// Záznam a případně log chyb
+        /// </summary>
+        /// <param name="e"></param>
         private static void LogCrash(Exception e)
         {
             DumpErr(e);
@@ -89,13 +100,15 @@ namespace Daemon
 
 
 
+        /// <summary>
+        /// Zapne novy asynchroni thread DS
+        /// </summary>
         private async static void NewThreadDS()
         {
             var settings = new LoginSettings();
             settings.PipeOK = false;
 
             var pipes = new PipeComs();
-
 
             logger.Log("NamedPipe - Začíná pokus o připojení", LogType.DEBUG);
             try
@@ -138,16 +151,26 @@ namespace Daemon
             logger.Log("NamedPipe - Čtení připraveno", LogType.DEBUG);
         }
 
+        /// <summary>
+        /// Debug zpráva přijata
+        /// </summary>
+        /// <param name="msg"></param>
         private static void Pipes_MessageReceived(PipeMessage msg)
         {
             logger.Log($"NamedPipe - Přijata zpráva {msg.Code}{(msg.Payload.Length > 0 ? "-" : "")}{msg.Payload}", LogType.DEBUG);
         }
 
+        /// <summary>
+        /// Zapne daemon settings
+        /// </summary>
         private static void StartDS()
         {
             NewThreadDS();
         }
 
+        /// <summary>
+        /// Metoda zapne Daemona a umožní logování
+        /// </summary>
         private static void Start()
         {
             try
@@ -163,7 +186,9 @@ namespace Daemon
             }
         }
 
-
+        /// <summary>
+        /// Zapne DS a Daemona
+        /// </summary>
         public Core()
         {
             StartDS();

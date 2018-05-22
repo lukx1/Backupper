@@ -1,0 +1,21 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Shared.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="SInstallDirPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SHttpPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3393</Value>
+    </Setting>
+    <Setting Name="SHttpsPort" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3394</Value>
+    </Setting>
+    <Setting Name="SIISexConfigPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SIISexExe" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>
