@@ -19,7 +19,6 @@ namespace Daemon.Backups
         public string ActionBefore { get; set; }
         public string ActionAfter { get; set; }
 
-        private DetailedLog detailedLog { get; set; }
 
         private Logging.ILogger logger = Logging.LoggerFactory.CreateAppropriate();
 
@@ -33,10 +32,9 @@ namespace Daemon.Backups
         /// </summary>
         public void StartBackup()
         {
-            detailedLog = new DetailedLog(BackupType, TaskDetails, ID);
 
             CMDAction(ActionBefore);
-            detailedLog.Add("Done Action Before >" + ActionBefore);
+            logger.Log("Done Action Before >" + ActionBefore, Shared.LogType.INFORMATION);
 
             foreach (DbTaskLocation item in TaskLocations)
             {
@@ -53,7 +51,7 @@ namespace Daemon.Backups
                 {
                     info.UnionAllSimilarInfos();
                 }
-                detailedLog.Add("Done Creating BackupInfo Type=" + BackupType.LongName + " Path=" + info.location);
+                logger.Log("Done Creating BackupInfo Type=" + BackupType.LongName + " Path=" + info.location,Shared.LogType.INFORMATION);
 
                 if (item.destination.protocol == DbProtocol.FTP)
                 {
@@ -67,10 +65,11 @@ namespace Daemon.Backups
                 {
                     BackupNormal(info, item);
                 }
-                detailedLog.Add("Done Backuping using " + item.destination.protocol);
+                logger.Log("Done Backuping using " + item.destination.protocol,Shared.LogType.INFORMATION);
             }
             CMDAction(ActionAfter);
-            detailedLog.Add("Done Action After >" + ActionAfter);
+            logger.Log("Done Action After >" + ActionAfter,Shared.LogType.INFORMATION);
+
         }
 
         /// <summary>
@@ -101,7 +100,7 @@ namespace Daemon.Backups
             {
                 trulyBackupedInfo = new SmartBackupInfo();
                 trulyBackupedInfo = new Compressions.Compressor(backupInfo, TaskDetails).Compress(Path.GetTempPath() + @"\" + DateTime.Now.ToFileTimeUtc() + ".zip",System.IO.Compression.CompressionLevel.Optimal);
-                detailedLog.Add("Done compressing file using zip");
+                logger.Log("Done compressing file using zip",Shared.LogType.INFORMATION);
             }
 
             bool successful = true;
@@ -120,7 +119,7 @@ namespace Daemon.Backups
                 string copyPath = DestinationPath + subPath + item.filename;
                 try
                 {
-                    detailedLog.Add("Backuped file " + item.destination + " to " + copyPath);
+                    logger.Log("Backuped file " + item.destination + " to " + copyPath,Shared.LogType.INFORMATION);
                     File.Copy(item.destination, copyPath);
                 }
                 catch (Exception)
@@ -163,7 +162,7 @@ namespace Daemon.Backups
                 string copyPath = DestinationPath + subPath + item.filename;
                 try
                 {
-                    detailedLog.Add("Backuped file " + item.destination + " to " + copyPath);
+                    logger.Log("Backuped file " + item.destination + " to " + copyPath,Shared.LogType.INFORMATION);
                     client.upload(item.destination, copyPath);
                 }
                 catch (Exception)
@@ -206,7 +205,7 @@ namespace Daemon.Backups
                 string copyPath = DestinationPath + subPath + item.filename;
                 try
                 {
-                    detailedLog.Add("Backuped file " + item.destination + " to " + copyPath);
+                    logger.Log("Backuped file " + item.destination + " to " + copyPath,Shared.LogType.INFORMATION);
                     client.Upload(item.destination, copyPath);
                 }
                 catch (Exception)

@@ -21,7 +21,7 @@ namespace Daemon.Communication
         {
             Host = host;
             Username = username;
-            Password = password;
+            Password = Shared.PasswordFactory.DecryptRSA(password,new DaemonShared.LoginSettings().RSAPrivate);
         }
 
         /// <summary>
