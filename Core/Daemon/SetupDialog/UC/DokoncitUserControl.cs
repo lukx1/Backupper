@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DaemonShared;
+using System.IO;
+using Shared;
 
 namespace SetupDialog
 {
@@ -26,11 +28,16 @@ namespace SetupDialog
 
         private void button1_Click(object sender, EventArgs e)
         {
-            LoginSettings settings = new LoginSettings();
-            settings.Password = howToSetup.Password;
-            settings.OwnerUserNickname = howToSetup.Username;
-            settings.RSAPrivate = howToSetup.PrivateKey;
-            settings.Server = howToSetup.Server;
+            var dir = Path.Combine(Util.GetSharedFolder(), "Install");
+            Directory.CreateDirectory(dir);
+            var file = Path.Combine(dir, "transfer.tsf");
+            File.WriteAllText(
+                file,
+                $"{howToSetup.Password};" +
+                $"{howToSetup.Username};" +
+                $"{howToSetup.PrivateKey};" +
+                $"{howToSetup.Server}"
+                );
             DokoncitClicked();
         }
     }

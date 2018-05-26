@@ -10,6 +10,9 @@
 #Ignore releases in top level
 Releases/**
 
+#Ignore publish output
+**/PublishOutput/**
+
 # User-specific files
 *.suo
 *.user

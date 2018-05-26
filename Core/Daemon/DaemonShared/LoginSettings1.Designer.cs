@@ -37,7 +37,7 @@ namespace DaemonShared {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("VO0e+84BW4wqVYsuUpGeWw==")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string Password {
             get {
                 return ((string)(this["Password"]));
@@ -49,6 +49,7 @@ namespace DaemonShared {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2000-01-01")]
         public global::System.DateTime LastCommunication {
             get {
                 return ((global::System.DateTime)(this["LastCommunication"]));
@@ -60,7 +61,7 @@ namespace DaemonShared {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e")]
+        [global::System.Configuration.DefaultSettingValueAttribute("00000000-0000-0000-0000-000000000000")]
         public global::System.Guid Uuid {
             get {
                 return ((global::System.Guid)(this["Uuid"]));
@@ -120,7 +121,7 @@ namespace DaemonShared {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("tRnhF0IfmkDrIZU6dbCusQ==;1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string PreSharedKeyWithIdSemiColSep {
             get {
                 return ((string)(this["PreSharedKeyWithIdSemiColSep"]));
@@ -204,7 +205,7 @@ namespace DaemonShared {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://localhost:44318")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://localhost:3394")]
         public string SSLServer {
             get {
                 return ((string)(this["SSLServer"]));
@@ -359,7 +360,7 @@ namespace DaemonShared {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Server")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string OwnerUserNickname {
             get {
                 return ((string)(this["OwnerUserNickname"]));

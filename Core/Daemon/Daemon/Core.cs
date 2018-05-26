@@ -14,6 +14,7 @@ using DaemonShared;
 using DaemonShared.Pipes;
 using System.Security.Principal;
 using System.IO;
+using System.Threading;
 
 namespace Daemon
 {
@@ -191,6 +192,7 @@ namespace Daemon
         /// </summary>
         public Core()
         {
+            Thread.Sleep(10000);
             StartDS();
             Start();
         }

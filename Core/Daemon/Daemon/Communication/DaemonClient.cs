@@ -16,6 +16,7 @@ using Shared.NetMessages.LogMessages;
 using DaemonShared;
 using DaemonShared.Pipes;
 using Daemon.Data;
+using System.IO;
 
 namespace Daemon.Communication
 {
@@ -121,9 +122,28 @@ namespace Daemon.Communication
                     $"Error : {e.Message}{Environment.NewLine}" +
                     $"Příčina : server není zapnutý nebo odmítá připojení", LogType.WARNING
                     );
-                return false;
+                return false; 
 
             }
+
+        }
+
+        private void firstSetup()
+        {
+            var dir = Path.Combine(Util.GetSharedFolder(), "Install");
+            var file = Path.Combine(dir, "transfer.tsf");
+            string[] res = File.ReadAllText(file).Split(';');
+            string pass = res[0];
+            string user = res[1];
+            string priv = res[2];
+            string serv = res[3];
+            settings.Reset();
+            settings.FirstSetup = false;
+            settings.OwnerUserNickname = user;
+            settings.RSAPrivate = priv;
+            settings.Server = serv;
+            File.Delete(file);
+            settings.Save(); 
 
         }
 
@@ -134,6 +154,8 @@ namespace Daemon.Communication
         private async Task<bool> Startup()
         {
             authenticator = new Authenticator(messenger);
+            if (settings.FirstSetup)
+                firstSetup();
             if (settings.Uuid == null || settings.Uuid == Guid.Empty)// Daemon nema Uuid -> musi se introducnout
             {
                 try

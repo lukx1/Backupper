@@ -22,9 +22,13 @@ namespace Daemon.Communication
         {
             Host = host;
             Username = username;
-            Password = password;
+            Password = Shared.PasswordFactory.DecryptRSA(password, new DaemonShared.LoginSettings().RSAPrivate); 
         }
-
+        /// <summary>
+        /// Nahraje soubor přes FTP
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="destination"></param>
         public void upload(string source, string destination)
         {
             try
@@ -63,6 +67,10 @@ namespace Daemon.Communication
             }
         }
 
+        /// <summary>
+        /// Vytvoří složku přes FTP
+        /// </summary>
+        /// <param name="destination"></param>
         public void createDirectory(string destination)
         {
             try
@@ -85,6 +93,9 @@ namespace Daemon.Communication
             return;
         }
 
+        /// <summary>
+        /// Zruší FTP Client
+        /// </summary>
         public void Dispose()
         {
             Password = null;

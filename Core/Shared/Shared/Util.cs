@@ -21,6 +21,11 @@ namespace Shared
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Backupper");
         }
 
+        public static string GetSharedFolder()
+        {
+            Directory.CreateDirectory("C:/Backupper");
+            return "C:/Backupper";
+        }
 
         public static string GetFileInAppData(string fileName)
         {

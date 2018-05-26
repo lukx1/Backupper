@@ -6,13 +6,13 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="Password" Type="System.String" Scope="User">
-      <Value Profile="(Default)">VO0e+84BW4wqVYsuUpGeWw==</Value>
-    </Setting>
-    <Setting Name="LastCommunication" Type="System.DateTime" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="LastCommunication" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">2000-01-01</Value>
+    </Setting>
     <Setting Name="Uuid" Type="System.Guid" Scope="User">
-      <Value Profile="(Default)">50a7cd9f-d5f9-4c40-8e0f-bfcbb21a5f0e</Value>
+      <Value Profile="(Default)">00000000-0000-0000-0000-000000000000</Value>
     </Setting>
     <Setting Name="Server" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://localhost:3393</Value>
@@ -27,7 +27,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="PreSharedKeyWithIdSemiColSep" Type="System.String" Scope="User">
-      <Value Profile="(Default)">tRnhF0IfmkDrIZU6dbCusQ==;1</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="Version" Type="System.String" Scope="User">
       <Value Profile="(Default)">0.1.0</Value>
@@ -48,7 +48,7 @@
       <Value Profile="(Default)">3</Value>
     </Setting>
     <Setting Name="SSLServer" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://localhost:44318</Value>
+      <Value Profile="(Default)">https://localhost:3394</Value>
     </Setting>
     <Setting Name="SSLUse" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -87,7 +87,7 @@
       <Value Profile="(Default)">127.0.0.1</Value>
     </Setting>
     <Setting Name="OwnerUserNickname" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Server</Value>
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

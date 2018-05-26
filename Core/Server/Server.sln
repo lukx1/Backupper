@@ -12,6 +12,11 @@ EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "WebSetup", "WebSetup\WebSetup.vdproj", "{46C85CFC-24C5-4CF3-93D5-FBF49B0B6F1E}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Server_IISEx_Setup2", "Server_IISEx_Setup2\Server_IISEx_Setup2.vdproj", "{77643ED4-9113-4B89-A6DD-F69F70701C50}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F627124E-E950-4A06-BA35-BADE392C1074} = {F627124E-E950-4A06-BA35-BADE392C1074}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server_Setup_Bootstrap", "Server_Setup_Bootstrap\Server_Setup_Bootstrap.csproj", "{C034546A-F564-449B-BF71-A8EA14B1B038}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +40,10 @@ Global
 		{46C85CFC-24C5-4CF3-93D5-FBF49B0B6F1E}.Release|Any CPU.Build.0 = Release
 		{77643ED4-9113-4B89-A6DD-F69F70701C50}.Debug|Any CPU.ActiveCfg = Debug
 		{77643ED4-9113-4B89-A6DD-F69F70701C50}.Release|Any CPU.ActiveCfg = Release
+		{C034546A-F564-449B-BF71-A8EA14B1B038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C034546A-F564-449B-BF71-A8EA14B1B038}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C034546A-F564-449B-BF71-A8EA14B1B038}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C034546A-F564-449B-BF71-A8EA14B1B038}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
