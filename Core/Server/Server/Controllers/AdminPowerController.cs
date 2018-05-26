@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace Server.Controllers
 {
-    [AdminExc]
+    
     [AdminSec(Authentication.Permission.MANAGEPOWER)]
     public class AdminPowerController : Controller
     {

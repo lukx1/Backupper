@@ -15,7 +15,7 @@
 		<th>Mac</th>
 		<th>Date Added</th>
 	</tr>
-	@foreach (var item in Model)
+	@foreach (var item in Model.OrderBy(x => x.DaemonInfo.DateAdded))
 	{
 	<tr>
 		<td>@item.Id</td>

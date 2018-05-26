@@ -10,7 +10,7 @@ using Newtonsoft.Json;
 
 namespace Server.Controllers
 {
-	[AdminExc]
+	
     [AdminSec(Permission.MANAGEEMAIL)]
 	public class AdminEmailController : AdminBaseController
 	{

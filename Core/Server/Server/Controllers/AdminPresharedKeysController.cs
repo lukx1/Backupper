@@ -10,7 +10,7 @@ using Shared;
 
 namespace Server.Controllers
 {
-    [AdminExc]
+    
     [AdminSec(Authentication.Permission.MANAGEPRESHARED)]
     public class AdminPresharedKeysController : AdminBaseController
     {

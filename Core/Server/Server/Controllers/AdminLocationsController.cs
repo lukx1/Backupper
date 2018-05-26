@@ -12,7 +12,7 @@ using Shared;
 
 namespace Server.Controllers
 {
-    [AdminExc]
+    
     [AdminSec(Authentication.Permission.MANAGELOCATIONS)]
     public class AdminLocationsController : AdminBaseController
     {

@@ -8,7 +8,7 @@ using Server.Authentication;
 
 namespace Server.Controllers
 {
-	[AdminExc]
+	
     [AdminSec(Permission.MANAGEOTHERDAEMONS, Permission.MANAGESELFDAEMONS)]
     public class AdminDaemonsController : AdminBaseController
     {
@@ -27,10 +27,8 @@ namespace Server.Controllers
         }
 
         [HttpPost]
-        public JsonResult AcceptDaemon(int id)
+        public ActionResult AcceptDaemon(int id)
         {
-            JsonResult result = new JsonResult();
-
             using (var db = new Models.MySQLContext())
             {
                 var wfoc = db.WaitingForOneClicks
@@ -39,24 +37,20 @@ namespace Server.Controllers
                 {
                     wfoc.Confirmed = true;
                     db.SaveChanges();
-                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
-                    result.Data = new { success = true };
+                    OperationResultMessage = "Daemon was accepted";
                 }
                 else
                 {
-                    Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
-                    result.Data = new { success = false };
+                    ErrorMessage = "No daemon was waiting";
                 }
             }
 
-            return result;
+            return View("UnacceptedDaemons");
         }
 
         [HttpPost]
-        public JsonResult DeclineDaemon(int id)
+        public ActionResult DeclineDaemon(int id)
         {
-            JsonResult result = new JsonResult();
-
             using (var db = new Models.MySQLContext())
             {
                 var wfoc = db.WaitingForOneClicks
@@ -65,17 +59,15 @@ namespace Server.Controllers
                 {
                     db.WaitingForOneClicks.Remove(wfoc);
                     db.SaveChanges();
-                    Response.StatusCode = (int)System.Net.HttpStatusCode.OK;
-                    result.Data = new { success = true };
+                    OperationResultMessage = "Daemon was declined";
                 }
                 else
                 {
-                    Response.StatusCode = (int)System.Net.HttpStatusCode.NotFound;
-                    result.Data = new { success = false };
+                    ErrorMessage = "No daemon was waiting";
                 }
             }
 
-            return Json(result);
+            return View("UnacceptedDaemons");
         }
 
         [HttpGet]

@@ -21,7 +21,7 @@ namespace Server.ScheduledTasks
             ITrigger trigger = TriggerBuilder.Create()
                 .WithDailyTimeIntervalSchedule
                 (s =>
-                    s.WithIntervalInSeconds(5)
+                    s.WithIntervalInMinutes(10)
                         .OnEveryDay()
                 )
                 .Build();

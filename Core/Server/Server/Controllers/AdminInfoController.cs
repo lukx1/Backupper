@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace Server.Controllers
 {
-    [AdminExc]
+    
     public class AdminInfoController : AdminBaseController
     {
         public ActionResult PublicInfo()

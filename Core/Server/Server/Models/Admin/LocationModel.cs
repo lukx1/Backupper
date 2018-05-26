@@ -6,12 +6,14 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
+using Server.Objects.AdminExceptions;
+
 namespace Server.Models.Admin
 {
     public class LocationModel
     {
         public Location DbLocation { get; set; }
-        public SelectList Protocols { get; set; }
+        public IEnumerable<SelectListItem> Protocols { get; set; }
 
         public LocationModel()
         {
@@ -25,8 +27,7 @@ namespace Server.Models.Admin
             {
                 DbLocation = db.Locations.AsQueryable().Where(x => x.Id == idLocation).Include(x => x.Protocol).FirstOrDefault();
                 if(DbLocation == null)
-                    //TODO: use custom exception
-                    throw new Exception("Location not found");
+                    throw new AdminException("Location not found");
             }
 
             LoadProtocols();
@@ -40,15 +41,9 @@ namespace Server.Models.Admin
         {
             using (var db = new MySQLContext())
             {
-                var items = db.Protocols.Select(
-                    x => new SelectListItem()
-                    {
-                        Text = x.ShortName,
-                        Value = x.Id.ToString()
-                    }
-                ).ToArray();
+                Protocols = new SelectList(db.Protocols.ToArray(), "Id", "ShortName");
 
-                Protocols = new SelectList(items);
+                Protocols = db.Protocols.Select(x => new SelectListItem { Text = x.ShortName + " - " + x.LongName, Value = x.Id.ToString() }).ToArray();
             }
         }
 

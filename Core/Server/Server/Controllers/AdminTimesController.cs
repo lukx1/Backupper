@@ -12,7 +12,7 @@ using Shared;
 
 namespace Server.Controllers
 {
-    [AdminExc]
+    
     [AdminSec(Authentication.Permission.MANAGETIMES)]
     public class AdminTimesController : AdminBaseController
     {

@@ -11,7 +11,7 @@ using Shared;
 
 namespace Server.Controllers
 {
-    [AdminExc]
+    
     [AdminSec(Permission.MANAGECREDENTIALS)]
     public class AdminLocationCredentialsController : AdminBaseController
     {

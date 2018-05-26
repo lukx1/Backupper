@@ -6,11 +6,15 @@ using System.Web;
 using System.Web.Mvc;
 using Server.Authentication;
 
+using Server.Objects.AdminExceptions;
+
 namespace Server.Controllers
 {
-    [AdminExc]
+    
     public class AdminGroupsController : AdminBaseController
     {
+        private readonly string[] protectedGroups = { "Server", "DaemonAdmins", "Admins", "Daemons", "Users" };
+
         [HttpGet]
         [AdminSec]
         public ActionResult Index()
@@ -65,6 +69,13 @@ namespace Server.Controllers
             using (var db = new Models.MySQLContext())
             {
                 var group = db.Groups.FirstOrDefault(x => x.Id == id);
+
+                if (group == null)
+                    throw new AdminException("Group does not exists");
+
+                if (protectedGroups.Contains(group.Name))
+                    throw new AdminException("You can't delete default groups");
+
                 return View(group);
             }
         }
@@ -90,6 +101,13 @@ namespace Server.Controllers
             using (var db = new Models.MySQLContext())
             {
                 var group = db.Groups.FirstOrDefault(x => x.Id == id);
+
+                if (group == null)
+                    throw new AdminException("Group does not exists");
+
+                if (protectedGroups.Contains(group.Name))
+                    throw new AdminException("You can't delete default groups");
+
                 return View(group);
             }
         }

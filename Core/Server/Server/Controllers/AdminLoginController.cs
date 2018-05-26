@@ -5,10 +5,12 @@ using System.Web;
 using System.Web.Mvc;
 
 using Shared;
+using Server.Objects.AdminExceptions;
+using System.Web.Routing;
 
 namespace Server.Controllers
 {
-    [AdminExc]
+    
     public class AdminLoginController : AdminBaseController
     {
         [HttpGet]
@@ -23,11 +25,33 @@ namespace Server.Controllers
         [HttpPost]
         public ActionResult Login(Models.Admin.LoginModel loginModel)
         {
-            Guid guid;
+            Guid guid = default(Guid);
             using (var db = new Models.MySQLContext())
             {
                 var auth = new Authentication.Authenticator(db);
-                guid = auth.LoginUser(loginModel.Nickname, loginModel.Password);
+                try
+                {
+                    guid = auth.LoginUser(loginModel.Nickname, loginModel.Password);
+                }
+                catch(AdminSecurityException ex)
+                {
+                    var res = new RedirectToRouteResult(
+                    new RouteValueDictionary(
+                        new
+                        {
+                            controller = "AdminLogin",
+                            action = "Login"
+                        }
+                    ));
+
+                    ErrorMessage = ex.Message;
+                    return RedirectToAction("Login", "AdminLogin");
+                }
+                catch(Exception ex)
+                {
+                    throw ex;
+                }
+
             }
 
             SessionUuid = guid;

@@ -12,7 +12,7 @@ using Shared;
 
 namespace Server.Controllers
 {
-    [AdminExc]
+    
     [AdminSec(Permission.MANAGEOTHERUSERS, Permission.MANAGESELFUSER)]
     public class AdminUsersController : AdminBaseController
     {

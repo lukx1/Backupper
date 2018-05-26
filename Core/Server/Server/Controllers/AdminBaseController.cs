@@ -20,30 +20,44 @@ namespace Server.Controllers
         public Models.User CurrentUser { get; set; }
 
         public string OperationResultMessage
-		{
-			get => TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE].ToString();
-			set => TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = value;
-		}
-
-		public string ErrorMessage
-		{
-			get => TempData[Objects.MagicStrings.ERROR_MESSAGE].ToString();
-			set => TempData[Objects.MagicStrings.ERROR_MESSAGE] = value;
-		}
-
-		public Guid? SessionUuid
-		{
-			get => (Guid?)Session[Objects.MagicStrings.SESSION_UUID];
-			set => Session[Objects.MagicStrings.SESSION_UUID] = value;
-		}
-    }
-
-    public class AdminExcAttribute : FilterAttribute, IExceptionFilter
-    {
-        public void OnException(ExceptionContext filterContext)
         {
-            ServerLogger.Debug("EXCEPTION: ", filterContext.Exception);
-            filterContext.ExceptionHandled = true;
+            get => TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE].ToString();
+            set => TempData[Objects.MagicStrings.OPERATION_RESULT_MESSAGE] = value;
+        }
+
+        public string ErrorMessage
+        {
+            get => TempData[Objects.MagicStrings.ERROR_MESSAGE].ToString();
+            set => TempData[Objects.MagicStrings.ERROR_MESSAGE] = value;
+        }
+
+        public Guid? SessionUuid
+        {
+            get => (Guid?)Session[Objects.MagicStrings.SESSION_UUID];
+            set => Session[Objects.MagicStrings.SESSION_UUID] = value;
+        }
+
+        protected override void OnException(ExceptionContext fc)
+        {
+            ServerLogger.Debug("EXCEPTION: ", fc.Exception);
+
+            if (fc.ExceptionHandled)
+            {
+                return;
+            }
+
+            fc.Result = new RedirectToRouteResult(
+                new RouteValueDictionary(
+                    new
+                    {
+                        controller = "AdminError",
+                        action = "Index"
+                    }
+                )
+            );
+
+            ((AdminBaseController)fc.Controller).ErrorMessage = fc.Exception.Message;
+            fc.ExceptionHandled = true;
         }
     }
 
@@ -131,7 +145,7 @@ namespace Server.Controllers
                 ctr.OperationResultMessage = "User does not have necessary permission";
 #if DEBUG
                 ctr.OperationResultMessage += @"| Missing permissions are: ";
-                foreach(var i in _requiredPermissions.Where(x => !ctr.CurrentUserPermissions.Contains(x)))
+                foreach (var i in _requiredPermissions.Where(x => !ctr.CurrentUserPermissions.Contains(x)))
                 {
                     ctr.OperationResultMessage += @", " + i.ToString();
                 }

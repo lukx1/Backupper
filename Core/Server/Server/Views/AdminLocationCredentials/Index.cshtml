@@ -16,11 +16,11 @@
 	@foreach (var item in Model)
 	{
 		<tr>
-			<td>@(item.Host ?? "NO HOST")</td>
-			<td>@(item.Port?.ToString() ?? "NO PORT")</td>
-			<td>@(item.LogonType?.Name ?? "NO LOGON TYPE")</td>
-			<td>@(item.Username ?? "NO USERNAME")</td>
-			<td>@(item.Password ?? "NO PASSWORD")</td>
+			<td>@(item.Host ?? "Nil")</td>
+			<td>@(item.Port?.ToString() ?? "Nil")</td>
+			<td>@(item.LogonType?.Name ?? "Nil")</td>
+			<td>@(item.Username ?? "Nil")</td>
+			<td>@(item.Password ?? "Nil")</td>
 			<td><a href="/AdminLocationCredentials/EditLocationCredential?id=@(item.Id)">Edit</a></td>
 			<td><a href="/AdminLocationCredentials/DeleteLocationCredential?id=@(item.Id)">Delete</a></td>
 		</tr>

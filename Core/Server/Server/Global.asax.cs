@@ -31,7 +31,7 @@ namespace Server
         {
             var ex = Server.GetLastError();
 
-            Objects.ServerLogger.Error("Framework exception: ", ex);
+            Objects.ServerLogger.Emergency("Framework exception: ", ex);
         }
     }
 }

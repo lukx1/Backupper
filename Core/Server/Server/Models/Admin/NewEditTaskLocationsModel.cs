@@ -5,6 +5,8 @@ using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Web;
 
+using Server.Objects.AdminExceptions;
+
 namespace Server.Models.Admin
 {
     public class NewEditTaskLocationsModel
@@ -65,9 +67,14 @@ namespace Server.Models.Admin
                         IdSource = IdSource,
                         IdDestination = IdDestination
                     });
-                    taskLoc.Task.LastChanged = DateTime.Now;
 
-                    db.Entry(taskLoc.Task).State = EntityState.Modified;
+                    var task = db.Tasks.FirstOrDefault(x => x.Id == IdTask);
+                    if (task == null)
+                        throw new AdminException("Task must exist for task location");
+
+                    task.LastChanged = DateTime.Now;
+                    db.Entry(task).State = EntityState.Modified;
+                    db.Entry(taskLoc).State = EntityState.Modified;
                 }
 
                 db.SaveChanges();

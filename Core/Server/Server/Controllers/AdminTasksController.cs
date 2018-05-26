@@ -9,7 +9,7 @@ using Server.Models;
 
 namespace Server.Controllers
 {
-	[AdminExc]
+	
     [AdminSec(Authentication.Permission.MANAGEOTHERDAEMONS, Authentication.Permission.MANAGESELFDAEMONS)]
 	public class AdminTasksController : AdminBaseController
 	{

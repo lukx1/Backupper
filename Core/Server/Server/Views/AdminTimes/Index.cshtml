@@ -16,11 +16,11 @@
 	@foreach (var item in Model)
 	{
 	<tr>
-		<td>@item.Name</td>
+		<td>@(item.Name ?? "Nil")</td>
 		<td>@item.Interval</td>
 		<td>@item.Repeat</td>
 		<td>@item.StartTime</td>
-		<td>@item.EndTime</td>
+		<td>@(item.EndTime.HasValue ? item.EndTime.ToString() : "Nil")</td>
 		<td><a href="/AdminTimes/EditTime?id=@(item.Id)">Edit</a></td>
 		<td><a href="/AdminTimes/DeleteTime?id=@(item.Id)">Delete</a></td>
 	</tr>

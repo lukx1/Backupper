@@ -9,7 +9,7 @@ using Server.Authentication;
 
 namespace Server.Controllers
 {
-	[AdminExc]
+	
     [AdminSec]
     public class AdminController : AdminBaseController
     {
