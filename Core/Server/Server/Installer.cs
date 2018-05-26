@@ -23,16 +23,17 @@ namespace Server
         {
             if (Environment.Is64BitOperatingSystem)
             {
-                return Path.Combine(Environment.ExpandEnvironmentVariables("%ProgramW6432%"), "iisexpress.exe");
+                return Path.Combine(Environment.ExpandEnvironmentVariables("%ProgramW6432%"),"IIS Express", "iisexpress.exe");
             }
             else // 32 bit
             {
-                return Path.Combine(Environment.ExpandEnvironmentVariables("%ProgramFiles(x86)%"), "iisexpress.exe");
+                return Path.Combine(Environment.ExpandEnvironmentVariables("%ProgramFiles(x86)%"),"IIS Express", "iisexpress.exe");
             }
         }
 
         private void Installer_AfterInstall(object sender, InstallEventArgs e)
         {
+            return;
             var settings = new Shared.Properties.SharedSettings();
             settings.SInstallDirPath = Directory.GetParent(Context.Parameters["assemblyPath"]).Parent.FullName;
             settings.Save();
@@ -64,6 +65,7 @@ namespace Server
 
         private void Installer_AfterUninstall(object sender, InstallEventArgs e)
         {
+            return;
             /*var settings = new SharedSettings();
             try
             {
@@ -84,6 +86,7 @@ namespace Server
 
         private void Installer_BeforeInstall(object sender, InstallEventArgs e)
         {
+            return;
             /*var logFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "DaemonSetup", "Install.log");
             Directory.CreateDirectory(Path.GetDirectoryName(logFile));
             File.AppendAllText(logFile, "IISEX:" + getIISExpressFile() + "\r\n");

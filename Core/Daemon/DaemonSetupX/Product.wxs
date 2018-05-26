@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"><?define Daemon_TargetDir=$(var.Daemon.TargetDir)?><?define Shared_TargetDir=$(var.Shared.TargetDir)?><?define DaemonShared_TargetDir=$(var.DaemonShared.TargetDir)?><?define SetupDialog_TargetDir=$(var.SetupDialog.TargetDir)?>
+	<Product Id="*" Name="DaemonSetupX" Language="1033" Version="1.0.0.0" Manufacturer="" UpgradeCode="9e93b3a2-f5f1-4993-9807-8869aab30d73">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate />
+
+		<Feature Id="ProductFeature" Title="DaemonSetupX" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="DaemonSetupX" />
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+			<!-- <Component Id="ProductComponent"> -->
+				<!-- TODO: Insert files, registry keys, and other resources here. -->
+			<!-- </Component> -->
+			<Component Id="Backupper.exe" Guid="72a54049-91a7-4ab3-be3d-134b5825c3b6">
+			  <File Id="Backupper.exe" Name="Backupper.exe" Source="$(var.Daemon_TargetDir)Backupper.exe" />
+			</Component>
+			<Component Id="Backupper.exe.config" Guid="fb11c00c-1a85-4073-8422-7497e51f85e9">
+			  <File Id="Backupper.exe.config" Name="Backupper.exe.config" Source="$(var.Daemon_TargetDir)Backupper.exe.config" />
+			</Component>
+			<Component Id="EntityFramework.dll" Guid="344abd47-a085-4206-8ed4-a9b0fdceac20">
+			  <File Id="EntityFramework.dll" Name="EntityFramework.dll" Source="$(var.Daemon_TargetDir)EntityFramework.dll" />
+			</Component>
+			<Component Id="EntityFramework.SqlServer.dll" Guid="594454b3-5f52-4b1a-a08e-dea10d49bd80">
+			  <File Id="EntityFramework.SqlServer.dll" Name="EntityFramework.SqlServer.dll" Source="$(var.Daemon_TargetDir)EntityFramework.SqlServer.dll" />
+			</Component>
+			<Component Id="MySql.Data.dll" Guid="988bad4b-d946-4604-b393-a49162a1c304">
+			  <File Id="MySql.Data.dll" Name="MySql.Data.dll" Source="$(var.Daemon_TargetDir)MySql.Data.dll" />
+			</Component>
+			<Component Id="MySql.Data.Entity.EF6.dll" Guid="28032a17-7881-4f32-bdb7-02dff7289e47">
+			  <File Id="MySql.Data.Entity.EF6.dll" Name="MySql.Data.Entity.EF6.dll" Source="$(var.Daemon_TargetDir)MySql.Data.Entity.EF6.dll" />
+			</Component>
+			<Component Id="Newtonsoft.Json.dll" Guid="46970a4d-970d-4e2a-9a61-6f01ed6da604">
+			  <File Id="Newtonsoft.Json.dll" Name="Newtonsoft.Json.dll" Source="$(var.Daemon_TargetDir)Newtonsoft.Json.dll" />
+			</Component>
+			<Component Id="Renci.SshNet.dll" Guid="da4c9bd9-4299-44ed-a6b3-49bfb844be0e">
+			  <File Id="Renci.SshNet.dll" Name="Renci.SshNet.dll" Source="$(var.Daemon_TargetDir)Renci.SshNet.dll" />
+			</Component>
+			<Component Id="Shared.dll" Guid="a76bd5e3-1c88-45f6-8d8d-cf0b7fc36025">
+			  <File Id="Shared.dll" Name="Shared.dll" Source="$(var.Shared_TargetDir)Shared.dll" />
+			</Component>
+			<Component Id="MySqlBackup.dll" Guid="6ad67eb6-a2ec-4b88-b7b2-e8c8a5dac68b">
+			  <File Id="MySqlBackup.dll" Name="MySqlBackup.dll" Source="$(var.Daemon_TargetDir)MySqlBackup.dll" />
+			</Component>
+			<Component Id="Rijndael256.dll" Guid="32cae097-f02c-46d6-b022-7e2feec85115">
+			  <File Id="Rijndael256.dll" Name="Rijndael256.dll" Source="$(var.Daemon_TargetDir)Rijndael256.dll" />
+			</Component>
+			<Component Id="DaemonShared.dll" Guid="a5b78a6a-c0bc-414e-8803-96eae3e4410e">
+			  <File Id="DaemonShared.dll" Name="DaemonShared.dll" Source="$(var.DaemonShared_TargetDir)DaemonShared.dll" />
+			</Component>
+			<Component Id="SetupDialog.exe" Guid="8f62c89c-b6fa-45c7-946d-f0bc5c159a83">
+			  <File Id="SetupDialog.exe" Name="SetupDialog.exe" Source="$(var.SetupDialog_TargetDir)SetupDialog.exe" />
+			</Component>
+			<Component Id="SetupDialog.exe.config" Guid="2b8fb713-55ff-4290-958a-e1c7255fb4a4">
+			  <File Id="SetupDialog.exe.config" Name="SetupDialog.exe.config" Source="$(var.SetupDialog_TargetDir)SetupDialog.exe.config" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>

@@ -14,37 +14,53 @@ namespace Server_Setup_Bootstrap
         {
             if (Environment.Is64BitOperatingSystem)
             {
-                return Path.Combine(Environment.ExpandEnvironmentVariables("%ProgramW6432%"), "iisexpress.exe");
+                return Path.Combine(Environment.ExpandEnvironmentVariables("%ProgramW6432%"), "IIS Express", "iisexpress.exe");
             }
             else // 32 bit
             {
-                return Path.Combine(Environment.ExpandEnvironmentVariables("%ProgramFiles(x86)%"), "iisexpress.exe");
+                return Path.Combine(Environment.ExpandEnvironmentVariables("%ProgramFiles(x86)%"), "IIS Express", "iisexpress.exe");
             }
         }
 
         static void Main(string[] args)
         {
+            Console.WriteLine("Loading settings");
             var settings = new Shared.Properties.SharedSettings();
+            Console.WriteLine("Settings loaded");
+            var iiseInstallerPath = Path.GetTempFileName()+".msi";
+            var serverInstallerPath = Path.GetTempFileName()+".msi";
+            Console.WriteLine("Got iiseIP name  :"+iiseInstallerPath);
+            Console.WriteLine("Got serverIP name:"+serverInstallerPath);
             if (!File.Exists(getIISExpressFile()))
             {
-                File.WriteAllBytes("iise.msi", Environment.Is64BitOperatingSystem ? Resource.iisexpress_amd64_en_US : Resource.iisexpress_x86_en_US);
+                Console.WriteLine("IISE doesnt exist, starting install");
+                File.WriteAllBytes(iiseInstallerPath, Environment.Is64BitOperatingSystem ? Resource.iisexpress_amd64_en_US : Resource.iisexpress_x86_en_US);
                 {
+                    Console.WriteLine("Installing IISE");
                     var proc = new Process();
-                    proc.StartInfo.FileName = "iise.msi";
+                    proc.StartInfo.FileName = iiseInstallerPath;
                     proc.Start();
                     proc.WaitForExit();
+                    Console.WriteLine("IISE finished");
                 }
                 settings.SIISexExe = getIISExpressFile();
-                File.Delete("iise.msi");
+                File.Delete(iiseInstallerPath);
+                Console.WriteLine("IISE Installer removed");
             }
-            File.WriteAllBytes("server.msi", Resource.Server_IISEx_Setup2);
+            settings.Save();
+            Console.WriteLine("Started server install");
+            File.WriteAllBytes(serverInstallerPath, Resource.Server_IISEx_Setup2);
             {
+                Console.WriteLine("Installing server");
                 var proc = new Process();
-                proc.StartInfo.FileName = "server.msi";
+                proc.StartInfo.FileName = serverInstallerPath;
                 proc.Start();
                 proc.WaitForExit();
+                Console.WriteLine("Server finished");
             }
-            File.Delete("server.msi");
+            File.Delete(serverInstallerPath);
+            Console.WriteLine("Server Installer removed");
+            Console.WriteLine("Starting IISE");
             Process.Start(getIISExpressFile(), $"/path:\"{settings.SInstallDirPath}\" /port:{settings.SHttpPort}");
         }
     }

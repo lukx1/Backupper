@@ -24,7 +24,7 @@ namespace DaemonSettings
             RegistryKey rk = Registry.CurrentUser.OpenSubKey
             ("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
             rk.SetValue("BackupperDS", Context.Parameters["assemblyPath"]);
-            Process.Start(Context.Parameters["assemblyPath"]);
+            //Process.Start(Context.Parameters["assemblyPath"]);
         }
 
         private void DSInstaller_AfterUninstall(object sender, InstallEventArgs e)
@@ -45,6 +45,25 @@ namespace DaemonSettings
                 }
                 catch (Exception) { }
             }
+            Process[] psnames = Process.GetProcessesByName("DaemonSettings");
+            foreach (var proc in psnames)
+            {
+                try
+                {
+                    proc.Kill();
+                }
+                catch (Exception) { }
+            }
+            Process[] pssnames = Process.GetProcessesByName("DaemonSettings (32 bit)");
+            foreach (var proc in pssnames)
+            {
+                try
+                {
+                    proc.Kill();
+                }
+                catch (Exception) { }
+            }
+            Process.Start(Context.Parameters["assemblyPath"]);
         }
     }
 }
