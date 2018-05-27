@@ -11,16 +11,19 @@
         <th>Mac</th>
         <th>Date Added</th>
     </tr>
-    @foreach (var item in Model)
+    @if (Model != null)
     {
-    <tr>
-        <td>@item.DateReceived</td>
-        <td>@item.DaemonInfo.Os</td>
-        <td>@item.DaemonInfo.Mac</td>
-        <td>@item.DaemonInfo.DateAdded</td>
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.DateReceived</td>
+                <td>@item.DaemonInfo.Os</td>
+                <td>@item.DaemonInfo.Mac</td>
+                <td>@item.DaemonInfo.DateAdded</td>
 
-        <td><a href="/AdminDaemons/AcceptDaemon?id=@(item.Id)">Accept</a></td>
-        <td><a href="/AdminDaemons/DeclineDaemon?id=@(item.Id)">Decline</a></td>
-    </tr>
+                <td><a href="/AdminDaemons/AcceptDaemon?id=@(item.Id)">Accept</a></td>
+                <td><a href="/AdminDaemons/DeclineDaemon?id=@(item.Id)">Decline</a></td>
+            </tr>
+        }
     }
 </table>

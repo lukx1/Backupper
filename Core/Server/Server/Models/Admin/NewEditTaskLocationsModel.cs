@@ -61,20 +61,21 @@ namespace Server.Models.Admin
                 }
                 else
                 {
-                    var taskLoc = db.TaskLocations.Add(new TaskLocation()
-                    {
-                        IdTask = IdTask,
-                        IdSource = IdSource,
-                        IdDestination = IdDestination
-                    });
-
                     var task = db.Tasks.FirstOrDefault(x => x.Id == IdTask);
                     if (task == null)
                         throw new AdminException("Task must exist for task location");
 
+                    var taskLoc = new TaskLocation
+                    {
+                        IdTask = IdTask,
+                        IdSource = IdSource,
+                        IdDestination = IdDestination
+                    };
+
+                    db.TaskLocations.Add(taskLoc);
+
                     task.LastChanged = DateTime.Now;
                     db.Entry(task).State = EntityState.Modified;
-                    db.Entry(taskLoc).State = EntityState.Modified;
                 }
 
                 db.SaveChanges();

@@ -26,7 +26,7 @@ namespace Server.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpGet]
         public ActionResult AcceptDaemon(int id)
         {
             using (var db = new Models.MySQLContext())
@@ -48,7 +48,7 @@ namespace Server.Controllers
             return View("UnacceptedDaemons");
         }
 
-        [HttpPost]
+        [HttpGet]
         public ActionResult DeclineDaemon(int id)
         {
             using (var db = new Models.MySQLContext())
