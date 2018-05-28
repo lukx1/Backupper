@@ -36,7 +36,7 @@
       <Value Profile="(Default)">500</Value>
     </Setting>
     <Setting Name="TaskRefreshPeriodMs" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">900000</Value>
+      <Value Profile="(Default)">60000</Value>
     </Setting>
     <Setting Name="LoggingLevel" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">8</Value>

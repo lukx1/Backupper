@@ -184,6 +184,8 @@ namespace Daemon
             catch (Exception e)
             {
                 LogCrash(e.InnerException);
+                Thread.Sleep(60000);
+                Start();
             }
         }
 

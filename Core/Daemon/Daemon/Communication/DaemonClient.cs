@@ -294,9 +294,18 @@ namespace Daemon.Communication
                     if (await LoadTasks())
                         logger.Log("Tasky načteny", LogType.INFORMATION);
                 }
+                catch(INetException<ChangedTaskResponse> ex)
+                {
+                    if (ex.ServerResponse.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                        await Startup();
+                    GeneralDaemonError log = new GeneralDaemonError() { LogType = LogType.ERROR };
+                    log.Content.DaemonUuid = settings.Uuid;
+                    log.Content.Message = "Chyba při pokusu o znovunačtení tasků\r\n" + ex.ToString();
+                    var faf = logger.ServerLogAsync(log);
+                }
                 catch(Exception e)
                 {
-
+                    
                     logger.Log(e.StackTrace,LogType.ERROR);
                     GeneralDaemonError log = new GeneralDaemonError() {LogType = LogType.ERROR };
                     log.Content.DaemonUuid = settings.Uuid;
