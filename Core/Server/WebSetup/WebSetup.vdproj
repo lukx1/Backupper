@@ -178,7 +178,7 @@
         "Entry"
         {
         "MsmKey" = "8:_5141A5E686C22D8B210826283F4B532C"
-        "OwnerKey" = "8:_D646267F3A77A21617D911A9C5F61D11"
+        "OwnerKey" = "8:_6DA9DB0F7737974BE1933CF621D4ABFA"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -220,7 +220,7 @@
         "Entry"
         {
         "MsmKey" = "8:_69622796C1857CD2429F2FAF59E8407D"
-        "OwnerKey" = "8:_D646267F3A77A21617D911A9C5F61D11"
+        "OwnerKey" = "8:_6DA9DB0F7737974BE1933CF621D4ABFA"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -256,6 +256,12 @@
         "Entry"
         {
         "MsmKey" = "8:_6C4A6E9851511E95BC70C67AC05F6936"
+        "OwnerKey" = "8:_A3EE14F286144280B29162694DF8C987"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6DA9DB0F7737974BE1933CF621D4ABFA"
         "OwnerKey" = "8:_A3EE14F286144280B29162694DF8C987"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -333,12 +339,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_D646267F3A77A21617D911A9C5F61D11"
-        "OwnerKey" = "8:_A3EE14F286144280B29162694DF8C987"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_D6A403C1375444C77F8C9B25DAE3033E"
         "OwnerKey" = "8:_A3EE14F286144280B29162694DF8C987"
         "MsmSig" = "8:_UNDEFINED"
@@ -394,13 +394,7 @@
         "Entry"
         {
         "MsmKey" = "8:_F4C48A2C7B0AFEF802727E6F1750681A"
-        "OwnerKey" = "8:_D646267F3A77A21617D911A9C5F61D11"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_69622796C1857CD2429F2FAF59E8407D"
+        "OwnerKey" = "8:_6DA9DB0F7737974BE1933CF621D4ABFA"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -412,7 +406,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D646267F3A77A21617D911A9C5F61D11"
+        "OwnerKey" = "8:_6DA9DB0F7737974BE1933CF621D4ABFA"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -589,9 +583,47 @@
         "OwnerKey" = "8:_F4C48A2C7B0AFEF802727E6F1750681A"
         "MsmSig" = "8:_UNDEFINED"
         }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_69622796C1857CD2429F2FAF59E8407D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
     }
     "Configurations"
     {
+        "64"
+        {
+        "DisplayName" = "8:64"
+        "IsDebugOnly" = "11:FALSE"
+        "IsReleaseOnly" = "11:FALSE"
+        "OutputFilename" = "8:64\\WebSetup.msi"
+        "PackageFilesAs" = "3:2"
+        "PackageFileSize" = "3:-2147483648"
+        "CabType" = "3:1"
+        "Compression" = "3:2"
+        "SignOutput" = "11:FALSE"
+        "CertificateFile" = "8:"
+        "PrivateKeyFile" = "8:"
+        "TimeStampServer" = "8:"
+        "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
+            }
+        }
         "Debug"
         {
         "DisplayName" = "8:Debug"
@@ -607,6 +639,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
         "Release"
         {
@@ -623,6 +663,54 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
+            }
+        }
+        "x86"
+        {
+        "DisplayName" = "8:x86"
+        "IsDebugOnly" = "11:FALSE"
+        "IsReleaseOnly" = "11:FALSE"
+        "OutputFilename" = "8:x86\\WebSetup.msi"
+        "PackageFilesAs" = "3:2"
+        "PackageFileSize" = "3:-2147483648"
+        "CabType" = "3:1"
+        "Compression" = "3:2"
+        "SignOutput" = "11:FALSE"
+        "CertificateFile" = "8:"
+        "PrivateKeyFile" = "8:"
+        "TimeStampServer" = "8:"
+        "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
+            }
         }
     }
     "Deployable"
@@ -1210,6 +1298,37 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6DA9DB0F7737974BE1933CF621D4ABFA"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Shared, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64"
+                "ScatterAssemblies"
+                {
+                    "_6DA9DB0F7737974BE1933CF621D4ABFA"
+                    {
+                    "Name" = "8:Shared.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Shared.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_6214AAA18CCB43729F2F12BD6561A1C4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6E7C813CEC558E15A8C11A51404FCEBA"
             {
             "AssemblyRegister" = "3:1"
@@ -1379,37 +1498,6 @@
                     }
                 }
             "SourcePath" = "8:EntityFramework.SqlServer.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_6214AAA18CCB43729F2F12BD6561A1C4"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D646267F3A77A21617D911A9C5F61D11"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Shared, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_D646267F3A77A21617D911A9C5F61D11"
-                    {
-                    "Name" = "8:Shared.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Shared.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6214AAA18CCB43729F2F12BD6561A1C4"
@@ -1703,7 +1791,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:WebSetup"
         "ProductCode" = "8:{B0616D78-2CBC-491D-B1B5-29426583741B}"
-        "PackageCode" = "8:{01C07B55-0312-4678-8E30-55AB6AC71C81}"
+        "PackageCode" = "8:{E1A920F8-7AF3-4EBE-8C38-23D442480526}"
         "UpgradeCode" = "8:{3A544143-9D41-4DC9-B60F-BEBA041AE5DE}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -2155,7 +2243,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A3EE14F286144280B29162694DF8C987"
             {
-            "SourcePath" = "8:..\\Server\\obj\\Release\\Server.dll"
+            "SourcePath" = "8:..\\Server\\obj\\x64\\64\\Server.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_A336F9F6EC73494791837192ECF76ED5"
