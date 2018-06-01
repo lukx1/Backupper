@@ -157,7 +157,7 @@ namespace DaemonShared {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("900000")]
+        [global::System.Configuration.DefaultSettingValueAttribute("60000")]
         public int TaskRefreshPeriodMs {
             get {
                 return ((int)(this["TaskRefreshPeriodMs"]));
