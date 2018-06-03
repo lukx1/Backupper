@@ -42,6 +42,11 @@ namespace Shared.NetMessages
         public char[] publicKey;
 
         /// <summary>
+        /// Název počítače. Například Pepa-PC apod.
+        /// </summary>
+        public string pcName;
+
+        /// <summary>
         /// Verze komunikačního protokolu
         /// </summary>
         public Version version;
