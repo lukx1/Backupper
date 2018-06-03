@@ -1,5 +1,5 @@
 # Zálohovací projekt Backupper
-Backupper umožňuje komplexní zálohy nejenom souborů, ale i databází. Umožňuje uživatelům zálohovat pomocí protokolů pro vzdálený přenos souborů jako je FTP nebo SFTP. Podporuje zálohování na, i z vzdálených lokací či disků. Spravovat a nastavovat zálohy je možno ve webovém portálu Backupper Serveru, který slouží jako centrální bod Vaší zálohovací sítě. Pro pokročilejší sítě je možno mít vícero administrátorů na Backupper Serveru, kteří mohou mít,dle vašich potřeb, odlišné povolen.
+Backupper umožňuje komplexní zálohy nejenom souborů, ale i databází. Umožňuje uživatelům zálohovat pomocí protokolů pro vzdálený přenos souborů jako je FTP nebo SFTP. Podporuje zálohování na i ze vzdálených lokací či disků. Spravovat a nastavovat zálohy je možno ve webovém portálu Backupper Serveru, který slouží jako centrální bod Vaší zálohovací sítě. Pro pokročilejší sítě je možno mít vícero administrátorů na Backupper Serveru, kteří mohou mít,dle vašich potřeb, odlišné povolen.
 
 # Vlastnosti
 - Zálohování kamkoliv odkudkoliv
@@ -10,7 +10,7 @@ Backupper umožňuje komplexní zálohy nejenom souborů, ale i databází. Umo�
 - Vícero druhů záloh
 - Informování prostřednictvím mailů a portálu Backupper Serveru
 - Zálohování MySQL serverů
-- Bezpeční přenos dat a zabezpečení hesel
+- Bezpečný přenos dat a zabezpečení hesel
 - Pro vývojáře
   - Plně dokumentovaný C# kód
   - Jasné vysvětlní a užití end pointů databáze
