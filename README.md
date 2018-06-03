@@ -27,4 +27,6 @@ Backupper umožňuje komplexní zálohy nejenom souborů, ale i databází. Umo�
 - Síťové připojení
 - Administrátorské přihlášení
 
+# Instalace
+Pro návod k instalaci navštivte [Instalace](https://github.com/lukx1/Backupper/wiki/Instalace)
   
