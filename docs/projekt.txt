@@ -1,0 +1,81 @@
+Centr·lnÌ z·lohovacÌ program
+
+-soubory 
+  - kam se co bude kdy z·lohovat
+-pc klient
+  - obstarava zalohovani
+-server
+  - spravuje celou sit
+-zalohovat do libovolne destinace
+  -lokalni disk (z C na D)
+  -externi ftp
+  -ssh zaloha
+  -sÌùov˝ disk
+-zalohovat
+  -fily
+    -plain (tak jak jsou vcetne slozek, podslozek)
+  -zip
+    -mnozstvi komprese
+    -druhy zip
+-kdy budu zalohovat
+  -definice casu
+    -jednorazova
+    -rocne
+    -mnesicne
+    -tydne
+    -kazdy den
+    -vickrat dene
+    -definovat periodu
+    -napr. kazde pondeli od do, do dubna
+-typ zalohy
+  -full backup
+  -differential
+    -vztahuje se k poslednimu fullu
+    -rozdil mezi full a dosavadnim
+    -staci pouze 2 (full a posledni diff)
+  -incremental
+    -musime mit vsechny zaznamy
+  -u diff a inc
+    -moc definovat kolik delat max diff a inc
+    -kolik zaloh zpatky nebo za jakej cas zpatky
+      -napr poslednich 30 dnu nebo poslednich 10 zaloh
+      -jako fronta
+    -napr. max 3 diference, 4. zaloha vse zlikviduje a udela se full
+    -nebo napr. zalohovat kazdy den, kazdou nedeli full
+      -zbytek jsou diff
+-to stejna zalohovat zaroven na nekolik destinaci
+-notifikace o tom ze zaloha prosla nebo neprosla (mailem)
+  -v definovanej intervalech
+  -report
+    -uspesna zaloha na PC1, PC2 ,...
+  -neprobehli protoze ...
+-zalohovat i databaze (mysql) nejlepe i mssql
+  -mysql dump, z toho soubor
+  -definovat server, jakej ucet pouzit, jake db
+-moznost definovat co se stane pred a po tasku
+  -napr. restart, vypnout zapnout, pripojit disk
+------------------
+-server bezi furt, pouziva rest api v .net
+  -pripojen k db
+-admin app pripoji se k serveru
+  -vytvori objekt konfigurace posle server, ten ulozi do db
+  -konfiguruje klienty
+-daemon app pripoji k serveru
+  -daemon se dotazuje a stahuje konfiguraci
+  -nema uziv. rozhrani
+  -v dany cas zkopiruje do destinace
+  -na server se prihlasi, zaregistruje daemona
+  -nutno overeni pomoci tokenu
+------------------
+-daemon windows service
+  -multi platformni
+-admin web
+  -v angular
+  -nebo desktop app
+--------------------
+-zalozit wiki
+  -informace o projektu
+  -dokumentace
+--------------
+-dokumentovat api
+-issue tracker

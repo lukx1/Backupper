@@ -53,7 +53,7 @@ namespace Daemon.Communication
                 messenger = new Messenger(settings.SSLServer, settings.SSLAllowSelfSigned);
             else
                 messenger = new Messenger(settings.Server);
-            logger = ConsoleLogger.CreateSourceInstance(messenger);
+            logger = UniLogger.CreateSourceInstance(messenger);
         }
 
         /// <summary>

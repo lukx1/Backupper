@@ -24,7 +24,7 @@ namespace Daemon
     public class Core
     {
 
-        private static ILogger logger = ConsoleLogger.CreateSourceInstance(null);
+        private static ILogger logger = UniLogger.CreateSourceInstance(null);
         private static DaemonClient DaemonClient;
         private static Task PipeListener;
 
@@ -178,7 +178,7 @@ namespace Daemon
             {
                 //throw new ArgumentException("Test excep",new Exception("Test error please ignore", new Exception("Test inner", new Exception("Test inner 2"))));
                 DaemonClient = new DaemonClient();
-                logger = ConsoleLogger.CreateSourceInstance(DaemonClient.messenger);
+                logger = UniLogger.CreateSourceInstance(DaemonClient.messenger);
                 DaemonClient.Run().Wait();
             }
             catch (Exception e)
@@ -190,12 +190,12 @@ namespace Daemon
         }
 
         /// <summary>
-        /// Zapne DS a Daemona
+        /// Po prodlevě spustí daemona
         /// </summary>
         public Core()
         {
             Thread.Sleep(10000);
-            StartDS();
+            //StartDS();
             Start();
         }
     }

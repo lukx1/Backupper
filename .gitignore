@@ -10,6 +10,9 @@
 #Ignore releases in top level
 Releases/**
 
+#Sign tool
+signtool.exe
+
 #Ignore publish output
 **/PublishOutput/**
 

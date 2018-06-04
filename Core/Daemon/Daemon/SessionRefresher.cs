@@ -22,7 +22,7 @@ namespace Daemon
         private DateTime refreshAt;
         private DateTime wakeUpAt;
         private bool externRec = false;
-        private ILogger logger = ConsoleLogger.CreateInstance();
+        private ILogger logger = UniLogger.CreateInstance();
 
         /// <summary>
         /// Vyvroří instanci a použije poskytnutý authenticator k refreshování/přihlášení

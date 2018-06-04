@@ -47,10 +47,10 @@ namespace Daemon
         /// <summary>
         /// Vypočitá kdy by měla proběhnout záloha
         /// </summary>
-        /// <param name="startTime"></param>
-        /// <param name="period"></param>
-        /// <returns></returns>
-        private TimeSpan CalculateDueTime(DateTime startTime,int? period) //TODO: kontrola jestli minuly backup probeh
+        /// <param name="startTime">Kdy začne</param>
+        /// <param name="period">Jak často se má opakovat</param>
+        /// <returns>Kdy by měla proběhnout záloha</returns>
+        private TimeSpan CalculateDueTime(DateTime startTime,int? period)
         {
             if (period == null || period <= 0)
                 return TimeSpan.FromMilliseconds(0);
@@ -61,9 +61,9 @@ namespace Daemon
         /// <summary>
         /// Metoda kterou timer volá
         /// </summary>
-        /// <param name="task"></param>
-        /// <param name="time"></param>
-        /// <param name="timedBackup"></param>
+        /// <param name="task">Který bude vykonáván</param>
+        /// <param name="time">Kdy bude vykonáván</param>
+        /// <param name="timedBackup">Objekt který ho vykonává</param>
         private void TimerMethod(DbTask task, DbTime time, TimedBackup timedBackup)
         {
             if (!timedBackup.ShouldRun.Value) // Kontroluje jestli by měl běžet
@@ -147,7 +147,8 @@ namespace Daemon
         }
 
         /// <summary>
-        /// Odstraní timery které doběhly a u běžících čeká než doběhnout a pak je odstraní
+        /// Odstraní timery které doběhly a u běžících čeká než doběhnout a pak je odstraní.
+        /// Nefreezuje
         /// </summary>
         private void ClearTObjs()
         {
@@ -174,6 +175,10 @@ namespace Daemon
             logger.Log("Čištení tObj OK",LogType.DEBUG);
         }
 
+        /// <summary>
+        /// Vytvoří testovací čas
+        /// </summary>
+        /// <param name="time"></param>
         private void ReshapeToTestingTime(DbTime time)
         {
             var ttime = CreateTestingTime();
@@ -185,13 +190,17 @@ namespace Daemon
             time.startTime = ttime.startTime;
         }
 
+        /// <summary>
+        /// Vytvoří testovací čas
+        /// </summary>
+        /// <returns></returns>
         private DbTime CreateTestingTime()
         {
             return new DbTime() {endTime = null,id = 999,interval = 300,name = "Test time",repeat = false,startTime = DateTime.Now.AddSeconds(5) };
         }
 
         /// <summary>
-        /// z listu tasků vytvoří timery
+        /// Vytvoří A spustí tasky pomocí dat v Tasks
         /// </summary>
         public void CreateTimers()
         {

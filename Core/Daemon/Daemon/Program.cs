@@ -24,21 +24,10 @@ namespace Daemon
         
 
         /// <summary>
-        /// Exception hook
+        /// Zaznamenává nechycené exceptiony
         /// </summary>
-        private static void CatchAnyException()
-        {
-            if (!AppDomain.CurrentDomain.FriendlyName.EndsWith("vshost.exe"))
-            {
-                AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
-            }
-        }
-
-        /// <summary>
-        /// Exception hook
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">Odesílatel</param>
+        /// <param name="e">Exception</param>
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             try
@@ -75,7 +64,7 @@ namespace Daemon
         }
 
         /// <summary>
-        /// The main entry point for the application.
+        /// Vstup pro aplikaci
         /// </summary>
         static void Main(string []args)
         {
@@ -86,7 +75,6 @@ namespace Daemon
 #else
             if (!EventLog.SourceExists("Backupper"))
                 EventLog.CreateEventSource("Backupper","Backupper");
-            CatchAnyException();
             if (Environment.UserInteractive)
             {
                 Service service = new Daemon.Service();

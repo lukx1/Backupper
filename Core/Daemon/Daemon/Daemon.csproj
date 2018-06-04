@@ -196,7 +196,7 @@
     <Compile Include="DoNotStoreThisException.cs" />
     <Compile Include="ListenController.cs" />
     <Compile Include="LocalException.cs" />
-    <Compile Include="Logging\ConsoleLogger.cs" />
+    <Compile Include="Logging\UniLogger.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logging\LoggerFactory.cs" />
