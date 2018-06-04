@@ -18,7 +18,7 @@ namespace Daemon.Logging
         /// <returns></returns>
         public static ILogger CreateAppropriate()
         {
-            return ConsoleLogger.CreateInstance();
+            return UniLogger.CreateInstance();
         }
     }
 }

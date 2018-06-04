@@ -26,7 +26,7 @@ namespace Daemon.Communication
         public Authenticator(Messenger messenger)
         {
             this.messenger = messenger;
-            logger = ConsoleLogger.CreateInstance();
+            logger = UniLogger.CreateInstance();
         }
 
         /// <summary>

@@ -12,20 +12,20 @@ using System.Threading.Tasks;
 namespace Daemon.Logging
 {
     /// <summary>
-    /// Zálohovač do konzole, v Service dělá zálohy do Windows Eventů
+    /// V intaraktivním režimu píše do konzole, v Service dělá záznamy do Windows Eventů
     /// </summary>
-    public class ConsoleLogger : ILogger
+    public class UniLogger : ILogger
     {
         private LoginSettings settings = new LoginSettings();
         private LogCommunicator logCommunicator;
 
-        private static ConsoleLogger logger;
+        private static UniLogger logger;
 
         /// <summary>
         /// Vytvoří instanci a dovolí logování
         /// </summary>
         /// <param name="messenger">Pro odesílání na server</param>
-        private ConsoleLogger(Messenger messenger)
+        private UniLogger(Messenger messenger)
         {
             logCommunicator = new LogCommunicator(messenger); 
         }
@@ -133,7 +133,7 @@ namespace Daemon.Logging
         /// <returns></returns>
         public static ILogger CreateSourceInstance(Messenger messenger)
         {
-                return (logger = new ConsoleLogger(messenger));
+                return (logger = new UniLogger(messenger));
         }
 
         /// <summary>
