@@ -8,24 +8,29 @@
 <h2>Daemons</h2>
 
 <table style="width:100%">
-	<tr>
-		<th>ID</th>
-		<th>User name</th>
-		<th>OS</th>
-		<th>Mac</th>
-		<th>Date Added</th>
-	</tr>
+    <tr>
+        <th>ID</th>
+        <th>User name</th>
+        <th>Custom Name</th>
+        <th>Machine Name</th>
+        <th>OS</th>
+        <th>Mac</th>
+        <th>Date Added</th>
+    </tr>
 	@foreach (var item in Model.OrderBy(x => x.DaemonInfo.DateAdded))
 	{
-	<tr>
-		<td>@item.Id</td>
-		<td>@item.User.Nickname</td>
-		<td>@item.DaemonInfo.Os</td>
-		<td>@item.DaemonInfo.Mac</td>
-		<td>@item.DaemonInfo.DateAdded</td>
-		<td><a href="/AdminTasks/Tasks?id=@(item.Id)">Show Tasks</a></td>
-		<td><a href="/AdminDaemons/DaemonGroups?id=@(item.Id)">Groups</a></td>
-	</tr>
+    <tr>
+        <td>@item.Id</td>
+        <td>@item.User.Nickname</td>
+        <td>@(item.DaemonInfo.Name ?? "Nil")</td>
+        <td>@(item.DaemonInfo.PcName ?? "Nil")</td>
+        <td>@item.DaemonInfo.Os</td>
+        <td>@item.DaemonInfo.Mac</td>
+        <td>@item.DaemonInfo.DateAdded</td>
+        <td><a href="/AdminDaemons/EditCustomName?id=@(item.Id)">Edit custom name</a></td>
+        <td><a href="/AdminTasks/Tasks?id=@(item.Id)">Show Tasks</a></td>
+        <td><a href="/AdminDaemons/DaemonGroups?id=@(item.Id)">Groups</a></td>
+    </tr>
 	}
 </table>
 

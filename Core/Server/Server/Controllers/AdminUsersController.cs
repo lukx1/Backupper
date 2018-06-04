@@ -82,6 +82,8 @@ namespace Server.Controllers
 
                 dbUser.Nickname = user.Nickname;
                 dbUser.FullName = user.FullName;
+                dbUser.Email = user.Email;
+                dbUser.WantsReport = user.WantsReport;
                 if (!user.Password.IsNullOrWhiteSpace())
                 {
                     string RSAPair = PasswordFactory.CreateRSAPrivateKey();

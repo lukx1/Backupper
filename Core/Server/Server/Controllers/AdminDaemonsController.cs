@@ -17,49 +17,38 @@ namespace Server.Controllers
         {
             using (var db = new Models.MySQLContext())
             {
-                var daemons = db.WaitingForOneClicks
+                ViewBag.WoCList = db.WaitingForOneClicks
                     .AsQueryable()
                     .Include(x => x.DaemonInfo)
                     .Where(x => x.Confirmed == false)
                     .ToArray();
-                return View(daemons);
+                return View(new Models.Admin.UnacceptedDaemonsModel());
             }
         }
 
-        [HttpGet]
-        public ActionResult AcceptDaemon(int id)
+        [HttpPost]
+        public ActionResult UnacceptedDaemons(Models.Admin.UnacceptedDaemonsModel model)
         {
             using (var db = new Models.MySQLContext())
             {
                 var wfoc = db.WaitingForOneClicks
-                    .FirstOrDefault(x => x.Id == id);
-                if(wfoc != null)
-                {
-                    wfoc.Confirmed = true;
-                    db.SaveChanges();
-                    OperationResultMessage = "Daemon was accepted";
-                }
-                else
-                {
-                    ErrorMessage = "No daemon was waiting";
-                }
-            }
-
-            return View("UnacceptedDaemons");
-        }
-
-        [HttpGet]
-        public ActionResult DeclineDaemon(int id)
-        {
-            using (var db = new Models.MySQLContext())
-            {
-                var wfoc = db.WaitingForOneClicks
-                    .FirstOrDefault(x => x.Id == id);
+                    .FirstOrDefault(x => x.Id == model.Id);
                 if (wfoc != null)
                 {
-                    db.WaitingForOneClicks.Remove(wfoc);
+                    if(model.IsDaemonAccepted)
+                    {
+                        wfoc.Confirmed = true;
+                        wfoc.DaemonInfo.Name = model.Name;
+                        OperationResultMessage = "Daemon was accepted";
+                    }
+                    else
+                    {
+                        db.WaitingForOneClicks.Remove(wfoc);
+                        db.SaveChanges();
+                        OperationResultMessage = "Daemon was declined";
+                    }
                     db.SaveChanges();
-                    OperationResultMessage = "Daemon was declined";
+
                 }
                 else
                 {
@@ -82,6 +71,41 @@ namespace Server.Controllers
 			        .ToArray();
 			    return View(daemons);
 			}
+        }
+
+        [HttpGet]
+        public ActionResult EditCustomName(int id)
+        {
+            using (var db = new Models.MySQLContext())
+            {
+                var daemon = db.Daemons.AsQueryable().Include(x => x.DaemonInfo).Include(x => x.User).FirstOrDefault(x => x.Id == id);
+                if(daemon == null)
+                {
+                    ErrorMessage = "Invalid daemon";
+                    return RedirectToAction("Index", "AdminDaemons");
+                }
+
+                return View(daemon);
+            }
+        }
+
+        [HttpPost]
+        public ActionResult EditCustomName(Models.Daemon daemon)
+        {
+            using (var db = new Models.MySQLContext())
+            {
+                var dbDaemon = db.Daemons.FirstOrDefault(x => x.Id == daemon.Id);
+                if (dbDaemon == null)
+                {
+                    ErrorMessage = "Invalid daemon";
+                    return RedirectToAction("Index", "AdminDaemons");
+                }
+
+                dbDaemon.DaemonInfo.Name = daemon.DaemonInfo.Name;
+                db.SaveChanges();
+
+                return RedirectToAction("Index", "AdminDaemons");
+            }
         }
 
         [HttpGet]
