@@ -70,7 +70,14 @@ namespace SetupDialog
 
         private void Sc_DalsiClicked()
         {
-            Next();
+            try
+            {
+                Next();
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show(this, e.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)

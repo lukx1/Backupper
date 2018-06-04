@@ -59,7 +59,21 @@ namespace SetupDialog
                 how.Server = server;
                 return true;
             });
-            tsk.Wait();
+            try
+            {
+                tsk.Wait();
+            }
+            catch(AggregateException ex)
+            {
+                var exi = ex.InnerException;
+                if (exi == null)
+                    return;
+                if (exi is UriFormatException)
+                    MessageBox.Show(null, "Tvar adresy není platný", "Error v adrese", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                else
+                    MessageBox.Show(null, "Chyba při pokusu o přihlášení", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             if (tsk.Result)
             {
                 DalsiClicked();

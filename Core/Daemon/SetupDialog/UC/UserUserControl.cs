@@ -30,7 +30,19 @@ namespace SetupDialog
         {
             var messenger = new Messenger(how.Server);
             var task = messenger.SendAsync<UserLoginResponse>(new UserLoginMessage() {Username = name,Password = pass },"UserLogin",HttpMethod.Post);
-            task.Wait();
+            try
+            {
+                task.Wait();
+            }
+            catch(AggregateException e)
+            {
+                var exi = e.InnerException;
+                if(exi is INetException<UserLoginResponse>)
+                    MessageBox.Show(null, "Přihlašovací údaje nejsou platné", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                else
+                    MessageBox.Show(null, "Neúspěch při přihlašování", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
             var res = task.Result.ServerResponse;
             if (!res.OK)
             {
