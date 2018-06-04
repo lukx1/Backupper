@@ -27,6 +27,9 @@ namespace BackupperDebugSoubory
 
         static void Main(string[] args)
         {
+            if (!Directory.Exists(@"C:\BDEBUG"))
+                Directory.CreateDirectory(@"C:\BDEBUG");
+
             Empty(new DirectoryInfo(@"C:\BDEBUG"));
 
             List<DirectoryInfo> dirs = new List<DirectoryInfo>();
