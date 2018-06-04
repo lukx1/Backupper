@@ -6,22 +6,30 @@
 }
 
 <table>
-	<tr>
-		<td>
-			@Html.LabelFor(m => m.Nickname)
-		</td>
-		<td>
-			@Html.DisplayFor(m => m.Nickname)
-		</td>
-	</tr>
-	<tr>
-		<td>
-			@Html.LabelFor(m => m.FullName)
-		</td>
-		<td>
-			@Html.DisplayFor(m => m.FullName)
-		</td>
-	</tr>
+    <tr>
+        <td>
+            @Html.LabelFor(m => m.Nickname)
+        </td>
+        <td>
+            @Html.DisplayFor(m => m.Nickname)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(m => m.FullName)
+        </td>
+        <td>
+            @Html.DisplayFor(m => m.FullName)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(m => m.Email)
+        </td>
+        <td>
+            @Html.DisplayFor(m => m.Email)
+        </td>
+    </tr>
 </table>
 
 @using (Html.BeginForm("DeleteUser", "AdminUsers", FormMethod.Post))

@@ -13,6 +13,10 @@ using Permission = Server.Authentication.Permission;
 
 namespace Server.Controllers
 {
+    /// <summary>
+    /// Základni třída pro všechny kontrolery, kterými se ovládá chování nebo data v Backupperu
+    /// Obsahuje logiku pro kontrolu přihlášení uživatele
+    /// </summary>
     public abstract class AdminBaseController : Controller
     {
         public IEnumerable<Permission> CurrentUserPermissions { get; set; }
@@ -37,6 +41,10 @@ namespace Server.Controllers
             set => Session[Objects.MagicStrings.SESSION_UUID] = value;
         }
 
+        /// <summary>
+        /// Jakákoliv výjimka, která se sem dostane bude zobrazena na AdminError stránce
+        /// </summary>
+        /// <param name="fc"></param>
         protected override void OnException(ExceptionContext fc)
         {
             ServerLogger.Debug("EXCEPTION: ", fc.Exception);
@@ -61,6 +69,9 @@ namespace Server.Controllers
         }
     }
 
+    /// <summary>
+    /// Pokud je použit zajistí, že se k metodě v kontroleru dostanou přihlášení uživatelé se specifikovanými permisemi
+    /// </summary>
     public class AdminSecAttribute : FilterAttribute, IAuthenticationFilter, IAuthorizationFilter
     {
         private readonly Permission[] _requiredPermissions;
@@ -74,6 +85,10 @@ namespace Server.Controllers
             _requiredPermissions = permissions;
         }
 
+        /// <summary>
+        /// Přihlásí uživatele
+        /// </summary>
+        /// <param name="filterContext"></param>
         public void OnAuthentication(AuthenticationContext filterContext)
         {
             var ctr = (AdminBaseController)filterContext.Controller;
@@ -103,6 +118,10 @@ namespace Server.Controllers
 
         public void OnAuthenticationChallenge(AuthenticationChallengeContext filterContext) { }
 
+        /// <summary>
+        /// Načte permise z databáze a zkontroluje, že uživatel může pokračovat dál
+        /// </summary>
+        /// <param name="filterContext"></param>
         public void OnAuthorization(AuthorizationContext filterContext)
         {
             ServerLogger.Information("Authotization for: " + filterContext.ActionDescriptor.ControllerDescriptor.ControllerName + "/" + filterContext.ActionDescriptor.ActionName);

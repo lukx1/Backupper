@@ -40,6 +40,12 @@ namespace Server.Models
         [StringLength(2288)]
         public string PrivateKey { get; set; }
 
+        [StringLength(256)]
+        public string Email { get; set; }
+
+        [Required]
+        public bool WantsReport { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DaemonPreSharedKey> DaemonPreSharedKeys { get; set; }
 

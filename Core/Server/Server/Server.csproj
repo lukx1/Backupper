@@ -20,9 +20,12 @@
     <MvcBuildViews>false</MvcBuildViews>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort>44318</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressSSLPort>
+    </IISExpressSSLPort>
+    <IISExpressAnonymousAuthentication>
+    </IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>
+    </IISExpressWindowsAuthentication>
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
@@ -40,6 +43,7 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>x86</PlatformTarget>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>App_Data/XmlDocument.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -249,6 +253,7 @@
     <Compile Include="Models\Admin\PublicInfo.cs" />
     <Compile Include="Models\Admin\ShowOrAssignCredentialModel.cs" />
     <Compile Include="Models\Admin\TaskTimesModel.cs" />
+    <Compile Include="Models\Admin\UnacceptedDaemonsModel.cs" />
     <Compile Include="Models\BackupType.cs" />
     <Compile Include="Models\Daemon.cs" />
     <Compile Include="Models\DaemonGroup.cs" />
@@ -415,6 +420,7 @@
     <Content Include="Views\Shared\_AdminFootBarPart.cshtml" />
     <Content Include="Views\AdminDaemons\UnacceptedDaemons.cshtml" />
     <Content Include="Views\AdminInfo\PublicInfo.cshtml" />
+    <Content Include="Views\AdminDaemons\EditCustomName.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
