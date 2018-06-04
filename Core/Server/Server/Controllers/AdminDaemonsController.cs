@@ -44,7 +44,6 @@ namespace Server.Controllers
                     else
                     {
                         db.WaitingForOneClicks.Remove(wfoc);
-                        db.SaveChanges();
                         OperationResultMessage = "Daemon was declined";
                     }
                     db.SaveChanges();
