@@ -39,6 +39,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Setup";
             this.Text = "Nastavení Backupper klienta";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Setup_FormClosing);
             this.Load += new System.EventHandler(this.Setup_Load);
             this.ResumeLayout(false);
 

@@ -104,5 +104,10 @@ namespace SetupDialog
         {
 
         }
+
+        private void Setup_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+        }
     }
 }
