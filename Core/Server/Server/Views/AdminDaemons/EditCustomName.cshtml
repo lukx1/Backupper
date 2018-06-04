@@ -1,0 +1,32 @@
+﻿@model global::Server.Models.Daemon
+
+@{
+    ViewBag.Title = "Edit daemons custom name";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm("EditCustomName", "AdminDaemons", FormMethod.Post))
+{
+    @Html.HiddenFor(model => model.Id)
+    <table>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.DaemonInfo.PcName)
+            </td>
+            <td>
+                @Html.DisplayFor(model => model.DaemonInfo.PcName)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(model => model.DaemonInfo.Name)
+            </td>
+            <td>
+                @Html.TextBoxFor(model => model.DaemonInfo.Name)
+            </td>
+        </tr>
+    </table>
+
+    <input type="submit" value="Confirm" />
+    <input type="reset" value="Clear" />
+}

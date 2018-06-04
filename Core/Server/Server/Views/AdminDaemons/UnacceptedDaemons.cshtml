@@ -1,8 +1,9 @@
-﻿@model IEnumerable<global::Server.Models.WaitingForOneClick>
+﻿@model global::Server.Models.Admin.UnacceptedDaemonsModel
 
 @{
     ViewBag.Title = "Unaccepted Daemons";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var WoC = (IEnumerable<global::Server.Models.WaitingForOneClick>)ViewBag.WoCList;
 }
 <table style="width:100%">
     <tr>
@@ -13,24 +14,44 @@
         <th>Pc Name</th>
         <th>Custom Name</th>
     </tr>
-    @if (Model != null)
+    @using (Html.BeginForm("UnacceptedDaemons", "AdminDaemons", FormMethod.Post))
     {
-        foreach (var item in Model)
+        @Html.HiddenFor(x => x.Id)
+        @Html.HiddenFor(x => x.Name)
+        @Html.HiddenFor(x => x.IsDaemonAccepted)
+
+        if (WoC != null)
         {
-            <tr>
-                <td>@item.DateReceived</td>
-                <td>@item.DaemonInfo.Os</td>
-                <td>@item.DaemonInfo.Mac</td>
-                <td>@item.DaemonInfo.DateAdded</td>
-                <td>@item.DaemonInfo.PcName</td>
+            var modl = WoC.ToArray();
+            for (int i = 0; i < modl.Length; i++)
+            {
+                <tr>
+                    <td>@modl[i].DateReceived</td>
+                    <td>@modl[i].DaemonInfo.Os</td>
+                    <td>@modl[i].DaemonInfo.Mac</td>
+                    <td>@modl[i].DaemonInfo.DateAdded</td>
+                    <td>@(modl[i].DaemonInfo.PcName ?? "Nil")</td>
 
-                <td>@item.DaemonInfo.Name</td>
+                    <td><input id="cName@(modl[i].Id)" type="text"/></td>
 
-                <td><a href="/AdminDaemons/AcceptDaemon?id=@(item.Id)">Accept</a></td>
-                <td><a href="/AdminDaemons/DeclineDaemon?id=@(item.Id)">Decline</a></td>
-            </tr>
+                    <td><button onclick="AcceptDaemon(@modl[i].Id, $('#cName@(modl[i].Id)').val())" type="submit">Accept</button></td>
+                    <td><button onclick="DeclineDaemon(@modl[i].Id, $('#cName@(modl[i].Id)').val())" type="submit">Decline</button></td>
+                </tr>
+            }
         }
-        <a href="/AdminDaemons/AcceptAllDaemons">Accept All</a>
-        <a href="/AdminDaemons/DeclineAllDaemons">Decline All</a>
     }
 </table>
+
+<script>
+    function AcceptDaemon(id, name) {
+        $('#@Html.IdFor(m => m.Id)').val(id);
+        $('#@Html.IdFor(m => m.Name)').val(name);
+        $('#@Html.IdFor(m => m.IsDaemonAccepted)').val(true);
+    }
+
+    function DeclineDaemon(id, name) {
+        $('#@Html.IdFor(m => m.Id)').val(id);
+        $('#@Html.IdFor(m => m.Name)').val(name);
+        $('#@Html.IdFor(m => m.IsDaemonAccepted)').val(false);
+    }
+</script>

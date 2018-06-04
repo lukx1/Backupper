@@ -87,8 +87,8 @@ namespace Daemon.Communication
                 macAdress = firstMacAddress.ToCharArray(),
                 os = GetOSFriendlyName(),
                 version = Shared.Version.Parse(settings.Version),
-                PCUuid = pcInfo.GetUniqueId()
-                
+                PCUuid = pcInfo.GetUniqueId(),
+                pcName = Environment.MachineName
             };
 
             bool OCI = false;

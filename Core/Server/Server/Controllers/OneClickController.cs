@@ -13,6 +13,11 @@ namespace Server.Controllers
 {
     public class OneClickController : ApiController
     {
+        /// <summary>
+        /// Daemon se dozví jestli byl povolen adminem
+        /// </summary>
+        /// <param name="msg"></param>
+        /// <returns>Pokud je povolen je mu přiděleno uuid s heslem, pokud ne tak je mu přiděleno nic</returns>
         public HttpResponseMessage Post([FromBody]OneClickMessage msg)
         {
             using(MySQLContext sql = new MySQLContext())

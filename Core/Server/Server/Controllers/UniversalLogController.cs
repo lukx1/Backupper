@@ -28,7 +28,7 @@ namespace Server.Controllers
         }
 
         /// <summary>
-        /// Vytvoří tasky
+        /// Daemon odešle log na server
         /// </summary>
         /// <param name="taskMessage"></param>
         /// <returns></returns>
@@ -38,7 +38,7 @@ namespace Server.Controllers
         }
 
         /// <summary>
-        /// Získá tasky pro daemona
+        /// Neimplementováno
         /// </summary>
         /// <param name="taskMessage"></param>
         /// <returns></returns>
