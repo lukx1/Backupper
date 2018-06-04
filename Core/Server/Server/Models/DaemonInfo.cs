@@ -35,6 +35,12 @@ namespace Server.Models
         [Column(TypeName = "timestamp")]
         public DateTime DateAdded { get; set; }
 
+        [StringLength(64)]
+        public string Name { get; set; }
+
+        [StringLength(128)]
+        public string PcName { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Daemon> Daemons { get; set; }
 

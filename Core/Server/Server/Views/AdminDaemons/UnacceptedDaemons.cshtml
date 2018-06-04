@@ -10,6 +10,8 @@
         <th>OS</th>
         <th>Mac</th>
         <th>Date Added</th>
+        <th>Pc Name</th>
+        <th>Custom Name</th>
     </tr>
     @if (Model != null)
     {
@@ -20,10 +22,15 @@
                 <td>@item.DaemonInfo.Os</td>
                 <td>@item.DaemonInfo.Mac</td>
                 <td>@item.DaemonInfo.DateAdded</td>
+                <td>@item.DaemonInfo.PcName</td>
+
+                <td>@item.DaemonInfo.Name</td>
 
                 <td><a href="/AdminDaemons/AcceptDaemon?id=@(item.Id)">Accept</a></td>
                 <td><a href="/AdminDaemons/DeclineDaemon?id=@(item.Id)">Decline</a></td>
             </tr>
         }
+        <a href="/AdminDaemons/AcceptAllDaemons">Accept All</a>
+        <a href="/AdminDaemons/DeclineAllDaemons">Decline All</a>
     }
 </table>

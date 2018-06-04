@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Server.Models;
+using System.Web.Routing;
 
 namespace Server.Controllers
 {
@@ -42,7 +43,7 @@ namespace Server.Controllers
 		{
 			model.Save();
 			OperationResultMessage = "Time edition was successfull";
-			return RedirectToAction("Tasks", "AdminTasks", new { id = model.IdDaemon });
+            return Redirect($"~/AdminTasks/Tasks/?id={model.IdDaemon}");
 		}
 
 		[HttpGet]

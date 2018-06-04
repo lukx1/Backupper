@@ -58,6 +58,8 @@ namespace Server.Models.Admin
 
                 db.TaskTimes.AddRange(desire);
 
+                task.LastChanged = DateTime.Now;
+
                 db.SaveChanges();
             }
         }

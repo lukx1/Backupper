@@ -87,6 +87,7 @@ namespace Daemon.Communication
                 os = Environment.OSVersion.ToString(),
                 version = Shared.Version.Parse(settings.Version),
                 PCUuid = pcInfo.GetUniqueId()
+                
             };
 
             bool OCI = false;

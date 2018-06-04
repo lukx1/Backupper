@@ -5,11 +5,10 @@
 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<h2>TaskTimes</h2>
-
 @using (Html.BeginForm("TaskTimes", "AdminTasks", FormMethod.Post))
 {
 	@Html.HiddenFor(model => model.IdTask)
+    @Html.HiddenFor(model => model.IdDaemon)
 
 	<table style="width:100%">
 		<tr>

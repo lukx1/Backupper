@@ -66,6 +66,14 @@ namespace Server.Models
                 .IsUnicode(false);
 
             modelBuilder.Entity<DaemonInfo>()
+                .Property(e => e.Name)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<DaemonInfo>()
+                .Property(e => e.PcName)
+                .IsUnicode(false);
+
+            modelBuilder.Entity<DaemonInfo>()
                 .HasMany(e => e.Daemons)
                 .WithRequired(e => e.DaemonInfo)
                 .HasForeignKey(e => e.IdDaemonInfo);

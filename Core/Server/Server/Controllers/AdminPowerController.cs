@@ -9,7 +9,7 @@ namespace Server.Controllers
 {
     
     [AdminSec(Authentication.Permission.MANAGEPOWER)]
-    public class AdminPowerController : Controller
+    public class AdminPowerController : AdminBaseController
     {
         private void StartHiddenCmdProcess(string args)
         {
