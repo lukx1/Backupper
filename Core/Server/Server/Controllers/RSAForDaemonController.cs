@@ -34,7 +34,7 @@ namespace Server.Controllers
         }
 
         /// <summary>
-        /// Získá tasky pro daemona
+        /// Daemon požádá o zašifrovaná private key svého majitele
         /// </summary>
         /// <param name="taskMessage"></param>
         /// <returns></returns>

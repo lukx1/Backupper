@@ -13,6 +13,11 @@ namespace Server.Controllers
     {
         private UserHandler userHandler = new UserHandler();
 
+        /// <summary>
+        /// Získá uživatele
+        /// </summary>
+        /// <param name="userMessage"></param>
+        /// <returns></returns>
         public HttpResponseMessage Post([FromBody]UserMessage userMessage)
         {
             var users = userHandler.FetchUsers(userMessage);
@@ -21,6 +26,12 @@ namespace Server.Controllers
             else
                 return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.OK, new UserResponse() { ErrorMessages = userHandler.Errors, Users = users });
         }
+
+        /// <summary>
+        /// Přidá uživatele
+        /// </summary>
+        /// <param name="userMessage"></param>
+        /// <returns></returns>
         public HttpResponseMessage Put([FromBody]UserMessage userMessage)
         {
             userHandler.AddUsers(userMessage);
@@ -30,6 +41,12 @@ namespace Server.Controllers
                 return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.OK, new UserResponse() { ErrorMessages = userHandler.Errors});
 
         }
+
+        /// <summary>
+        /// Upraví uživatele
+        /// </summary>
+        /// <param name="userMessage"></param>
+        /// <returns></returns>
         public HttpResponseMessage Patch([FromBody]UserMessage userMessage)
         {
             userHandler.UpdateUsers(userMessage);
@@ -39,6 +56,11 @@ namespace Server.Controllers
                 return Util.MakeHttpResponseMessage(System.Net.HttpStatusCode.OK, new UserResponse() { ErrorMessages = userHandler.Errors });
         }
 
+        /// <summary>
+        /// Vymaže uživatele
+        /// </summary>
+        /// <param name="userMessage"></param>
+        /// <returns></returns>
         public HttpResponseMessage Delete([FromBody]UserMessage userMessage)
         {
             userHandler.DeleteUsers(userMessage);

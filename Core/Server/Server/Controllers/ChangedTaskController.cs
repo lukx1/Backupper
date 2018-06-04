@@ -14,9 +14,8 @@ namespace Server.Controllers
 {
     public class ChangedTaskController : ApiController
     {
-
         /// <summary>
-        /// Získá tasky pro daemona
+        /// Daemon získá změny v taskové konfiguraci
         /// </summary>
         /// <param name="taskMessage"></param>
         /// <returns></returns>
