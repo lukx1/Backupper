@@ -44,6 +44,7 @@ namespace Server.Controllers
         {
             using (var db = new Models.MySQLContext())
             {
+                cred.Password = PasswordFactory.EncryptRSA(cred.Password, CurrentUser.PublicKey);
                 db.LocationCredentials.Add(cred);
                 db.SaveChanges();
             }
@@ -82,7 +83,7 @@ namespace Server.Controllers
 
                 dbLocCred.Username = cred.Username;
                 if(!cred.Password.IsNullOrWhiteSpace())
-                    dbLocCred.Password = cred.Password;
+                    dbLocCred.Password = PasswordFactory.EncryptRSA(cred.Password, CurrentUser.PublicKey);
                 dbLocCred.Host = cred.Host;
                 dbLocCred.Port = cred.Port;
                 dbLocCred.IdLogonType = cred.IdLogonType;

@@ -12,6 +12,11 @@ namespace Server.Models
         {
         }
 
+        public MySQLContext(string connectionString)
+            : base(connectionString)
+        {
+        }
+
         public virtual DbSet<BackupType> BackupTypes { get; set; }
         public virtual DbSet<DaemonGroup> DaemonGroups { get; set; }
         public virtual DbSet<DaemonInfo> DaemonInfos { get; set; }

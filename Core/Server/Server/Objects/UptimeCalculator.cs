@@ -9,6 +9,9 @@ using System.Web;
 
 namespace Server.Objects
 {
+    /// <summary>
+    /// Pocita hodnoty jak dlouho je server online, offline, z kolika procent byl online a od kdy se to pocita
+    /// </summary>
     public class UptimeCalculator
     {
         public class Uptime

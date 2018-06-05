@@ -7,6 +7,9 @@ using System.Web;
 
 namespace Server.Objects
 {
+    /// <summary>
+    /// Slouzi k logovani do databaze
+    /// </summary>
     public class SqlLogger
     {
         private IEnumerable<UniversalLog> CreateUnisFromLogs<T>(params SLog<T>[] logs) where T : class

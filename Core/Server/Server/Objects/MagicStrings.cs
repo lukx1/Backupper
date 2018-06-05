@@ -5,6 +5,9 @@ using System.Web;
 
 namespace Server.Objects
 {
+    /// <summary>
+    /// Obsahuje v kodu se opakujici textove retezce
+    /// </summary>
     public static class MagicStrings
     {
         public const string OPERATION_RESULT_MESSAGE = "customMessage";

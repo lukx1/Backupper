@@ -12,6 +12,9 @@ namespace Server.Objects.AdminExceptions
         RequestedDataIsNull
     }
 
+    /// <summary>
+    /// Slouží pro chyby při validaci, neplatných datech nebo chybějících údajích 
+    /// </summary>
     public class AdminModelErrorException : AdminException
     {
         public AdminModelErrorException(string message) : base(message) { }

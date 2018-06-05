@@ -705,6 +705,12 @@
             </summary>
             <param name="filterContext"></param>
         </member>
+        <member name="T:Server.Controllers.AdminSetupController">
+            <summary>
+            Použité pro první nastavení serveru. resp. prvního admin účtu a connection stringu
+            Connection string jde později změnit ServerSettings
+            </summary>
+        </member>
         <member name="M:Server.Controllers.ChangedTaskController.Post(Shared.NetMessages.ChangedTaskMessage)">
             <summary>
             Daemon získá změny v taskové konfiguraci
@@ -808,6 +814,11 @@
             <param name="taskMessage"></param>
             <returns></returns>
         </member>
+        <member name="T:Server.HostringEnvironmentRegisteredShutdownObject">
+            <summary>
+            Zajišťuje periodické zapisování uptimu serveru do databáze
+            </summary>
+        </member>
         <member name="F:Server.Installer.components">
             <summary>
             Required designer variable.
@@ -825,12 +836,104 @@
             the contents of this method with the code editor.
             </summary>
         </member>
+        <member name="T:Server.Models.Admin.ServerSetupModel">
+            <summary>
+            Pro AdminSetup/Index
+            </summary>
+        </member>
+        <member name="M:Server.Models.Admin.ServerSetupModel.Save">
+            <summary>
+            Otestuje jestli se jde připojit poskytnutým connection stringem k MySql serveru
+            Pokud ano vytvoří admin uživatele dle zadaných parametrů
+            </summary>
+        </member>
         <member name="T:Server.Models.MySQLConnectionStringMaker">
             <summary>
-            Poskyuje login info schované v appdata
+            Poskytuje login info schované ve Web.config
             </summary>
             Pokud mySQL stále nefunguje přidejte nad classu
             tento annotation [DbConfigurationType(typeof(MySqlEFConfiguration))]
+        </member>
+        <member name="M:Server.Models.MySQLConnectionStringMaker.GetConnectionString">
+            <summary>
+            Získá connectionstring schovaná ve Web.config
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Server.Objects.AdminExceptions.AdminException">
+            <summary>
+            Základní vyjímka využívaná v grafické části admina
+            </summary>
+        </member>
+        <member name="T:Server.Objects.AdminExceptions.AdminModelErrorException">
+            <summary>
+            Slouží pro chyby při validaci, neplatných datech nebo chybějících údajích 
+            </summary>
+        </member>
+        <member name="T:Server.Objects.AdminExceptions.AdminSecurityException">
+            <summary>
+            Používané např. pro chybné přihlášení a nebo nedostatečné permise
+            </summary>
+        </member>
+        <member name="T:Server.Objects.ConnectionStringHelper">
+            <summary>
+            Dynamicky ziska nebo nastavi connectionString
+            </summary>
+        </member>
+        <member name="T:Server.Objects.MagicStrings">
+            <summary>
+            Obsahuje v kodu se opakujici textove retezce
+            </summary>
+        </member>
+        <member name="T:Server.Objects.LogHandler">
+            <summary>
+            Slouzi pro praci s logy ze strany API
+            </summary>
+        </member>
+        <member name="T:Server.Objects.MailHandler">
+            <summary>
+            Pomocna trida pro posilani emailu
+            </summary>
+        </member>
+        <member name="T:Server.Objects.PList">
+            <summary>
+            Pomocna trida pro permise
+            </summary>
+        </member>
+        <member name="T:Server.Objects.ServerLogger">
+            <summary>
+            Slouzi pro lokalni logovani na serveru
+            </summary>
+        </member>
+        <member name="T:Server.Objects.SqlLogger">
+            <summary>
+            Slouzi k logovani do databaze
+            </summary>
+        </member>
+        <member name="T:Server.Objects.TaskHandler">
+            <summary>
+            Pomocne metody pro praci s DbTasky pro API
+            </summary>
+        </member>
+        <member name="T:Server.Objects.UptimeCalculator">
+            <summary>
+            Pocita hodnoty jak dlouho je server online, offline, z kolika procent byl online a od kdy se to pocita
+            </summary>
+        </member>
+        <member name="T:Server.Objects.UserHandler">
+            <summary>
+            Repozitar pro DbUser
+            </summary>
+        </member>
+        <member name="T:Server.ScheduledTasks.Email.EmailJob">
+            <summary>
+            Popis emailoveho background tasku a jeho logika
+            </summary>
+        </member>
+        <member name="T:Server.ScheduledTasks.JobScheduler">
+            <summary>
+            Zapne background task pro posilani emailu
+            </summary>
         </member>
     </members>
 </doc>
