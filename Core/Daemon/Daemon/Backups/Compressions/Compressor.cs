@@ -48,8 +48,8 @@ namespace Daemon.Backups.Compressions
                     memoryStream.CopyTo(fileStream);
                 }
 
-                SmartBackupInfo temp = new SmartBackupInfo() { location = backupInfo.location };
-                temp.fileInfos.Add(new SmartFileInfo() { destination = destination });
+                SmartBackupInfo temp = new SmartBackupInfo() { location = new DbTaskLocation() { source = new DbLocation() { uri = Path.GetTempPath() } } };
+                temp.fileInfos.Add(new SmartFileInfo() { destination = destination, filename = Path.GetFileName(destination) });
 
                 return temp;
                 
