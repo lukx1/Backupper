@@ -9,8 +9,10 @@ using System.Web;
 
 namespace Server.Objects
 { 
-
-    public class UserHandler //TODO : Tahle trida je priserna
+    /// <summary>
+    /// Repozitar pro DbUser
+    /// </summary>
+    public class UserHandler
     {
         private MySQLContext mysql;
         private List<ErrorMessage> errors = new List<ErrorMessage>();

@@ -7,6 +7,9 @@ using System.Collections;
 
 namespace Server.Objects
 {
+    /// <summary>
+    /// Pomocna trida pro permise
+    /// </summary>
     public class PList : IList<Permission>
     {
         private List<Permission> list = new List<Permission>();

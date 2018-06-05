@@ -3,16 +3,10 @@
   <Profiles />
   <Settings>
     <Setting Name="DBLoginValid" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="DatabaseName" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="UserPassword" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
-    <Setting Name="HostName" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="ConnString" Type="System.String" Scope="User">
+      <Value Profile="(Default)">server=mysqlstudenti.litv.sssvt.cz;persistsecurityinfo=True;database=3b1_joskalukas_db1;User ID=joskalukas;password=123456;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

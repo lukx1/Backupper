@@ -1,0 +1,66 @@
+﻿@model global::Server.Models.Admin.ServerSetupModel
+
+@{
+    ViewBag.Title = "Server Setup";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 style="color:red;">SETUP</h2>
+
+@using (Html.BeginForm("Index", "AdminSetup", FormMethod.Post))
+{
+<table>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.Username)
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.Username)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.Fullname)
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.Fullname)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.Password)
+        </td>
+        <td>
+            @Html.PasswordFor(model => model.Password)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.Email)
+        </td>
+        <td>
+            @Html.TextBoxFor(model => model.Email)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.WantsReport)
+        </td>
+        <td>
+            @Html.CheckBoxFor(model => model.WantsReport)
+        </td>
+    </tr>
+    <tr>
+        <td>
+            @Html.LabelFor(model => model.ConnectionString)
+        </td>
+        <td>
+            @Html.TextAreaFor(model => model.ConnectionString)
+        </td>
+    </tr>
+</table>
+
+<input type="submit" class="btn btn-dark" value="Submit" />
+<input type="reset" class="btn btn-dark" value="Clear" />
+}
+

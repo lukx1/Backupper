@@ -15,6 +15,9 @@ using System.Web.Hosting;
 
 namespace Server
 {
+    /// <summary>
+    /// Zajišťuje periodické zapisování uptimu serveru do databáze
+    /// </summary>
     public class HostringEnvironmentRegisteredShutdownObject : IRegisteredObject
     {
 

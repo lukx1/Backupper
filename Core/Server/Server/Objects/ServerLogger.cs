@@ -7,6 +7,9 @@ using log4net.Core;
 
 namespace Server.Objects
 {
+    /// <summary>
+    /// Slouzi pro lokalni logovani na serveru
+    /// </summary>
     public class ServerLogger
     {
         private static readonly ServerLogger _instance = new ServerLogger();

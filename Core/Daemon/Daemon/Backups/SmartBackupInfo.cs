@@ -57,7 +57,7 @@ namespace Daemon.Backups
                 bool exists = false;
                 foreach (SmartFileInfo file in info.fileInfos)
                 {
-                    if (item.destination == file.destination && item.lastDateModified == file.lastDateModified)
+                    if (item.destination == file.destination && item.lastDateModified.ToLongTimeString() == file.lastDateModified.ToLongTimeString())
                     {
                         exists = true;
                         break;
@@ -117,8 +117,7 @@ namespace Daemon.Backups
                 while (!reader.EndOfStream)
                 {
                     string[] data = reader.ReadLine().Split(';');
-                    FileInfo info = new FileInfo(data[0]);
-                    fileInfos.Add(new SmartFileInfo() { destination = info.FullName, filename = info.Name, lastDateModified = info.LastWriteTime });
+                    fileInfos.Add(new SmartFileInfo() { destination = data[0], filename = Path.GetFileName(data[0]), lastDateModified = Convert.ToDateTime(data[1]) });
                 }
             }
         }

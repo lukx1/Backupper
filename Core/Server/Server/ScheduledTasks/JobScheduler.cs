@@ -9,6 +9,9 @@ using Server.ScheduledTasks.Email;
 
 namespace Server.ScheduledTasks
 {
+    /// <summary>
+    /// Zapne background task pro posilani emailu
+    /// </summary>
     public class JobScheduler
     {
         public static async Task Start()

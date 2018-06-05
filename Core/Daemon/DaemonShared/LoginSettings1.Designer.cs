@@ -12,7 +12,7 @@ namespace DaemonShared {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.6.0.0")]
     public sealed partial class LoginSettings : global::System.Configuration.ApplicationSettingsBase {
         
         private static LoginSettings defaultInstance = ((LoginSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new LoginSettings())));
@@ -312,7 +312,7 @@ namespace DaemonShared {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool FirstSetup {
             get {
                 return ((bool)(this["FirstSetup"]));
@@ -360,7 +360,7 @@ namespace DaemonShared {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server")]
         public string OwnerUserNickname {
             get {
                 return ((string)(this["OwnerUserNickname"]));

@@ -216,6 +216,7 @@
     <Compile Include="Controllers\AdminLoginController.cs" />
     <Compile Include="Controllers\AdminPowerController.cs" />
     <Compile Include="Controllers\AdminPresharedKeysController.cs" />
+    <Compile Include="Controllers\AdminSetupController.cs" />
     <Compile Include="Controllers\AdminTasksController.cs" />
     <Compile Include="Controllers\AdminTimesController.cs" />
     <Compile Include="Controllers\AdminUsersController.cs" />
@@ -251,6 +252,7 @@
     <Compile Include="Models\Admin\LoginModel.cs" />
     <Compile Include="Models\Admin\NewEditTaskLocationsModel.cs" />
     <Compile Include="Models\Admin\PublicInfo.cs" />
+    <Compile Include="Models\Admin\ServerSetupModel.cs" />
     <Compile Include="Models\Admin\ShowOrAssignCredentialModel.cs" />
     <Compile Include="Models\Admin\TaskTimesModel.cs" />
     <Compile Include="Models\Admin\UnacceptedDaemonsModel.cs" />
@@ -284,6 +286,7 @@
     <Compile Include="Objects\AdminExceptions\AdminException.cs" />
     <Compile Include="Objects\AdminExceptions\AdminModelErrorException.cs" />
     <Compile Include="Objects\AdminExceptions\AdminSecurityException.cs" />
+    <Compile Include="Objects\ConnectionStringHelper.cs" />
     <Compile Include="Objects\MagicStrings.cs" />
     <Compile Include="Objects\LogHandler.cs" />
     <Compile Include="Objects\MailHandler.cs" />
@@ -301,7 +304,6 @@
     </Compile>
     <Compile Include="ScheduledTasks\Email\EmailJob.cs" />
     <Compile Include="ScheduledTasks\JobScheduler.cs" />
-    <Compile Include="SQLConnectionIni.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -421,6 +423,7 @@
     <Content Include="Views\AdminDaemons\UnacceptedDaemons.cshtml" />
     <Content Include="Views\AdminInfo\PublicInfo.cshtml" />
     <Content Include="Views\AdminDaemons\EditCustomName.cshtml" />
+    <Content Include="Views\AdminSetup\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
