@@ -64,42 +64,40 @@ namespace Tests
             try { Directory.Delete(testDir); } catch (Exception) { }
         }
 
-
         [TestMethod]
-        public void FTPTest()
+        public void FTPDownload()
         {
-            Assert.Inconclusive();
-            const string testFile = "C:/NormalTestFile";
+            const string testFile = "C:/FTPTestFile";
             CreateTreeSourceDest(testFile);
             var bak = create(DbBackupType.NORM, new DbTaskDetails() { }, CrtTaskLocE(
-                new DbTaskLocation() { source = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, destination = new DbLocation { protocol = DbProtocol.FTP, uri = "Upload/Dest",LocationCredential = new DbLocationCredential() {LogonType = DbLogonType.Anonymous,host = "ftp://speedtest.tele2.net/" } } }
+                new DbTaskLocation() { destination = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, source = new DbLocation { protocol = DbProtocol.FTP, uri = "",LocationCredential = new DbLocationCredential() {LogonType = DbLogonType.Normal,host = "test.rebex.net",port = 21,password = "password",username = "demo" } } }
                 ), 1, null, null);
             bak.StartBackup();
+            Assert.IsTrue(Directory.GetFiles(testFile + "/Source").Length > 0,"Nic nebylo zkopirovano");
+        }
+
+        [TestMethod]
+        public void FTPUpload()
+        {
+            const string testFile = "C:/FTPTestFile";
+            CreateTreeSourceDest(testFile);
+            var bak = create(DbBackupType.NORM, new DbTaskDetails() { }, CrtTaskLocE(
+                new DbTaskLocation() { source = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, destination = new DbLocation { protocol = DbProtocol.FTP, uri = "", LocationCredential = new DbLocationCredential() { LogonType = DbLogonType.Normal, host = "ftp.dlptest.com", port = 21, password = "eiTqR7EMZD5zy7M", username = "dlpuser@dlptest.com" } } }
+                ), 1, null, null);
             bak.StartBackup();
-            var dirs = Directory.GetDirectories(testFile + "/Dest");
-            Assert.IsTrue(dirs.Length != 0, "Nebyla vytvořena žádná záloha");
-            string[] sourceFiles = Directory.GetFiles(testFile + "/Source", "*.*", SearchOption.AllDirectories).OrderBy(r => Path.GetFileName(r)).ToArray();
+            Assert.IsTrue(Directory.GetFiles(testFile + "/Source").Length > 0, "Nic nebylo zkopirovano");
+        }
 
-
-            for (int i = 0; i < sourceFiles.Length; i++)
-            {
-                string[] destFiles = new string[0];
-                foreach (var dir in dirs)
-                {
-                    destFiles = Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories).OrderBy(r => Path.GetFileName(r)).ToArray();
-
-
-                    Assert.IsTrue(sourceFiles.Length == destFiles.Length, "Počet kopírovaných souborů si není roven");
-                    int y = 0;
-                    foreach (var file in destFiles)
-                    {
-                        Assert.IsTrue(Path.GetFileName(sourceFiles[y]) == Path.GetFileName(file), "Soubor nebyl zkopírován");
-                        Assert.IsTrue(new FileInfo(sourceFiles[y]).Length == new FileInfo(file).Length, "Kopírovaný soubor nemá stejnou velikost");
-                        y++;
-                    }
-
-                }
-            }
+        [TestMethod]
+        public void SFTPTest()
+        {
+            const string testFile = "C:/SFTPTestFile";
+            CreateTreeSourceDest(testFile);
+            var bak = create(DbBackupType.NORM, new DbTaskDetails() { }, CrtTaskLocE(
+                new DbTaskLocation() { destination = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, source = new DbLocation { protocol = DbProtocol.SFTP, uri = "/", LocationCredential = new DbLocationCredential() { LogonType = DbLogonType.Normal, host = "test.rebex.net", port = 22, password = "password", username = "demo" } } }
+                ), 1, null, null);
+            bak.StartBackup();
+            Assert.IsTrue(Directory.GetFiles(testFile + "/Source").Length > 0, "Nic nebylo zkopirovano");
         }
 
         private void CreateTreeSourceDest(string where)

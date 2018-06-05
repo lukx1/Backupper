@@ -21,7 +21,7 @@ namespace Daemon.Communication
         {
             Host = host;
             Username = username;
-            Password = Shared.PasswordFactory.DecryptRSA(password,new DaemonShared.LoginSettings().RSAPrivate);
+            Password = password.Length > 32 ? Shared.PasswordFactory.DecryptRSA(password,new DaemonShared.LoginSettings().RSAPrivate) : password;
         }
 
         /// <summary>
