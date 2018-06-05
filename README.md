@@ -29,4 +29,5 @@ Backupper umožňuje komplexní zálohy nejenom souborů, ale i databází. Umo�
 
 # Instalace
 Pro návod k instalaci navštivte [Instalace](https://github.com/lukx1/Backupper/wiki/Instalace)
+Pro manuál navštivte [Manuál](https://github.com/lukx1/Backupper/wiki/U%C5%BEivatelsk%C3%BD-manu%C3%A1l)
   

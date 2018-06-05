@@ -86,7 +86,11 @@ namespace Server
             }
             Timer = new Timer((e) =>
             {
-                MakeOrUpdateNoChangeLog();
+                try
+                {
+                    MakeOrUpdateNoChangeLog();
+                }
+                catch (Exception) { }
             }, null, period, period
                 );
         }

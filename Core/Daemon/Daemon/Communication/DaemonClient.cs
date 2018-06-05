@@ -154,7 +154,7 @@ namespace Daemon.Communication
         private async Task<bool> Startup()
         {
             authenticator = new Authenticator(messenger);
-            if (settings.FirstSetup)
+            if (settings.FirstSetup && File.Exists(Path.Combine(Util.GetSharedFolder(), "Install","transfer.tsf")))
                 firstSetup();
             if (settings.Uuid == null || settings.Uuid == Guid.Empty)// Daemon nema Uuid -> musi se introducnout
             {

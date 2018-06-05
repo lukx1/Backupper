@@ -40,7 +40,7 @@ namespace Server.Controllers
 
             if (wwwaiting == null)
             {
-                DaemonInfo info = new DaemonInfo() { Mac = new string(msg.macAdress), Os = msg.os, PCUuid = msg.PCUuid, DateAdded = DateTime.Now, PcName = msg.pcName };
+                DaemonInfo info = new DaemonInfo() { Mac = new string(msg.macAdress), Os = msg.os, PCUuid = msg.PCUuid, DateAdded = DateTime.Now, PcName = msg.pcName, Name = "" };
                 WaitingForOneClick waiting = new WaitingForOneClick() { DaemonInfo = info, User = msg.User,DateReceived = DateTime.Now };
                 mySQL.DaemonInfos.Add(info);
                 mySQL.WaitingForOneClicks.Add(waiting);

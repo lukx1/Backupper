@@ -32,7 +32,7 @@ namespace Shared.NetMessages
         public string PCUuid;
 
         /// <summary>
-        /// Nutno pouze pro 1CI
+        /// Nutno pouze pro OCI
         /// </summary>
         public string User;
 
