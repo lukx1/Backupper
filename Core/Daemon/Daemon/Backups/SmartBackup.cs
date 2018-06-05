@@ -41,7 +41,8 @@ namespace Daemon.Backups
             {
                 SmartBackupInfo info = new SmartBackupInfo();
                 info.location = item;
-                info.CreateFullBackupInfo(item.source.uri);
+                if((item.source.protocol == DbProtocol.WND || item.source.protocol == DbProtocol.WRD)) // Bez tohodle to crashovalo
+                    info.CreateFullBackupInfo(item.source.uri);
                 if (BackupType.Id == DbBackupType.DIFF.Id)
                 {
                     SmartBackupInfo temp = new SmartBackupInfo() { location = item };
@@ -66,18 +67,31 @@ namespace Daemon.Backups
                 {
                     BackupNormal(info, item);
                 }
-                else if (item.destination.protocol == DbProtocol.MYSQL)
+                if (item.source.protocol == DbProtocol.MYSQL)
                 {
                     SmartBackupInfo tempInfo = new SmartBackupInfo();
 
+                    var sdest = Path.Combine(item.destination.uri, item.source.uri + ".sql");
                     SqlCommunicator sqlCommunicator = new SqlCommunicator();
+                    sqlCommunicator.ExportAsFileAsync(// Od sud
+                        item.source.LocationCredential.host,
+                        item.source.uri,
+                        item.source.LocationCredential.username,
+                        item.source.LocationCredential.password,//Az sem nesahat tohle je OK
+                        sdest // Kde se soubor vytvori
+                        ).Wait();
 
-                    BackupNormal(info, item);
+                    BackupNormal(info, item);//Tohle nevim co je
                 }
                 logger.Log("Done Backuping using " + item.destination.protocol,Shared.LogType.INFORMATION);
             }
             CMDAction(ActionAfter);
             logger.Log("Done Action After >" + ActionAfter,Shared.LogType.INFORMATION);
+
+        }
+
+        private void BackupMySQL()
+        {
 
         }
 
@@ -110,7 +124,7 @@ namespace Daemon.Backups
             if (TaskDetails.ZipAlgorithm == "zip")
             {
                 trulyBackupedInfo = new SmartBackupInfo();
-                trulyBackupedInfo = new Compressions.Compressor(backupInfo, TaskDetails).Compress(Path.GetTempPath() + @"\" + DateTime.Now.ToFileTimeUtc() + ".zip",System.IO.Compression.CompressionLevel.Optimal);
+                trulyBackupedInfo = new Compressions.Compressor(backupInfo, TaskDetails).Compress(Path.GetTempPath() + @"\" + DateTime.Now.ToFileTimeUtc() + ".zip",(System.IO.Compression.CompressionLevel)TaskDetails.CompressionLevel);
                 logger.Log("Done compressing file using zip",Shared.LogType.INFORMATION);
             }
 
@@ -120,7 +134,7 @@ namespace Daemon.Backups
             if (!Directory.Exists(DestinationPath))
                 Directory.CreateDirectory(DestinationPath);
 
-            string SourcePath = taskLocation.source.uri;
+            string SourcePath = trulyBackupedInfo.location.source.uri;
             foreach (SmartFileInfo item in trulyBackupedInfo.fileInfos)
             {
                 // Definice cesty kam se to bude kopírovat je = DestinationPath + SubPath + FileName, a kopiruje se z SourcePath + SubPath + FileName (aneb item.destination)

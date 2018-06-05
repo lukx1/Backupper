@@ -280,6 +280,7 @@ namespace Daemon.Communication
             TaskTickerTask = Task.Run(() => TaskTicker());//Refreshuje tasky aby byli aktualni se serverem
             await logCheckTask;
             await loadPrivTask;
+            await TaskTickerTask;
         }
 
         private async Task TaskTicker()
