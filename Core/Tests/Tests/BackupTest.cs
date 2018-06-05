@@ -65,6 +65,27 @@ namespace Tests
         }
 
         [TestMethod]
+        public void MySQLUp()
+        {
+            Assert.Inconclusive();
+        }
+
+        [TestMethod]
+        public void MySQLDown()
+        {
+            var temp = Path.GetTempFileName();
+            var testFile = "C:/SqlTest";
+            try { Directory.Delete(testFile, true); } catch (Exception) { }
+            Directory.CreateDirectory(testFile);
+            var bak = create(DbBackupType.NORM, new DbTaskDetails() { }, CrtTaskLocE(
+                new DbTaskLocation() { destination = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, source = new DbLocation { protocol = DbProtocol.MYSQL, uri = "3b1_joskalukas_db1", LocationCredential = new DbLocationCredential() { LogonType = DbLogonType.Normal, host = "mysqlstudenti.litv.sssvt.cz ", port = 21, password = "123456", username = "joskalukas" } } }
+                ), 1, null, null);
+            bak.StartBackup();
+            Assert.IsTrue(Directory.GetFiles(testFile, "*.*", SearchOption.AllDirectories).Length > 0);
+            
+        }
+
+        [TestMethod]
         public void FTPDownload()
         {
             const string testFile = "C:/FTPTestFile";
