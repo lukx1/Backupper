@@ -91,6 +91,8 @@ namespace Daemon.Communication
                 pcName = Environment.MachineName
             };
 
+            logger.Log("OS name: " + GetOSFriendlyName(), LogType.INFORMATION);
+            
             bool OCI = false;
 
             if (settings.PreSharedKeyWithIdSemiColSep == null || settings.PreSharedKeyWithIdSemiColSep.Trim() == "")

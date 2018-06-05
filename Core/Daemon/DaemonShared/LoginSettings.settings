@@ -75,7 +75,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="FirstSetup" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="SkipTasks" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -87,7 +87,7 @@
       <Value Profile="(Default)">127.0.0.1</Value>
     </Setting>
     <Setting Name="OwnerUserNickname" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">Server</Value>
     </Setting>
   </Settings>
 </SettingsFile>
