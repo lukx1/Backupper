@@ -169,7 +169,7 @@ namespace Tests
         public void Differentail()
         {
             const string testFile = "C:/DiffTestFile";
-            Directory.Delete(@"C:\Users\lukx\AppData\Local\Backupper\Data", true);
+            try { Directory.Delete($@"C:\Users\{Environment.UserName}\AppData\Local\Backupper\Data", true); } catch (Exception) { }
             CreateTreeSourceDest(testFile);
             var bak = create(DbBackupType.DIFF, new DbTaskDetails() { }, CrtTaskLocE(
                 new DbTaskLocation() { source = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, destination = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Dest" } }
@@ -195,7 +195,7 @@ namespace Tests
                     var dir = dirs[0];
                     destFiles = Directory.GetFiles(dir, "*.*", SearchOption.AllDirectories).OrderBy(r => Path.GetFileName(r)).ToArray();
 
-                    Assert.IsTrue(sourceFiles.Length == destFiles.Length, "Počet kopírovaných souborů si není roven");
+                    Assert.IsTrue(5 == destFiles.Length, "Počet kopírovaných souborů si není roven");
                     int y = 0;
                     foreach (var file in destFiles)
                     {
@@ -217,7 +217,7 @@ namespace Tests
         public void Incremental()
         {
             const string testFile = "C:/IncTestFile";
-            Directory.Delete(@"C:\Users\lukx\AppData\Local\Backupper\Data", true);
+            try { Directory.Delete($@"C:\Users\{Environment.UserName}\AppData\Local\Backupper\Data", true); } catch (Exception) { };
             CreateTreeSourceDest(testFile);
             var bak = create(DbBackupType.INCR, new DbTaskDetails() { }, CrtTaskLocE(
                 new DbTaskLocation() { source = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, destination = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Dest" } }
@@ -227,6 +227,7 @@ namespace Tests
 
             Thread.Sleep(1000);
             File.WriteAllText(Path.Combine(testFile, "Source", "A.dum"), "Updated");
+            Thread.Sleep(1000);
 
             bak.StartBackup();
 
@@ -255,7 +256,7 @@ namespace Tests
                 {
                     var dir = dirs[1];
                     Assert.IsTrue(Directory.GetFiles(dir).Length != 0, "Nic nebylo zkopírováno");
-                    Assert.IsTrue(Directory.GetFiles(dir).Length > 1, "Byl zkopírován více než 1 soubor");
+                    Assert.IsTrue(Directory.GetFiles(dir).Length == 1, "Byl zkopírován více než 1 soubor");
                 }
             }
         }
