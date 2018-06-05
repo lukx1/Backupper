@@ -22,7 +22,7 @@ namespace Daemon.Communication
         {
             Host = host;
             Username = username;
-            Password = Shared.PasswordFactory.DecryptRSA(password, new DaemonShared.LoginSettings().RSAPrivate); 
+            Password = password.Length > 64 ? Shared.PasswordFactory.DecryptRSA(password, new DaemonShared.LoginSettings().RSAPrivate) : password; 
         }
         /// <summary>
         /// Nahraje soubor přes FTP
@@ -33,7 +33,7 @@ namespace Daemon.Communication
         {
             try
             {
-                FtpWebRequest ftpRequest = (FtpWebRequest)FtpWebRequest.Create(Host + "/" + destination);
+                FtpWebRequest ftpRequest = (FtpWebRequest)FtpWebRequest.Create("ftp://"+Host + "/" + destination);
                 ftpRequest.Credentials = new NetworkCredential(Username, Password);
 
                 ftpRequest.UseBinary = true;
@@ -61,6 +61,7 @@ namespace Daemon.Communication
                 }
                 return;
             }
+            catch(Exception e) { throw e; }
             finally
             {
                 ftpResponse.Close();

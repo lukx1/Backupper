@@ -69,14 +69,14 @@ namespace Daemon.Communication
                         {
                             cmd.Connection = conn;
                             conn.Open();
-                            mb.ExportCompleted += (o, e) => { Thread.CurrentThread.Interrupt(); };
+                            //mb.ExportCompleted += (o, e) => { Thread.CurrentThread.Interrupt(); };
                             mb.ExportToFile(LocalDest);
 
-                            try
+                            /*try
                             {
                                 Thread.Sleep(timeOut);
                             }
-                            catch (ThreadInterruptedException) { }
+                            catch (ThreadInterruptedException) { }*/
                             conn.Close();
                         }
                     }
