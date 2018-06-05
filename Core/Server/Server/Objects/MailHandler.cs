@@ -7,6 +7,9 @@ using System.Net;
 
 namespace Server.Objects
 {
+    /// <summary>
+    /// Pomocna trida pro posilani emailu
+    /// </summary>
 	public class MailHandler
 	{
 		public class SendMailProperties

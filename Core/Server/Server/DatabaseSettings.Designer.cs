@@ -12,7 +12,7 @@ namespace Server {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.3.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.7.0.0")]
     internal sealed partial class ServerSettings : global::System.Configuration.ApplicationSettingsBase {
         
         private static ServerSettings defaultInstance = ((ServerSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new ServerSettings())));
@@ -25,7 +25,7 @@ namespace Server {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool DBLoginValid {
             get {
                 return ((bool)(this["DBLoginValid"]));
@@ -37,37 +37,14 @@ namespace Server {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string DatabaseName {
+        [global::System.Configuration.DefaultSettingValueAttribute("server=mysqlstudenti.litv.sssvt.cz;persistsecurityinfo=True;database=3b1_joskaluk" +
+            "as_db1;User ID=joskalukas;password=123456;")]
+        public string ConnString {
             get {
-                return ((string)(this["DatabaseName"]));
+                return ((string)(this["ConnString"]));
             }
             set {
-                this["DatabaseName"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string UserPassword {
-            get {
-                return ((string)(this["UserPassword"]));
-            }
-            set {
-                this["UserPassword"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string HostName {
-            get {
-                return ((string)(this["HostName"]));
-            }
-            set {
-                this["HostName"] = value;
+                this["ConnString"] = value;
             }
         }
     }

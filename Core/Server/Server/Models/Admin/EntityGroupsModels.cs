@@ -28,7 +28,7 @@ namespace Server.Models.Admin
                     throw new Exception("Daemon does not exists");
 
                 var daemonGrp = db.DaemonGroups.Where(x => x.IdDaemon == IdDaemon).ToArray();
-                var groups = db.Groups.ToArray();
+                var groups = db.Groups.Where(x => x.ForDaemons).ToArray();
 
                 Groups = new List<SimpleGroupInfoModel>();
 
@@ -82,7 +82,7 @@ namespace Server.Models.Admin
                     throw new Exception("User does not exists");
 
                 var userGrp = db.UserGroups.Where(x => x.IdUser == IdUser).ToArray();
-                var groups = db.Groups.ToArray();
+                var groups = db.Groups.Where(x => !x.ForDaemons).ToArray();
 
                 Groups = new List<SimpleGroupInfoModel>();
 

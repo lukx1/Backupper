@@ -27,6 +27,15 @@ namespace Server.Controllers
         [AdminSec(Permission.MANAGEPERMISSION)]
         public ActionResult GroupPermissions(int id)
         {
+            using (var db = new Models.MySQLContext())
+            {
+                var grp = db.Groups.FirstOrDefault(x => x.Id == id);
+                if (grp == null)
+                    throw new AdminException("Invalid group");
+                if(protectedGroups.Contains(grp.Name))
+                    throw new AdminException("You can't modify default group");
+            }
+
             var model = new Models.Admin.GroupPermissionsModel(id);
             model.Load();
             return View(model);

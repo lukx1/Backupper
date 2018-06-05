@@ -10,6 +10,9 @@ using Quartz;
 
 namespace Server.ScheduledTasks.Email
 {
+    /// <summary>
+    /// Popis emailoveho background tasku a jeho logika
+    /// </summary>
     public class EmailJob : IJob
     {
         public Task Execute(IJobExecutionContext context)
