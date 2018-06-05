@@ -178,7 +178,7 @@
         "Entry"
         {
         "MsmKey" = "8:_5141A5E686C22D8B210826283F4B532C"
-        "OwnerKey" = "8:_6DA9DB0F7737974BE1933CF621D4ABFA"
+        "OwnerKey" = "8:_711D2C82047B412C0AABA14DD9058228"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -220,7 +220,7 @@
         "Entry"
         {
         "MsmKey" = "8:_69622796C1857CD2429F2FAF59E8407D"
-        "OwnerKey" = "8:_6DA9DB0F7737974BE1933CF621D4ABFA"
+        "OwnerKey" = "8:_711D2C82047B412C0AABA14DD9058228"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -261,12 +261,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_6DA9DB0F7737974BE1933CF621D4ABFA"
-        "OwnerKey" = "8:_A3EE14F286144280B29162694DF8C987"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_6E7C813CEC558E15A8C11A51404FCEBA"
         "OwnerKey" = "8:_A3EE14F286144280B29162694DF8C987"
         "MsmSig" = "8:_UNDEFINED"
@@ -280,6 +274,12 @@
         "Entry"
         {
         "MsmKey" = "8:_6FF0DE8067B3554D29B301E244714FAD"
+        "OwnerKey" = "8:_A3EE14F286144280B29162694DF8C987"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_711D2C82047B412C0AABA14DD9058228"
         "OwnerKey" = "8:_A3EE14F286144280B29162694DF8C987"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -394,7 +394,7 @@
         "Entry"
         {
         "MsmKey" = "8:_F4C48A2C7B0AFEF802727E6F1750681A"
-        "OwnerKey" = "8:_6DA9DB0F7737974BE1933CF621D4ABFA"
+        "OwnerKey" = "8:_711D2C82047B412C0AABA14DD9058228"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -406,7 +406,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_6DA9DB0F7737974BE1933CF621D4ABFA"
+        "OwnerKey" = "8:_711D2C82047B412C0AABA14DD9058228"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -646,6 +646,14 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.6.1"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.6.1 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.6.1"
+                    }
+                }
             }
         }
         "Release"
@@ -1298,37 +1306,6 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6DA9DB0F7737974BE1933CF621D4ABFA"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Shared, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64"
-                "ScatterAssemblies"
-                {
-                    "_6DA9DB0F7737974BE1933CF621D4ABFA"
-                    {
-                    "Name" = "8:Shared.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Shared.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_6214AAA18CCB43729F2F12BD6561A1C4"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_6E7C813CEC558E15A8C11A51404FCEBA"
             {
             "AssemblyRegister" = "3:1"
@@ -1374,6 +1351,37 @@
                     }
                 }
             "SourcePath" = "8:System.Web.WebPages.Razor.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_6214AAA18CCB43729F2F12BD6561A1C4"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_711D2C82047B412C0AABA14DD9058228"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Shared, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86"
+                "ScatterAssemblies"
+                {
+                    "_711D2C82047B412C0AABA14DD9058228"
+                    {
+                    "Name" = "8:Shared.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Shared.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_6214AAA18CCB43729F2F12BD6561A1C4"
@@ -1791,7 +1799,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:WebSetup"
         "ProductCode" = "8:{B0616D78-2CBC-491D-B1B5-29426583741B}"
-        "PackageCode" = "8:{E1A920F8-7AF3-4EBE-8C38-23D442480526}"
+        "PackageCode" = "8:{18E2338C-B08D-4144-B9F4-AF75A5CF0328}"
         "UpgradeCode" = "8:{3A544143-9D41-4DC9-B60F-BEBA041AE5DE}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
@@ -1804,7 +1812,7 @@
         "ARPHELPLINK" = "8:"
         "Title" = "8:WebSetup"
         "Subject" = "8:"
-        "ARPCONTACT" = "8:Default Company Name"
+        "ARPCONTACT" = "8:Lukxnet"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
         "ARPURLINFOABOUT" = "8:"
@@ -1812,7 +1820,7 @@
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
         "UseSystemSearchPath" = "11:TRUE"
-        "TargetPlatform" = "3:0"
+        "TargetPlatform" = "3:1"
         "PreBuildEvent" = "8:"
         "PostBuildEvent" = "8:"
         "RunPostBuildEvent" = "3:0"
@@ -2243,7 +2251,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A3EE14F286144280B29162694DF8C987"
             {
-            "SourcePath" = "8:..\\Server\\obj\\x64\\64\\Server.dll"
+            "SourcePath" = "8:..\\Server\\obj\\x64\\Release\\Server.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_A336F9F6EC73494791837192ECF76ED5"

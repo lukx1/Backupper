@@ -65,24 +65,64 @@ namespace Tests
         }
 
         [TestMethod]
-        public void MySQLUp()
+        public void Zip()
         {
-            Assert.Inconclusive();
+            const string testDir = "C:/ZipTest";
+            try { Directory.Delete(testDir); } catch (Exception) { }
+            var b = create(null, null, Enumerable.Empty<DbTaskLocation>(), 1, null, $"mkdir \"{testDir}\"");
+            b.StartBackup();
+            Thread.Sleep(1000);
+            Assert.IsTrue(Directory.Exists(testDir));
+            try { Directory.Delete(testDir); } catch (Exception) { }
         }
 
+
         [TestMethod]
-        public void MySQLDown()
+        public void MySQL()
         {
-            var temp = Path.GetTempFileName();
-            var testFile = "C:/SqlTest";
-            try { Directory.Delete(testFile, true); } catch (Exception) { }
-            Directory.CreateDirectory(testFile);
-            var bak = create(DbBackupType.NORM, new DbTaskDetails() { }, CrtTaskLocE(
-                new DbTaskLocation() { destination = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, source = new DbLocation { protocol = DbProtocol.MYSQL, uri = "3b1_joskalukas_db1", LocationCredential = new DbLocationCredential() { LogonType = DbLogonType.Normal, host = "mysqlstudenti.litv.sssvt.cz ", port = 21, password = "123456", username = "joskalukas" } } }
-                ), 1, null, null);
+            var testDir = "C:/SqlTest";
+
+            if(Directory.Exists(testDir))
+                Directory.Delete(testDir, true);
+
+            Directory.CreateDirectory(testDir);
+
+            var db = "3b1_joskalukas_db1";
+            var host = "mysqlstudenti.litv.sssvt.cz"; ;
+            var password = "123456";
+            var username = "joskalukas";
+
+            var bak = create(
+                DbBackupType.NORM,
+                new DbTaskDetails() { },
+                CrtTaskLocE(
+                    new DbTaskLocation()
+                        {
+                        destination = new DbLocation
+                            {
+                            protocol = DbProtocol.WND,
+                            uri = Path.Combine(testDir,"Dest") },
+                            source = new DbLocation {
+                                protocol = DbProtocol.MYSQL,
+                                uri = db,
+                                LocationCredential = new DbLocationCredential()
+                                    {
+                                    LogonType = DbLogonType.Normal,
+                                    host = host,
+                                    password = password,
+                                    username = username
+                                }
+                            }
+                    }
+                ),
+                1,
+                null,
+                null);
             bak.StartBackup();
-            Assert.IsTrue(Directory.GetFiles(testFile, "*.*", SearchOption.AllDirectories).Length > 0);
-            
+            var expectedResultFile = Path.Combine(testDir,"Dest", db + ".sql");
+            Assert.IsTrue(File.Exists(expectedResultFile),"Soubor nebyl zkopírován");
+            Assert.IsTrue(new FileInfo(expectedResultFile).Length > 0, "Zkopírovaný soubor je prázdný");
+            //Directory.Delete(testDir, true);
         }
 
         [TestMethod]
@@ -110,8 +150,22 @@ namespace Tests
         }
 
         [TestMethod]
+        public void FTPTest()
+        {
+            Assert.Fail();
+            /*const string testFile = "C:/SFTPTestFile";
+            CreateTreeSourceDest(testFile);
+            var bak = create(DbBackupType.NORM, new DbTaskDetails() { }, CrtTaskLocE(
+                new DbTaskLocation() { destination = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, source = new DbLocation { protocol = DbProtocol.SFTP, uri = "/", LocationCredential = new DbLocationCredential() { LogonType = DbLogonType.Normal, host = "test.rebex.net", port = 22, password = "password", username = "demo" } } }
+                ), 1, null, null);
+            bak.StartBackup();
+            Assert.IsTrue(Directory.GetFiles(testFile + "/Source").Length > 0, "Nic nebylo zkopirovano");*/
+        }
+
+        [TestMethod]
         public void SFTPTest()
         {
+            Assert.Fail();
             const string testFile = "C:/SFTPTestFile";
             CreateTreeSourceDest(testFile);
             var bak = create(DbBackupType.NORM, new DbTaskDetails() { }, CrtTaskLocE(
@@ -148,20 +202,24 @@ namespace Tests
             return list;
         }
 
+        private SmartBackup CreateLocBak(DbBackupType type, string testFile, string zip = null, int? level = null)
+        {
+            return create(DbBackupType.NORM, new DbTaskDetails() {CompressionLevel = level,ZipAlgorithm =zip }, CrtTaskLocE(
+                new DbTaskLocation() { source = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, destination = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Dest" } }
+                ), 1, null, null);
+        }
+
         [TestMethod]
         public void Normal()
         {
             const string testFile = "C:/NormalTestFile";
             CreateTreeSourceDest(testFile);
-            var bak = create(DbBackupType.NORM, new DbTaskDetails() { }, CrtTaskLocE(
-                new DbTaskLocation() { source = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, destination = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Dest" } }
-                ), 1, null, null);
+            var bak = CreateLocBak(DbBackupType.NORM, testFile);
             bak.StartBackup();
             bak.StartBackup();
-            var dirs = Directory.GetDirectories(testFile + "/Dest");
+            var dirs = Directory.GetDirectories(Path.Combine(testFile,"Dest"));
             Assert.IsTrue(dirs.Length != 0, "Nebyla vytvořena žádná záloha");
-            string[] sourceFiles = Directory.GetFiles(testFile + "/Source", "*.*", SearchOption.AllDirectories).OrderBy(r => Path.GetFileName(r)).ToArray();
-
+            string[] sourceFiles = Directory.GetFiles(Path.Combine(testFile,"Source"), "*.*", SearchOption.AllDirectories).OrderBy(r => Path.GetFileName(r)).ToArray();
 
             for (int i = 0; i < sourceFiles.Length; i++)
             {

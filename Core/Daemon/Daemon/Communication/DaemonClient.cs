@@ -154,7 +154,7 @@ namespace Daemon.Communication
         private async Task<bool> Startup()
         {
             authenticator = new Authenticator(messenger);
-            if (settings.FirstSetup)
+            if (settings.FirstSetup && Directory.Exists(Path.Combine(Util.GetSharedFolder(),"Install","transfer.tsf")))
                 firstSetup();
             if (settings.Uuid == null || settings.Uuid == Guid.Empty)// Daemon nema Uuid -> musi se introducnout
             {
@@ -280,6 +280,7 @@ namespace Daemon.Communication
             TaskTickerTask = Task.Run(() => TaskTicker());//Refreshuje tasky aby byli aktualni se serverem
             await logCheckTask;
             await loadPrivTask;
+            await TaskTickerTask;
         }
 
         private async Task TaskTicker()

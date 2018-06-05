@@ -124,7 +124,7 @@ namespace Daemon.Backups
             if (TaskDetails.ZipAlgorithm == "zip")
             {
                 trulyBackupedInfo = new SmartBackupInfo();
-                trulyBackupedInfo = new Compressions.Compressor(backupInfo, TaskDetails).Compress(Path.GetTempPath() + @"\" + DateTime.Now.ToFileTimeUtc() + ".zip",System.IO.Compression.CompressionLevel.Optimal);
+                trulyBackupedInfo = new Compressions.Compressor(backupInfo, TaskDetails).Compress(Path.GetTempPath() + @"\" + DateTime.Now.ToFileTimeUtc() + ".zip",(System.IO.Compression.CompressionLevel)TaskDetails.CompressionLevel);
                 logger.Log("Done compressing file using zip",Shared.LogType.INFORMATION);
             }
 

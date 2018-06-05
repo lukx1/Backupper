@@ -194,7 +194,7 @@ namespace Daemon
         /// </summary>
         public Core()
         {
-            Thread.Sleep(10000);
+            //Thread.Sleep(10000);
             //StartDS();
             Start();
         }
