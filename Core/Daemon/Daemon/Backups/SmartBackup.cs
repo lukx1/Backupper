@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using Shared.NetMessages.TaskMessages;
 using System.IO;
+using Daemon.Communication;
 
 namespace Daemon.Backups
 {
@@ -63,6 +64,14 @@ namespace Daemon.Backups
                 }
                 else if (item.destination.protocol == DbProtocol.WND || item.destination.protocol == DbProtocol.WRD)
                 {
+                    BackupNormal(info, item);
+                }
+                else if (item.destination.protocol == DbProtocol.MYSQL)
+                {
+                    SmartBackupInfo tempInfo = new SmartBackupInfo();
+
+                    SqlCommunicator sqlCommunicator = new SqlCommunicator();
+
                     BackupNormal(info, item);
                 }
                 logger.Log("Done Backuping using " + item.destination.protocol,Shared.LogType.INFORMATION);
@@ -135,6 +144,8 @@ namespace Daemon.Backups
             if (successful)
                 backupInfo.WriteToFile(SmartBackupInfo.StorePath + $"{taskLocation.id}_{DateTime.Now.ToFileTimeUtc()}.bki");
         }
+
+       
 
         /// <summary>
         /// Zálohuje pomocí FTP

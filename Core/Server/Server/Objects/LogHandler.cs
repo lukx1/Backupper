@@ -11,6 +11,9 @@ using System.Web;
 
 namespace Server.Objects
 {
+    /// <summary>
+    /// Slouzi pro praci s logy ze strany API
+    /// </summary>
     public class LogHandler : IDisposable
     {
 

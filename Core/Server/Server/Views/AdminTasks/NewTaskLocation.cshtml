@@ -1,29 +1,31 @@
 ﻿@model global::Server.Models.Admin.NewEditTaskLocationsModel
 
 @{
-	ViewBag.Title = "New Task Location";
-	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewBag.Title = "New Task Location";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <table style="width:100%">
-	<tr>
-		<th>Uri</th>
-	</tr>
-	@foreach (var item in Model.Locations)
-	{
-		<tr>
-			<td>@item.Uri</td>
-			<td><input onclick="$('#@Html.IdFor(m => m.IdSource)').val('@item.Id')" type="button" value="Use as source" /></td>
-			<td><input onclick="$('#@Html.IdFor(m => m.IdDestination)').val('@item.Id')" type="button" value="Use as destination" /></td>
-		</tr>
-	}
+    <tr>
+        <th>Uri</th>
+    </tr>
+    @foreach (var item in Model.Locations)
+    {
+        <tr>
+            <td>@item.Uri</td>
+            <td><input onclick="$('#@Html.IdFor(m => m.IdSource)').val('@item.Id')" type="button" value="Use as source" /></td>
+            <td><input onclick="$('#@Html.IdFor(m => m.IdDestination)').val('@item.Id')" type="button" value="Use as destination" /></td>
+        </tr>
+    }
 </table>
 
 @using (Html.BeginForm("NewTaskLocation", "AdminTasks", FormMethod.Post))
 {
-	@Html.HiddenFor(m => m.IdTask)
-	@Html.HiddenFor(m => m.IdSource)
-	@Html.HiddenFor(m => m.IdDestination)
+    <input id="sourceLoc" type="text" readonly />
+    <input id="destLoc" type="text" readonly />
+    @Html.HiddenFor(m => m.IdTask)
+    @Html.HiddenFor(m => m.IdSource)
+    @Html.HiddenFor(m => m.IdDestination)
 
-	<input type="submit" value="Confirm" />
+    <input type="submit" value="Confirm" />
 }

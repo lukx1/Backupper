@@ -10,6 +10,9 @@ using System.Web;
 
 namespace Server.Objects
 {
+    /// <summary>
+    /// Pomocne metody pro praci s DbTasky pro API
+    /// </summary>
     public class TaskHandler
     {
         private Authenticator authenticator = new Authenticator();

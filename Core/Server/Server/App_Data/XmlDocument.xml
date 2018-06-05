@@ -670,15 +670,50 @@
             SQL PermissionEnum
             </summary>
         </member>
+        <member name="T:Server.Controllers.AdminBaseController">
+            <summary>
+            Základni třída pro všechny kontrolery, kterými se ovládá chování nebo data v Backupperu
+            Obsahuje logiku pro kontrolu přihlášení uživatele
+            </summary>
+        </member>
+        <member name="M:Server.Controllers.AdminBaseController.OnException(System.Web.Mvc.ExceptionContext)">
+            <summary>
+            Jakákoliv výjimka, která se sem dostane bude zobrazena na AdminError stránce
+            </summary>
+            <param name="fc"></param>
+        </member>
+        <member name="T:Server.Controllers.AdminSecAttribute">
+            <summary>
+            Pokud je použit zajistí, že se k metodě v kontroleru dostanou přihlášení uživatelé se specifikovanými permisemi
+            </summary>
+        </member>
         <member name="M:Server.Controllers.AdminSecAttribute.#ctor(Server.Authentication.Permission[])">
             <summary>
             Constructor: if any permissions are specified then user is required to have at least one of them
             </summary>
             <param name="permissions"></param>
         </member>
+        <member name="M:Server.Controllers.AdminSecAttribute.OnAuthentication(System.Web.Mvc.Filters.AuthenticationContext)">
+            <summary>
+            Přihlásí uživatele
+            </summary>
+            <param name="filterContext"></param>
+        </member>
+        <member name="M:Server.Controllers.AdminSecAttribute.OnAuthorization(System.Web.Mvc.AuthorizationContext)">
+            <summary>
+            Načte permise z databáze a zkontroluje, že uživatel může pokračovat dál
+            </summary>
+            <param name="filterContext"></param>
+        </member>
+        <member name="T:Server.Controllers.AdminSetupController">
+            <summary>
+            Použité pro první nastavení serveru. resp. prvního admin účtu a connection stringu
+            Connection string jde později změnit ServerSettings
+            </summary>
+        </member>
         <member name="M:Server.Controllers.ChangedTaskController.Post(Shared.NetMessages.ChangedTaskMessage)">
             <summary>
-            Získá tasky pro daemona
+            Daemon získá změny v taskové konfiguraci
             </summary>
             <param name="taskMessage"></param>
             <returns></returns>
@@ -702,9 +737,16 @@
             <param name="loginMessage"></param>
             <returns>OK pokud prihlasen jinak 400+ kod</returns>
         </member>
+        <member name="M:Server.Controllers.OneClickController.Post(Shared.NetMessages.OneClickMessage)">
+            <summary>
+            Daemon se dozví jestli byl povolen adminem
+            </summary>
+            <param name="msg"></param>
+            <returns>Pokud je povolen je mu přiděleno uuid s heslem, pokud ne tak je mu přiděleno nic</returns>
+        </member>
         <member name="M:Server.Controllers.RSAForDaemonController.Post(Shared.NetMessages.RSAForDaemonMessage)">
             <summary>
-            Získá tasky pro daemona
+            Daemon požádá o zašifrovaná private key svého majitele
             </summary>
             <param name="taskMessage"></param>
             <returns></returns>
@@ -725,16 +767,44 @@
         </member>
         <member name="M:Server.Controllers.UniversalLogController.Put(Shared.NetMessages.LogMessages.UniversalLogMessage)">
             <summary>
-            Vytvoří tasky
+            Daemon odešle log na server
             </summary>
             <param name="taskMessage"></param>
             <returns></returns>
         </member>
         <member name="M:Server.Controllers.UniversalLogController.Post(Shared.NetMessages.LogMessages.UniversalLogMessage)">
             <summary>
-            Získá tasky pro daemona
+            Neimplementováno
             </summary>
             <param name="taskMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Server.Controllers.UserController.Post(Shared.NetMessages.UserMessage)">
+            <summary>
+            Získá uživatele
+            </summary>
+            <param name="userMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Server.Controllers.UserController.Put(Shared.NetMessages.UserMessage)">
+            <summary>
+            Přidá uživatele
+            </summary>
+            <param name="userMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Server.Controllers.UserController.Patch(Shared.NetMessages.UserMessage)">
+            <summary>
+            Upraví uživatele
+            </summary>
+            <param name="userMessage"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Server.Controllers.UserController.Delete(Shared.NetMessages.UserMessage)">
+            <summary>
+            Vymaže uživatele
+            </summary>
+            <param name="userMessage"></param>
             <returns></returns>
         </member>
         <member name="M:Server.Controllers.UserLoginController.Post(Shared.NetMessages.UserLoginMessage)">
@@ -743,6 +813,11 @@
             </summary>
             <param name="taskMessage"></param>
             <returns></returns>
+        </member>
+        <member name="T:Server.HostringEnvironmentRegisteredShutdownObject">
+            <summary>
+            Zajišťuje periodické zapisování uptimu serveru do databáze
+            </summary>
         </member>
         <member name="F:Server.Installer.components">
             <summary>
@@ -761,12 +836,104 @@
             the contents of this method with the code editor.
             </summary>
         </member>
+        <member name="T:Server.Models.Admin.ServerSetupModel">
+            <summary>
+            Pro AdminSetup/Index
+            </summary>
+        </member>
+        <member name="M:Server.Models.Admin.ServerSetupModel.Save">
+            <summary>
+            Otestuje jestli se jde připojit poskytnutým connection stringem k MySql serveru
+            Pokud ano vytvoří admin uživatele dle zadaných parametrů
+            </summary>
+        </member>
         <member name="T:Server.Models.MySQLConnectionStringMaker">
             <summary>
-            Poskyuje login info schované v appdata
+            Poskytuje login info schované ve Web.config
             </summary>
             Pokud mySQL stále nefunguje přidejte nad classu
             tento annotation [DbConfigurationType(typeof(MySqlEFConfiguration))]
+        </member>
+        <member name="M:Server.Models.MySQLConnectionStringMaker.GetConnectionString">
+            <summary>
+            Získá connectionstring schovaná ve Web.config
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Server.Objects.AdminExceptions.AdminException">
+            <summary>
+            Základní vyjímka využívaná v grafické části admina
+            </summary>
+        </member>
+        <member name="T:Server.Objects.AdminExceptions.AdminModelErrorException">
+            <summary>
+            Slouží pro chyby při validaci, neplatných datech nebo chybějících údajích 
+            </summary>
+        </member>
+        <member name="T:Server.Objects.AdminExceptions.AdminSecurityException">
+            <summary>
+            Používané např. pro chybné přihlášení a nebo nedostatečné permise
+            </summary>
+        </member>
+        <member name="T:Server.Objects.ConnectionStringHelper">
+            <summary>
+            Dynamicky ziska nebo nastavi connectionString
+            </summary>
+        </member>
+        <member name="T:Server.Objects.MagicStrings">
+            <summary>
+            Obsahuje v kodu se opakujici textove retezce
+            </summary>
+        </member>
+        <member name="T:Server.Objects.LogHandler">
+            <summary>
+            Slouzi pro praci s logy ze strany API
+            </summary>
+        </member>
+        <member name="T:Server.Objects.MailHandler">
+            <summary>
+            Pomocna trida pro posilani emailu
+            </summary>
+        </member>
+        <member name="T:Server.Objects.PList">
+            <summary>
+            Pomocna trida pro permise
+            </summary>
+        </member>
+        <member name="T:Server.Objects.ServerLogger">
+            <summary>
+            Slouzi pro lokalni logovani na serveru
+            </summary>
+        </member>
+        <member name="T:Server.Objects.SqlLogger">
+            <summary>
+            Slouzi k logovani do databaze
+            </summary>
+        </member>
+        <member name="T:Server.Objects.TaskHandler">
+            <summary>
+            Pomocne metody pro praci s DbTasky pro API
+            </summary>
+        </member>
+        <member name="T:Server.Objects.UptimeCalculator">
+            <summary>
+            Pocita hodnoty jak dlouho je server online, offline, z kolika procent byl online a od kdy se to pocita
+            </summary>
+        </member>
+        <member name="T:Server.Objects.UserHandler">
+            <summary>
+            Repozitar pro DbUser
+            </summary>
+        </member>
+        <member name="T:Server.ScheduledTasks.Email.EmailJob">
+            <summary>
+            Popis emailoveho background tasku a jeho logika
+            </summary>
+        </member>
+        <member name="T:Server.ScheduledTasks.JobScheduler">
+            <summary>
+            Zapne background task pro posilani emailu
+            </summary>
         </member>
     </members>
 </doc>
