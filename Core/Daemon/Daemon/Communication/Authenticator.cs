@@ -11,6 +11,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Management;
 
 namespace Daemon.Communication
 {
@@ -84,7 +85,7 @@ namespace Daemon.Communication
             {
 
                 macAdress = firstMacAddress.ToCharArray(),
-                os = Environment.OSVersion.ToString(),
+                os = GetOSFriendlyName(),
                 version = Shared.Version.Parse(settings.Version),
                 PCUuid = pcInfo.GetUniqueId(),
                 pcName = Environment.MachineName
@@ -171,6 +172,17 @@ namespace Daemon.Communication
                 return Guid.Empty;
             }
 
+        }
+        private string GetOSFriendlyName()
+        {
+            string result = string.Empty;
+            ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem");
+            foreach (ManagementObject os in searcher.Get())
+            {
+                result = os["Caption"].ToString();
+                break;
+            }
+            return result;
         }
 
     }

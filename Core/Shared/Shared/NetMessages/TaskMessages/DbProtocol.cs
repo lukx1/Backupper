@@ -12,6 +12,7 @@ namespace Shared.NetMessages.TaskMessages
         public static readonly DbProtocol WRD = new DbProtocol(2, "WRD", "Windows Remote URI");
         public static readonly DbProtocol FTP = new DbProtocol(3, "FTP", "File Transfer Protocol");
         public static readonly DbProtocol SFTP = new DbProtocol(4, "SFTP", "Secure File Transfer Protocol");
+        public static readonly DbProtocol MYSQL = new DbProtocol(5, "MYSQL", "MySQL");
 
         [DeserializeOnly]
         public DbProtocol()
