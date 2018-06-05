@@ -120,7 +120,7 @@ namespace Daemon.Backups
             if (!Directory.Exists(DestinationPath))
                 Directory.CreateDirectory(DestinationPath);
 
-            string SourcePath = taskLocation.source.uri;
+            string SourcePath = trulyBackupedInfo.location.source.uri;
             foreach (SmartFileInfo item in trulyBackupedInfo.fileInfos)
             {
                 // Definice cesty kam se to bude kopírovat je = DestinationPath + SubPath + FileName, a kopiruje se z SourcePath + SubPath + FileName (aneb item.destination)
