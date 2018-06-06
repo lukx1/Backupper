@@ -67,13 +67,13 @@ namespace Tests
         [TestMethod]
         public void Zip()
         {
-            const string testDir = "C:/ZipTest";
-            try { Directory.Delete(testDir); } catch (Exception) { }
-            var b = create(null, null, Enumerable.Empty<DbTaskLocation>(), 1, null, $"mkdir \"{testDir}\"");
-            b.StartBackup();
-            Thread.Sleep(1000);
-            Assert.IsTrue(Directory.Exists(testDir));
-            try { Directory.Delete(testDir); } catch (Exception) { }
+            const string testFile = "C:/NormalTestFile";
+            CreateTreeSourceDest(testFile);
+            var bak = CreateLocBak(DbBackupType.NORM, testFile,"zip",0);
+            bak.StartBackup();
+            bak.StartBackup();
+            var dirs = Directory.GetDirectories(Path.Combine(testFile, "Dest"));
+            Assert.IsTrue(dirs.Length != 0, "Nebyla vytvořena žádná záloha");
         }
 
 
@@ -144,32 +144,6 @@ namespace Tests
             CreateTreeSourceDest(testFile);
             var bak = create(DbBackupType.NORM, new DbTaskDetails() { }, CrtTaskLocE(
                 new DbTaskLocation() { source = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, destination = new DbLocation { protocol = DbProtocol.FTP, uri = "", LocationCredential = new DbLocationCredential() { LogonType = DbLogonType.Normal, host = "ftp.dlptest.com", port = 21, password = "eiTqR7EMZD5zy7M", username = "dlpuser@dlptest.com" } } }
-                ), 1, null, null);
-            bak.StartBackup();
-            Assert.IsTrue(Directory.GetFiles(testFile + "/Source").Length > 0, "Nic nebylo zkopirovano");
-        }
-
-        [TestMethod]
-        public void FTPTest()
-        {
-            Assert.Fail();
-            /*const string testFile = "C:/SFTPTestFile";
-            CreateTreeSourceDest(testFile);
-            var bak = create(DbBackupType.NORM, new DbTaskDetails() { }, CrtTaskLocE(
-                new DbTaskLocation() { destination = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, source = new DbLocation { protocol = DbProtocol.SFTP, uri = "/", LocationCredential = new DbLocationCredential() { LogonType = DbLogonType.Normal, host = "test.rebex.net", port = 22, password = "password", username = "demo" } } }
-                ), 1, null, null);
-            bak.StartBackup();
-            Assert.IsTrue(Directory.GetFiles(testFile + "/Source").Length > 0, "Nic nebylo zkopirovano");*/
-        }
-
-        [TestMethod]
-        public void SFTPTest()
-        {
-            Assert.Fail();
-            const string testFile = "C:/SFTPTestFile";
-            CreateTreeSourceDest(testFile);
-            var bak = create(DbBackupType.NORM, new DbTaskDetails() { }, CrtTaskLocE(
-                new DbTaskLocation() { destination = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, source = new DbLocation { protocol = DbProtocol.SFTP, uri = "/", LocationCredential = new DbLocationCredential() { LogonType = DbLogonType.Normal, host = "test.rebex.net", port = 22, password = "password", username = "demo" } } }
                 ), 1, null, null);
             bak.StartBackup();
             Assert.IsTrue(Directory.GetFiles(testFile + "/Source").Length > 0, "Nic nebylo zkopirovano");
