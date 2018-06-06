@@ -125,29 +125,7 @@ namespace Tests
             //Directory.Delete(testDir, true);
         }
 
-        [TestMethod]
-        public void FTPDownload()
-        {
-            const string testFile = "C:/FTPTestFile";
-            CreateTreeSourceDest(testFile);
-            var bak = create(DbBackupType.NORM, new DbTaskDetails() { }, CrtTaskLocE(
-                new DbTaskLocation() { destination = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, source = new DbLocation { protocol = DbProtocol.FTP, uri = "",LocationCredential = new DbLocationCredential() {LogonType = DbLogonType.Normal,host = "test.rebex.net",port = 21,password = "password",username = "demo" } } }
-                ), 1, null, null);
-            bak.StartBackup();
-            Assert.IsTrue(Directory.GetFiles(testFile + "/Source").Length > 0,"Nic nebylo zkopirovano");
-        }
-
-        [TestMethod]
-        public void FTPUpload()
-        {
-            const string testFile = "C:/FTPTestFile";
-            CreateTreeSourceDest(testFile);
-            var bak = create(DbBackupType.NORM, new DbTaskDetails() { }, CrtTaskLocE(
-                new DbTaskLocation() { source = new DbLocation { protocol = DbProtocol.WND, uri = testFile + "/Source" }, destination = new DbLocation { protocol = DbProtocol.FTP, uri = "", LocationCredential = new DbLocationCredential() { LogonType = DbLogonType.Normal, host = "ftp.dlptest.com", port = 21, password = "eiTqR7EMZD5zy7M", username = "dlpuser@dlptest.com" } } }
-                ), 1, null, null);
-            bak.StartBackup();
-            Assert.IsTrue(Directory.GetFiles(testFile + "/Source").Length > 0, "Nic nebylo zkopirovano");
-        }
+       
 
         private void CreateTreeSourceDest(string where)
         {
